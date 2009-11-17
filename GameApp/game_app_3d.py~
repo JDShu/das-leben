@@ -1,0 +1,84 @@
+from OpenGL.GL import *
+from OpenGL.GLU import *
+import sys
+import pygame
+from pygame.locals import *
+
+class GameApp3d:
+    """A 3d GameApp"""
+    def __init__(self, a_VeiwPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d"):
+        pygame.init()
+        
+        if a_Fullscreen:
+            video_options = OPENGL|DOUBLEBUF|FULLSCREEN
+            modes = pygame.display.list_modes()
+            for mode in modes:
+                print "%sx%s" % (mode[0], mode[1])
+        else:
+            video_options = OPENGL|DOUBLEBUF
+        
+        screen = pygame.display.set_mode((a_VeiwPortWidth, a_ViewPortHeight), video_options)
+        pygame.display.set_caption(a_AppName)
+        self.Resize((a_VeiwPortWidth, a_ViewPortHeight))
+        
+        glShadeModel(GL_FLAT)
+        glClearColor(0.0, 0.0, 0.0, 0.0)
+        glClearDepth(1.0)
+        glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LEQUAL)
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+        
+        LightAmbient  = [ 0.2, 0.2, 0.2, 1.0]
+        LightDiffuse  = [ 1.0, 1.0, 1.0, 1.0]
+        LightPosition = [ 0.0, 100.0, 0.0, 1.0]
+        
+        glLightfv( GL_LIGHT1, GL_AMBIENT, LightAmbient )
+        glLightfv( GL_LIGHT1, GL_DIFFUSE, LightDiffuse )
+        glLightfv( GL_LIGHT1, GL_POSITION, LightPosition )
+        glEnable( GL_LIGHT1 )
+        
+        glEnable( GL_LIGHTING )
+        
+
+    def ProcessEvents(self):
+        l_ReturnVal = True
+
+        events = pygame.event.get()
+        for event in events:
+            if event.type == KEYDOWN:
+                if self.ProccessKeys( event.key ) == True:
+                    l_ReturnVal = False
+            elif event.type == QUIT:
+                l_ReturnVal = False
+
+        return l_ReturnVal
+
+    def Resize(self, (width, height)):
+        if height==0:
+            height=1
+        glViewport(0, 0, width, height)
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPerspective(45, 1.0*width/height, 0.1, 100.0)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
+
+    def ProccessKeys(self, a_Key):
+        if a_Key == K_ESCAPE:
+            return True
+        
+    def PrintToConsole(self, a_Message):
+        pass
+
+    def Draw(self):
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
+        glTranslatef( 0, 0, -4.0)
+        glRotatef(90, 1.0, 0, 0)
+        sphere = gluNewQuadric()
+        gluSphere(sphere, 1.0, 10, 10) 
+        pygame.display.flip()
+
+    def Exit(self):
+        pygame.quit()
+        sys.exit()
