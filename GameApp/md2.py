@@ -25,7 +25,7 @@ try:
 except: 
     print "You need PyOpenGL >= 3.0 to run this program, your current version is %s" % (OpenGL.__version__)
     sys.exit(1)
-   
+
 from numpy import *
 import pygame
 from pygame.locals import *
@@ -95,20 +95,20 @@ class MD2Vertex:
     def __init__(self):
         self.vertex = array([0.0, 0.0, 0.0], dtype=float32)
         self.lightNormal = 0
-        
+
 class MD2Animation:
     def __init__(self, id, start, end, fps=12):
         self._id = id
         self._start = start
         self._end = end
         self._fps = 1000 / fps
-        
+
     def GetStart(self):
         return self._start
-    
+
     def GetEnd(self):
         return self._end
-    
+
     def GetFps(self):
         return self._fps
 
@@ -119,7 +119,7 @@ class MD2Frame:
         self.translate = array([0.0, 0.0, 0.0], dtype=float32)
         self.name = ''
         self.vertices  = []
-        
+
 class MD2Face:
     def __init__(self):
         self.p1 = 0
@@ -128,7 +128,7 @@ class MD2Face:
         self.uv1 = 0
         self.uv2 = 0
         self.uv3 = 0
-	self.Normal = None
+        self.Normal = None
 
 class MD2Mesh:
     """ Mesh data """
@@ -136,7 +136,7 @@ class MD2Mesh:
         self.pos = array([0.0, 0.0, 0.0], dtype=float32)
         self.u = 0.0
         self.v = 0.0
-        
+
 
 class MD2Header:
     """ Information for an MD2 file header """
@@ -158,17 +158,17 @@ class MD2Header:
         self.offsetFrames = 0
         self.offsetGLCmds = 0
         self.offsetEnd = 0
-	
+
 class MD2TexCoord:
     def __init__(self):
-	self.u = 0.0
-	self.v = 0.0
+        self.u = 0.0
+        self.v = 0.0
 
 class MD2Model(object):
     """ Data for an MD2 model """
     def __init__(self):
         object.__init__(self)
-               
+
         self._fileName = None
         self._numFrames = 0
         self._frameSize = 0
@@ -177,14 +177,14 @@ class MD2Model(object):
         self._numGLCmds = 0
         self._glCmds = []
         self._numTriangles = 0
-	self.m_SkinWidth = 0
-	self.m_SkinHeight = 0
+        self.m_SkinWidth = 0
+        self.m_SkinHeight = 0
         self.m_VBO = False
         self.m_VBOFrames = []
         self.m_VBOFrameNormals = []
         self.m_VBOFrameTextureCoords = None
         self.m_VBOFrameVertsNum = []
-	self.m_TexCoords = []
+        self.m_TexCoords = []
 
         for i in range(120):
             self._vertList.append(MD2Mesh())
@@ -197,17 +197,17 @@ class MD2Model(object):
         self._Animations = []
         self._Animations.append( MD2Animation( IDLE1, IDLE1_START, IDLE1_END, 6 ) )
         self._Animations.append( MD2Animation( RUN, RUN_START, RUN_END, 6 ) )
-        
+
         self._scale = 1.0
 
     def load(self, fileName, texture=None, VBO=False):
         """ Load the model data """
-	self.m_VBO = VBO
+        self.m_VBO = VBO
         f = open(fileName, 'rb')
         fileData = f.read()
         f.close()
-	
-	
+
+
         header = MD2Header()
 
         # Read in the header information
@@ -241,7 +241,7 @@ class MD2Model(object):
         for i in range(header.numFrames):
             frameInfo = fileData[header.offsetFrames + (i * header.frameSize):header.offsetFrames + 
                                  ((i + 1) * header.frameSize)]
-	    
+
             frame = MD2Frame()
 
             frame.scale[0] = (unpack('f', frameInfo[0:4]))[0]
@@ -274,7 +274,7 @@ class MD2Model(object):
         self.triangles = []; tadd = self.triangles.append
 
         face_size = calcsize("<3h3h")
-        
+
         for i in range(header.numTriangles):
             TriData = fileData[ header.offsetTriangles + (i * face_size) : header.offsetTriangles + ((i + 1) * face_size) ]
             data = unpack("<3h3h", TriData)
@@ -286,23 +286,23 @@ class MD2Model(object):
             face.uv2 = data[4]
             face.uv3 = data[5]
             tadd( face )
-            
+
         i = 0
 
-	textureCoord_size = calcsize("<2h")
-	for i in xrange(header.numTexCoords):
-	    TextCoordData = fileData[ header.offsetTexCoords + (i * textureCoord_size) : header.offsetTexCoords + ((i + 1) * textureCoord_size) ]
-	    u, v = unpack( '<2h', TextCoordData )
-	    tc = MD2TexCoord()
-	    tc.u = u / float(self.m_SkinWidth)
-	    tc.v = v / float(self.m_SkinHeight)
-	    self.m_TexCoords.append( tc )
-	    
-	i = 0
-	# Read in the vertex data
+        textureCoord_size = calcsize("<2h")
+        for i in xrange(header.numTexCoords):
+            TextCoordData = fileData[ header.offsetTexCoords + (i * textureCoord_size) : header.offsetTexCoords + ((i + 1) * textureCoord_size) ]
+            u, v = unpack( '<2h', TextCoordData )
+            tc = MD2TexCoord()
+            tc.u = u / float(self.m_SkinWidth)
+            tc.v = v / float(self.m_SkinHeight)
+            self.m_TexCoords.append( tc )
+
+        i = 0
+        # Read in the vertex data
         while i < len(cmdInfo):
             # Number of vertices
-            numVerts = (unpack('l', cmdInfo[i:i + 4]))[0]
+            numVerts = (unpack('=l', cmdInfo[i:i + 4]))[0]
             self._glCmds.append(numVerts)
 
             i += 4
@@ -312,14 +312,14 @@ class MD2Model(object):
 
             # Texture coordinates
             for j in range(numVerts):
-		tu = (unpack('f', cmdInfo[i:i + 4]))[0]
-		tv = (unpack('f', cmdInfo[i + 4:i + 8]))[0]
-		
+                tu = (unpack('f', cmdInfo[i:i + 4]))[0]
+                tv = (unpack('f', cmdInfo[i + 4:i + 8]))[0]
+
                 self._glCmds.append(tu)
                 self._glCmds.append(tv)
 
                 # Vertex index
-                self._glCmds.append((unpack('l', cmdInfo[i + 8:i + 12]))[0])
+                self._glCmds.append((unpack('=l', cmdInfo[i + 8:i + 12]))[0])
 
                 i += 12
 
@@ -327,63 +327,63 @@ class MD2Model(object):
         self._numGLCmds = header.numGLCmds
         self._frameSize = header.frameSize
         self._numTriangles = header.numTriangles
-        
+
         # load the texture
         if texture:
             textureSurface = pygame.image.load(texture)
- 
+
             textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
-         
+
             width = textureSurface.get_width()
             height = textureSurface.get_height()
-         
+
             self._texture = glGenTextures(1)
             glBindTexture(GL_TEXTURE_2D, self._texture)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
-         
+
         if VBO:
-	    # create Vertex Buffer Objects instead of display lists
+            # create Vertex Buffer Objects instead of display lists
             for i in range( self._numFrames ):
                 self.compileVBO( i )
-		
-		    
+
+
         else:
             # Compile the model vertex data into display lists    
             self._lists = glGenLists( self._numFrames )
-    
+
             for i in range( self._numFrames ):
                 glNewList( self._lists + i, GL_COMPILE )
-                
+
                 self.compileList( i )
                 glEndList()
 
         return True
-    
+
     def CalculateNormal(self, v1, v2, v3 ):
         # Calculate vectors
         v1x = v1[0] - v2[0]
         v1y = v1[1] - v2[1]
         v1z = v1[2] - v2[2]
-        
+
         v2x = v2[0] - v3[0]
         v2y = v2[1] - v3[1]
         v2z = v2[2] - v3[2]
-        
+
         # Get cross product of vectors
-        
+
         nx = (v1y * v2z) - (v1z * v2y)
         ny = (v1z * v2x) - (v1x * v2z)
         nz = (v1x * v2y) - (v1y * v2x)
-        
+
         # Normalise final vector
         vLen = sqrt( (nx * nx) + (ny * ny) + (nz * nz) )
         Result = zeros(3, dtype=float32)
         Result[0] = float(nx / vLen) * -1.0
         Result[1] = float(ny / vLen) * -1.0
         Result[2] = float(nz / vLen) * -1.0
-        
+
         return Result
 
     def compileList(self, frame):
@@ -394,10 +394,10 @@ class MD2Model(object):
         glDisable(GL_BLEND)
         glEnable(GL_DEPTH_TEST)
         glEnable( GL_TEXTURE_2D )
-        
+
         if self._texture:
             glBindTexture( GL_TEXTURE_2D, self._texture )
-            
+
         glCmd = 0
         while self._glCmds[glCmd] != 0:
             if self._glCmds[glCmd] > 0:
@@ -422,7 +422,7 @@ class MD2Model(object):
 
                 vertIndex = self._glCmds[glCmd]
                 glCmd += 1
-                
+
                 # make the vertex
                 self._vertList[index].pos[0] = (self._frames[frame].vertices[vertIndex].vertex[0] * 
                                                 self._frames[frame].scale[0]) + self._frames[frame].translate[0] * self._scale
@@ -431,168 +431,168 @@ class MD2Model(object):
                 self._vertList[index].pos[2] = (self._frames[frame].vertices[vertIndex].vertex[2] * 
                                                 self._frames[frame].scale[2]) + self._frames[frame].translate[2] * self._scale
                 index += 1
-                
-           
+
+
 
             if type == 0:
                 glBegin(GL_TRIANGLE_STRIP)
-                
+
                 for i in range(index):
                     vert = self._vertList[i].pos
-                    
+
                     texCoord[0] = self._vertList[i].u
                     texCoord[1] = self._vertList[i].v
 
                     glTexCoord2f(texCoord[0], texCoord[1])
-                    
+
                     glVertex3f(vert[0] * self._scale , vert[1] * self._scale, vert[2] * self._scale)
 
                 glEnd()
-                
+
             else:
                 glBegin(GL_TRIANGLE_FAN)
                 for i in range(index):
                     vert = self._vertList[i].pos
-                    
+
                     texCoord[0] = self._vertList[i].u
                     texCoord[1] = self._vertList[i].v
 
                     glTexCoord2f(texCoord[0], texCoord[1])
-                    
+
                     glVertex3f(vert[0], vert[1], vert[2])
 
                 glEnd()
         glDisable( GL_TEXTURE_2D )
 
-        
+
     def compileVBO(self, frame):
         """ Compile a frame's data into a Vertex buffer object """
-                     
+
         num_verts = 3 * self._numTriangles
-	
-	vertexes = zeros( ( 3 * self._numTriangles , 3 ), dtype=float32 ) 
-	texCoords = zeros( ( 3 * self._numTriangles, 2 ), dtype=float32 ) 
-	#texCoords = [( 3 * self._numTriangles, 2 )]
-	normals = zeros( ( 3 * self._numTriangles, 3 ), dtype=float32 ) 
-	index = 0
-	
-	for i in range(self._numTriangles):
-	    face = self.triangles[ i ];
-	    vertex1 = zeros( 3, dtype=float32 )
-	    vertex2 = zeros( 3, dtype=float32 )
-	    vertex3 = zeros( 3, dtype=float32 )
-	    # vertex 1
-	    vertex1[0] = ( self._frames[ frame ].vertices[ face.p1 ].vertex[0] * self._frames[ frame ].scale[0]) + self._frames[ frame ].translate[0] * self._scale
-	    vertex1[1] = ( self._frames[ frame ].vertices[ face.p1 ].vertex[1] * self._frames[ frame ].scale[1]) + self._frames[ frame ].translate[1] * self._scale
-	    vertex1[2] = ( self._frames[ frame ].vertices[ face.p1 ].vertex[2] * self._frames[ frame ].scale[2]) + self._frames[ frame ].translate[2] * self._scale
-	    
-	    vertexes[ (i * 3) ][0] = vertex1[0]
-	    vertexes[ (i * 3) ][1] = vertex1[1]
-	    vertexes[ (i * 3) ][2] = vertex1[2]
-	    # vertex 2
-	    vertex2[0] = ( self._frames[ frame ].vertices[ face.p2 ].vertex[0] * self._frames[ frame ].scale[0]) + self._frames[ frame ].translate[0] * self._scale
-	    vertex2[1] = ( self._frames[ frame ].vertices[ face.p2 ].vertex[1] * self._frames[ frame ].scale[1]) + self._frames[ frame ].translate[1] * self._scale
-	    vertex2[2] = ( self._frames[ frame ].vertices[ face.p2 ].vertex[2] * self._frames[ frame ].scale[2]) + self._frames[ frame ].translate[2] * self._scale
-	    
-	    vertexes[ (i * 3) + 1 ][0] = vertex2[0]
-	    vertexes[ (i * 3) + 1 ][1] = vertex2[1]
-	    vertexes[ (i * 3) + 1 ][2] = vertex2[2]
-	    # vertex 3
-	    vertex3[0] = ( self._frames[ frame ].vertices[ face.p3 ].vertex[0] * self._frames[ frame ].scale[0]) + self._frames[ frame ].translate[0] * self._scale
-	    vertex3[1] = ( self._frames[ frame ].vertices[ face.p3 ].vertex[1] * self._frames[ frame ].scale[1]) + self._frames[ frame ].translate[1] * self._scale
-	    vertex3[2] = ( self._frames[ frame ].vertices[ face.p3 ].vertex[2] * self._frames[ frame ].scale[2]) + self._frames[ frame ].translate[2] * self._scale
-	    
-	    vertexes[ (i * 3) + 2 ][0] = vertex3[0]
-	    vertexes[ (i * 3) + 2 ][1] = vertex3[1]
-	    vertexes[ (i * 3) + 2 ][2] = vertex3[2]
-	      
-	    
-	    nx, ny, nz = self.CalculateNormal( vertex1, vertex2, vertex3 )
-	    
-	    normal = zeros( 3, dtype=float32 )
-	    normal[0] = nx
-	    normal[1] = ny
-	    normal[2] = nz
-	    # add a normal for each vertex
-	    for j in range(3):
-		normals[ (i * 3) + j ] = normal 
-	    
-	    if not self.m_VBOFrameTextureCoords:
-		texCoord1 = zeros( 2, dtype=float32 )
-		texCoord2 = zeros( 2, dtype=float32 )
-		texCoord3 = zeros( 2, dtype=float32 )
-		
-		texCoord1[0] = self.m_TexCoords[ face.uv1 ].u
-		texCoord1[1] = self.m_TexCoords[ face.uv1 ].v
-		texCoord2[0] = self.m_TexCoords[ face.uv2 ].u
-		texCoord2[1] = self.m_TexCoords[ face.uv2 ].v
-		texCoord3[0] = self.m_TexCoords[ face.uv3 ].u
-		texCoord3[1] = self.m_TexCoords[ face.uv3 ].v
-		
-		'''texCoords.append(texCoord1)
+
+        vertexes = zeros( ( 3 * self._numTriangles , 3 ), dtype=float32 ) 
+        texCoords = zeros( ( 3 * self._numTriangles, 2 ), dtype=float32 ) 
+        #texCoords = [( 3 * self._numTriangles, 2 )]
+        normals = zeros( ( 3 * self._numTriangles, 3 ), dtype=float32 ) 
+        index = 0
+
+        for i in range(self._numTriangles):
+            face = self.triangles[ i ];
+            vertex1 = zeros( 3, dtype=float32 )
+            vertex2 = zeros( 3, dtype=float32 )
+            vertex3 = zeros( 3, dtype=float32 )
+            # vertex 1
+            vertex1[0] = ( self._frames[ frame ].vertices[ face.p1 ].vertex[0] * self._frames[ frame ].scale[0]) + self._frames[ frame ].translate[0] * self._scale
+            vertex1[1] = ( self._frames[ frame ].vertices[ face.p1 ].vertex[1] * self._frames[ frame ].scale[1]) + self._frames[ frame ].translate[1] * self._scale
+            vertex1[2] = ( self._frames[ frame ].vertices[ face.p1 ].vertex[2] * self._frames[ frame ].scale[2]) + self._frames[ frame ].translate[2] * self._scale
+
+            vertexes[ (i * 3) ][0] = vertex1[0]
+            vertexes[ (i * 3) ][1] = vertex1[1]
+            vertexes[ (i * 3) ][2] = vertex1[2]
+            # vertex 2
+            vertex2[0] = ( self._frames[ frame ].vertices[ face.p2 ].vertex[0] * self._frames[ frame ].scale[0]) + self._frames[ frame ].translate[0] * self._scale
+            vertex2[1] = ( self._frames[ frame ].vertices[ face.p2 ].vertex[1] * self._frames[ frame ].scale[1]) + self._frames[ frame ].translate[1] * self._scale
+            vertex2[2] = ( self._frames[ frame ].vertices[ face.p2 ].vertex[2] * self._frames[ frame ].scale[2]) + self._frames[ frame ].translate[2] * self._scale
+
+            vertexes[ (i * 3) + 1 ][0] = vertex2[0]
+            vertexes[ (i * 3) + 1 ][1] = vertex2[1]
+            vertexes[ (i * 3) + 1 ][2] = vertex2[2]
+            # vertex 3
+            vertex3[0] = ( self._frames[ frame ].vertices[ face.p3 ].vertex[0] * self._frames[ frame ].scale[0]) + self._frames[ frame ].translate[0] * self._scale
+            vertex3[1] = ( self._frames[ frame ].vertices[ face.p3 ].vertex[1] * self._frames[ frame ].scale[1]) + self._frames[ frame ].translate[1] * self._scale
+            vertex3[2] = ( self._frames[ frame ].vertices[ face.p3 ].vertex[2] * self._frames[ frame ].scale[2]) + self._frames[ frame ].translate[2] * self._scale
+
+            vertexes[ (i * 3) + 2 ][0] = vertex3[0]
+            vertexes[ (i * 3) + 2 ][1] = vertex3[1]
+            vertexes[ (i * 3) + 2 ][2] = vertex3[2]
+
+
+            nx, ny, nz = self.CalculateNormal( vertex1, vertex2, vertex3 )
+
+            normal = zeros( 3, dtype=float32 )
+            normal[0] = nx
+            normal[1] = ny
+            normal[2] = nz
+            # add a normal for each vertex
+            for j in range(3):
+                normals[ (i * 3) + j ] = normal 
+
+            if not self.m_VBOFrameTextureCoords:
+                texCoord1 = zeros( 2, dtype=float32 )
+                texCoord2 = zeros( 2, dtype=float32 )
+                texCoord3 = zeros( 2, dtype=float32 )
+
+                texCoord1[0] = self.m_TexCoords[ face.uv1 ].u
+                texCoord1[1] = self.m_TexCoords[ face.uv1 ].v
+                texCoord2[0] = self.m_TexCoords[ face.uv2 ].u
+                texCoord2[1] = self.m_TexCoords[ face.uv2 ].v
+                texCoord3[0] = self.m_TexCoords[ face.uv3 ].u
+                texCoord3[1] = self.m_TexCoords[ face.uv3 ].v
+
+                '''texCoords.append(texCoord1)
 		texCoords.append(texCoord2)
 		texCoords.append(texCoord3)'''
-		texCoords[ (i * 3) ][0] = texCoord1[0] 
-		texCoords[ (i * 3) ][1] = texCoord1[1]
-				
-		texCoords[ (i * 3) + 1 ][0] = texCoord2[0]
-		texCoords[ (i * 3) + 1 ][1] = texCoord2[1]
-				
-		texCoords[ (i * 3) + 2 ][0] = texCoord3[0] 
-		texCoords[ (i * 3) + 2 ][1] = texCoord3[1]
-				
-	    index += 3
-	
-	self.m_VBOFrames.append( glGenBuffersARB( 1 ) )      
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrames[ frame ] );
-	glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexes, GL_STATIC_DRAW_ARB );
-	
-	self.m_VBOFrameNormals.append( glGenBuffersARB( 1 ) )
-	glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameNormals[ frame ] );
-	glBufferDataARB( GL_ARRAY_BUFFER_ARB, normals, GL_STATIC_DRAW_ARB );
-	
-	if not self.m_VBOFrameTextureCoords:
-	    self.m_VBOFrameTextureCoords = glGenBuffersARB( 1 )
-	    glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameTextureCoords );
-	    glBufferDataARB( GL_ARRAY_BUFFER_ARB, texCoords, GL_STATIC_DRAW_ARB );
+                texCoords[ (i * 3) ][0] = texCoord1[0] 
+                texCoords[ (i * 3) ][1] = texCoord1[1]
+
+                texCoords[ (i * 3) + 1 ][0] = texCoord2[0]
+                texCoords[ (i * 3) + 1 ][1] = texCoord2[1]
+
+                texCoords[ (i * 3) + 2 ][0] = texCoord3[0] 
+                texCoords[ (i * 3) + 2 ][1] = texCoord3[1]
+
+            index += 3
+
+        self.m_VBOFrames.append( glGenBuffersARB( 1 ) )      
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrames[ frame ] );
+        glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexes, GL_STATIC_DRAW_ARB );
+
+        self.m_VBOFrameNormals.append( glGenBuffersARB( 1 ) )
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameNormals[ frame ] );
+        glBufferDataARB( GL_ARRAY_BUFFER_ARB, normals, GL_STATIC_DRAW_ARB );
+
+        if not self.m_VBOFrameTextureCoords:
+            self.m_VBOFrameTextureCoords = glGenBuffersARB( 1 )
+            glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameTextureCoords );
+            glBufferDataARB( GL_ARRAY_BUFFER_ARB, texCoords, GL_STATIC_DRAW_ARB );
             # print texCoords
         self.m_VBOFrameVertsNum.append( index )
-	
+
     # Draw the current frame
     def draw(self):
         if self.m_VBO:
-	    glEnable(GL_DEPTH_TEST)
-	    glEnable( GL_TEXTURE_2D )
-	    
-	    if self._texture:
-		glBindTexture( GL_TEXTURE_2D, self._texture )
+            glEnable(GL_DEPTH_TEST)
+            glEnable( GL_TEXTURE_2D )
+
+            if self._texture:
+                glBindTexture( GL_TEXTURE_2D, self._texture )
             glScale( self._scale, self._scale, self._scale )
             glEnableClientState( GL_VERTEX_ARRAY )
             glEnableClientState( GL_NORMAL_ARRAY )
             glEnableClientState( GL_TEXTURE_COORD_ARRAY )
-                     
+
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrames[ self._currentFrame - 1] )
             glVertexPointer( 3, GL_FLOAT, 0, None )
-            
-	    glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameNormals[ self._currentFrame ] )
+
+            glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameNormals[ self._currentFrame ] )
             glNormalPointer( GL_FLOAT, 0, None )
-	   
-	    glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameTextureCoords )
+
+            glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameTextureCoords )
             glTexCoordPointer( 2, GL_FLOAT, 0, None )
-            
+
             glDrawArrays( GL_TRIANGLES, 0, self.m_VBOFrameVertsNum[ self._currentFrame ] )
-         
+
             glDisableClientState( GL_VERTEX_ARRAY )
-	    glDisableClientState( GL_NORMAL_ARRAY )
+            glDisableClientState( GL_NORMAL_ARRAY )
             glDisableClientState( GL_TEXTURE_COORD_ARRAY )
-	    glDisable( GL_TEXTURE_2D )
+            glDisable( GL_TEXTURE_2D )
         else:
             glCallList(self._lists + self._currentFrame) 
-        
+
     def SetAnimation(self, animation):
         self._currentAnimation = animation
         self._currentFrame = self._Animations[ self._currentAnimation ].GetStart()
-        
+
     def Animate(self, forward=True, ticks=0):
         self._currentTicks += ticks
         if self._currentTicks > self._Animations[ self._currentAnimation ].GetFps():
@@ -600,18 +600,17 @@ class MD2Model(object):
                 self._currentFrame += 1
             else:
                 self._currentFrame -= 1
-                
+
             self._currentTicks = 0
-            
+
         if self._currentFrame < self._Animations[ self._currentAnimation ].GetStart():
             self._currentFrame = self._Animations[ self._currentAnimation ].GetEnd() - 1
-            
+
         if self._currentFrame >= self._Animations[ self._currentAnimation ].GetEnd():
             self._currentFrame = self._Animations[ self._currentAnimation ].GetStart() - 1
-            
+
     def SetScale(self, percent):
         self._scale = percent / 100.0
-        
-    
-    
-   
+
+
+
