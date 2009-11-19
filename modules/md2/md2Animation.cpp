@@ -1,6 +1,6 @@
-'''
+/*
  * This file is part of La Vida
- * Copyright (C) 2009 Mike Hibbert
+ * Copyright (C) 2009/10 Mike Hibbert
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -12,27 +12,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
  *
-'''
+ */
 
-import GameApp
-from GameApp.game_app_3d import GameApp3d
+#include "md2Animation.h"
 
-try:
-    import psyco
-    
-except ImportError:
-    print "For best results install psyco"
+md2Animation::md2Animation()
+{
+  //ctor
+}
 
-def main():
-
-    l_Game = GameApp3d(a_AppName="La Vida")
-
-    Running = True
-
-    while Running:
-        Running = l_Game.ProcessEvents()
-        l_Game.Draw()
-
-    l_Game.Exit()
-
-if __name__ == "__main__": main()
+md2Animation::~md2Animation()
+{
+  //dtor
+}

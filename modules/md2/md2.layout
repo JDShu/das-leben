@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="md2Animation.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="59" topLine="0" />
+	</File>
+	<File name="md2Animation.h" open="1" top="0" tabpos="4">
+		<Cursor position="583" topLine="0" />
+	</File>
+	<File name="md2Model.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="34" topLine="0" />
+	</File>
+	<File name="md2Model.h" open="1" top="0" tabpos="5">
+		<Cursor position="583" topLine="0" />
+	</File>
+	<File name="md2Object.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="md2Object.h" open="1" top="1" tabpos="6">
+		<Cursor position="583" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>
