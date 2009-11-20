@@ -36,6 +36,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="md2.cbp" />
+		<Unit filename="md2.i" />
 		<Unit filename="md2Animation.cpp" />
 		<Unit filename="md2Animation.h" />
 		<Unit filename="md2Model.cpp" />

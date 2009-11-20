@@ -13,7 +13,6 @@
  * General Public License for more details.
  *
  */
-#include <Python.h>
 #include <GL/gl.h>
 #include <iostream>
 #include <fstream>
