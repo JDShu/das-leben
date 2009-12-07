@@ -25,6 +25,21 @@
 using std::cout;
 using std::endl;
 
+// VBO Extension Definitions, From glext.h
+#define GL_ARRAY_BUFFER_ARB 0x8892
+#define GL_STATIC_DRAW_ARB 0x88E4
+
+typedef void (APIENTRY * PFNGLBINDBUFFERARBPROC) (GLenum target, GLuint buffer);
+typedef void (APIENTRY * PFNGLDELETEBUFFERSARBPROC) (GLsizei n, const GLuint *buffers);
+typedef void (APIENTRY * PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
+typedef void (APIENTRY * PFNGLBUFFERDATAARBPROC) (GLenum target, int size, const GLvoid *data, GLenum usage);
+
+// VBO Extension Function Pointers
+PFNGLGENBUFFERSARBPROC glGenBuffersARB = NULL;					// VBO Name Generation Procedure
+PFNGLBINDBUFFERARBPROC glBindBufferARB = NULL;					// VBO Bind Procedure
+PFNGLBUFFERDATAARBPROC glBufferDataARB = NULL;					// VBO Data Loading Procedure
+PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB = NULL;			// VBO Deletion Procedure
+
 
 bool FileExists(string strFilename) {
   struct stat stFileInfo;
@@ -51,7 +66,12 @@ bool FileExists(string strFilename) {
   return(blnReturn);
 }
 
-
+void InitMD2(void)  {
+  glGenBuffersARB = (PFNGLGENBUFFERSARBPROC) SDL_GL_GetProcAddress("glGenBuffersARB");
+  glBindBufferARB = (PFNGLBINDBUFFERARBPROC) SDL_GL_GetProcAddress("glBindBufferARB");
+  glBufferDataARB = (PFNGLBUFFERDATAARBPROC) SDL_GL_GetProcAddress("glBufferDataARB");
+  glDeleteBuffersARB = (PFNGLDELETEBUFFERSARBPROC) SDL_GL_GetProcAddress("glDeleteBuffersARB");
+}
 
 md2Model::md2Model(string a_Filename)
 {
@@ -107,7 +127,7 @@ md2Model::md2Model(string a_Filename)
 
   // frames
   l_File.seekg( m_Header.m_OffsetToFrames, std::ios::beg );
-  GLfloat l_Temp[3];
+
   int i;
   for(i = 0; i < m_Header.m_NumFrames; i++) {
     // add a new memory area fro this frames verts
@@ -115,11 +135,13 @@ md2Model::md2Model(string a_Filename)
     m_Frames[i].m_Verts = new md2Vertex[ m_Header.m_NumVertices ];
     m_Frames[i].m_DisplayList = 0;
 
+    GLfloat* l_Temp = new md2Vector3d;
     l_File.read( reinterpret_cast<char *>(&l_Temp), sizeof(GLfloat) * 3);
-    m_Frames[i].m_Scale = Vector3d( l_Temp[0], l_Temp[1], l_Temp[2] );
+    m_Frames[i].m_Scale = l_Temp;
 
-    l_File.read( reinterpret_cast<char *>(&l_Temp), sizeof(GLfloat) * 3);
-    m_Frames[i].m_Translate = Vector3d( l_Temp[0], l_Temp[1], l_Temp[2] );
+    l_Temp = new md2Vector3d;
+    l_File.read( reinterpret_cast<char *>(l_Temp), sizeof(GLfloat) * 3);
+    m_Frames[i].m_Translate = l_Temp;
 
     l_File.read( reinterpret_cast<char *>(&m_Frames[i].m_Name), sizeof(char) * 16);
     l_File.read( reinterpret_cast<char *>(m_Frames[i].m_Verts), sizeof(md2Vertex) * m_Header.m_NumVertices);
@@ -200,7 +222,12 @@ void md2Model::SetFromExistingTexture(
   SetTexture(a_Filename);
 }
 
-void md2Model::DrawImmediate(
+GLfloat* md2Model::CalculateFaceNormal( GLfloat* v1, GLfloat* v2, GLfloat* v3 )
+{
+
+}
+
+void md2Model::Draw(
   int a_Frame
 )
 {

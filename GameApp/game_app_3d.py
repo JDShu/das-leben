@@ -40,9 +40,11 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 class GameApp3d:
     """A 3d GameApp"""
-    def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d"):
+    def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_CWD=None):
         
         pygame.init()
+	
+	DATA_PATH = a_CWD != None and a_CWD or getcwd()
         
 	self.m_Camera = oglCamera()
         self.m_Camera.SetPosition(0, -40, -40.0)

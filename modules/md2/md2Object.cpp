@@ -31,7 +31,8 @@ md2Object::md2Object()
     m_Interpolation = 0.0;
     m_Percentage = 0.0;
     m_Scale = 1.0;
-    m_RenderMode = MD2OBJECT_ANIMATION_IMMEDIATE;
+    m_FPS = 6.0;
+    m_RenderMode = MD2OBJECT_RENDER_VBO;
 }
 
 md2Object::md2Object(
@@ -60,35 +61,12 @@ void md2Object::SetModel(
 void md2Object::Animate(
   int a_StartFrame
 , int a_EndFrame
-, GLfloat a_Percentage
+, int a_Ticks
 )
 {
-  // make the current frame withign the ranges
-  if(m_CurrentFrame < a_StartFrame) {
-    m_CurrentFrame = a_StartFrame;
-  }
-
-  if(m_CurrentFrame < a_EndFrame) {
-    m_CurrentFrame = a_StartFrame;
-  }
-
-  m_Percentage = a_Percentage;
-
-  if(m_Interpolation >= 1.0)  {
-    m_Interpolation = 0.0;
-    m_CurrentFrame++;
-
-    if(m_CurrentFrame > a_EndFrame) {
-      m_CurrentFrame = a_StartFrame;
-    }
-
-    m_NextFrame = m_CurrentFrame + 1;
-    if(m_NextFrame > a_EndFrame)  {
-      m_NextFrame = a_StartFrame;
-    }
 
 
-  }
+
 }
 
 void md2Object::Animate(

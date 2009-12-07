@@ -21,17 +21,24 @@
 #ifndef MD2MODEL_H
 #define MD2MODEL_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <map>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <sdl.h>
 
-#include "../sdlApp/Vector3d.h"
-#include "../OpenGL/oglTexture.h"
+// #include "../sdlApp/Vector3d.h"
+// #include "../OpenGL/oglTexture.h"
 // typedefs / enums / structs
 // Md2 header
+
 using std::map;
 using std::string;
 using std::vector;
+
+typedef GLfloat md2Vector3d[3];
 
 typedef struct
 {
@@ -88,13 +95,14 @@ struct md2Vertex
 // Frame data
 struct md2Frame
 {
-  ~md2Frame () { delete [] m_Verts; glDeleteLists(m_DisplayList, 1);}
+  ~md2Frame () { delete [] m_Verts; }
 
-  Vector3d m_Scale;        // Scale factors
-  Vector3d m_Translate;    // Translation vector
+  md2Vector3d* m_Scale;        // Scale factors
+  md2Vector3d* m_Translate;    // Translation vector
   char m_Name[16];       // Frame name
   struct md2Vertex* m_Verts;  // Frames's vertex list
   int m_DisplayList;
+  GLint m_VBOID;
 };
 
 struct md2GLCommand
@@ -108,16 +116,16 @@ struct md2AnimationRange
 {
   int m_StartFrame;  // first frame index
   int m_EndFrame;    // last frame index
+  int m_FPS;
 };
 
-typedef map <string, oglTexture *> SkinMap;
 typedef map <string, md2AnimationRange> AnimationRange;
 
 #define MD2MODEL_VERSION                  8
 #define MD2MODEL_VERSION_ID             'I' + ('D'<<8) + ('P'<<16) + ('2'<<24)
 
 
-typedef GLfloat md2Vector3d[3];
+
 // classes
 
 class md2Model  {
@@ -125,21 +133,20 @@ class md2Model  {
     md2Model(string a_Filename);
     void CreateAnimationRanges();
 
-    bool LoadTexture(string a_Filename);
-    void SetTexture(string a_Filename);
-    void SetFromExistingTexture(string a_Filename, oglTexture* a_Texture);
-
-    void DrawImmediate(int a_Frame);
-    void DrawImmediateWithInterpolation(int a_FromFrame, int a_ToFrame, GLfloat a_Interpolation);
-    void DrawGLCommandsWithInterpolation(int a_FromFrame, int a_ToFrame, GLfloat a_Interpolation);
+    GLfloat* CalculateFaceNormal( GLfloat* v1, GLfloat* v2, GLfloat* v3 );
+    void Draw(int a_Frame);
 
     void SetModel(md2Model * a_Model);
 
     void SetScale(GLfloat a_Scale);
 
-    AnimationRange* AccessAnimationRanges() { return &m_AnimationRanges; }
+    AnimationRange* AccessAnimationRanges() { return m_AnimationRanges; }
 
     bool Success() { return m_Success; }
+
+    void SetAnimationRangeFPS( string a_Animation, float a_FPS ) {
+      m_AnimationRanges[ a_Animation ].m_FPS = ( int ) a_FPS * 1000.0;
+    }
 
     ~md2Model();
   protected:
@@ -156,10 +163,10 @@ class md2Model  {
     int m_FramesNum;
     int *m_GLCommands;
     GLfloat m_Scale;
-    oglTexture* m_Texture;
-    SkinMap m_Textures;
-    AnimationRange m_AnimationRanges;
+    AnimationRange* m_AnimationRanges;
+
 };
 
+void InitMD2(void);
 
 #endif

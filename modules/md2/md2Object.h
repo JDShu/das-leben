@@ -24,6 +24,11 @@ enum MD2OBJECT_ANIMATION_TYPES  {
 , MD2OBJECT_ANIMATION_GLCOMMANDS
 };
 
+enum MD2OBJECT_RENDER_TYPE {
+  MD2OBJECT_RENDER_DISPLAYLIST,
+  MD2OBJECT_RENDER_VBO
+};
+
 class md2Object
 {
   public:
@@ -54,6 +59,7 @@ class md2Object
     md2Model *m_Model;
     int m_CurrentFrame;
     int m_NextFrame;
+    float m_FPS;
     GLfloat m_Interpolation;
     GLfloat m_Percentage;
     GLfloat m_Scale;
