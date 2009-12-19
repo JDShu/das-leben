@@ -105,7 +105,7 @@ class GameApp3d:
         self.m_SkyBox = SkyBox("%s/data/skybox" % DATA_PATH )
         self.m_Objects = []; oadd = self.m_Objects.append
         Model = Object3d( "%s/data/avatar/tris.md2" % DATA_PATH, 
-	                  "%s/data/avatar/grid.tga" % DATA_PATH, 
+	                  "%s/data/avatar/REI.PCX" % DATA_PATH, 
 	                  object_type=OBJECT_3D_ANIMATED_MESH )
         Model.m_XRot.SetAngle( -90 )
 	Model.SetAnimation( IDLE1 )

@@ -75,6 +75,7 @@ void InitMD2(void)  {
 
 md2Model::md2Model(string a_Filename)
 {
+  InitMD2();
   std::ifstream l_File;
   if(FileExists(a_Filename))  {
     l_File.open( a_Filename.c_str(), std::ios::binary );
@@ -238,7 +239,7 @@ void md2Model::Draw(
   }
   md2Frame* l_Frame = &m_Frames[ a_Frame ];
 
-  if(l_Frame->m_DisplayList == 0) {
+  if(l_Frame->m_VBOID == 0) {
     //l_Frame->m_DisplayList = glGenLists(1);
     //cout << "Display list is " << l_Frame->m_DisplayList << endl;
     //glNewList(l_Frame->m_DisplayList, GL_COMPILE_AND_EXECUTE);
@@ -272,6 +273,72 @@ void md2Model::Draw(
   } else {
     glCallList(l_Frame->m_DisplayList);
   }
+}
+
+void md2Model::MakeVBOFrame(
+  int a_Frame
+)
+{
+  int l_MaximumFrames = m_Header.m_NumFrames - 1;
+
+  // make a place to keep the coords to pass to video memory
+  GLfloat *l_Verts = new GLfloat[ m_Header.m_NumVertices ][3];
+  GLfloat *l_TexCoords = new GLfloat[ m_Header.m_NumVertices ][2];
+  GGLLfloat *l_Normals = new GLfloat[ m_Header.m_NumVertices ][3];
+
+  md2Frame* l_Frame = &m_Frames[ a_Frame ];
+
+  // process all the coords in this frame
+  for(int i = 0; i < m_Header.m_NumTriangles; ++i)  {
+    for(int j = 0; j < 3; j++)  {
+      md2Vertex* l_Vertex = &l_Frame->m_Verts[ m_Triangles[i].m_Vertex[j] ];
+
+      GLfloat *l_TexCoord = &l_TexCoords[ ( i * 3 ) + j ];
+      md2TextureCoord* l_TextureCoord = &m_TextureCoords[ m_Triangles[i].m_UV[j] ];
+      l_TexCoord[ 0 ] = static_cast<GLfloat>(l_TextureCoord->u) / m_Header.m_SkinWidth;
+      l_TexCoord[ 1 ] = static_cast<GLfloat>(l_TextureCoord->v) / m_Header.m_SkinHeight;
+
+      GLfloat *l_Normal = &l_Normals[ ( i * 3 ) + j ];
+      l_Normal[0] = m_Normals[ l_Vertex->m_NormalIndex ][0];
+      l_Normal[1] = m_Normals[ l_Vertex->m_NormalIndex ][1];
+      l_Normal[2] = m_Normals[ l_Vertex->m_NormalIndex ][2];
+
+      GLfloat *l_Vector = &l_Verts[ ( i * 3 ) + j ];
+      l_Vector[0] = (l_Frame->m_Scale.GetX()  * l_Vertex->m_Values[0]  + l_Frame->m_Translate.GetX()) * m_Scale;
+      l_Vector[1] = (l_Frame->m_Scale.GetY()  * l_Vertex->m_Values[1]  + l_Frame->m_Translate.GetY()) * m_Scale;
+      l_Vector[2] = (l_Frame->m_Scale.GetZ()  * l_Vertex->m_Values[2]  + l_Frame->m_Translate.GetZ()) * m_Scale;
+    }
+  }
+
+  // allocate a VBO and load the vertexes, texture coords and normals
+  glGenBuffersARB( 1, &l_Frame->m_VBOID );
+  glBindBufferARB( GL_ARRAY_BUFFER_ARB, l_Frame->m_VBOID );
+  glBufferDataARB(
+    GL_ARRAY_BUFFER_ARB,
+    m_Header->m_NumVertices * 3 * sizeof( GLfloat ),
+    l_Verts,
+    GL_STATIC_DRAW_ARB
+  );
+
+  // now normals
+  glGenBuffersARB( 1, &l_Frame->m_VBONormalsID );
+  glBindBufferARB( GL_ARRAY_BUFFER_ARB, l_Frame->m_VBONormalsID );
+  glBufferDataARB(
+    GL_ARRAY_BUFFER_ARB,
+    m_Header->m_NumVertices * 3 * sizeof( GLfloat ),
+    l_Normals,
+    GL_STATIC_DRAW_ARB
+  );
+
+  // now the texture coords
+  glGenBuffersARB( 1, &l_Frame->m_VBOTexID );
+  glBindBufferARB( GL_ARRAY_BUFFER_ARB, l_Frame->m_VBOTexID );
+  glBufferDataARB(
+    GL_ARRAY_BUFFER_ARB,
+    m_Header->m_NumVertices * 2 * sizeof( GLfloat ),
+    l_TexCoords,
+    GL_STATIC_DRAW_ARB
+  );
 }
 
 void md2Model::DrawImmediateWithInterpolation(
@@ -420,6 +487,14 @@ void md2Model::SetScale(GLfloat a_Scale)
   m_Scale = a_Scale;
 }
 
+void md2Model::CreateVBO(void)
+{
+  for( int i = 0; i < (int) m_Header.m_NumFrames; i++ ) {
+
+    glGenBuffersARB( 1, m_Frames[ i ].m_VBOID );
+    glBindBufferARB( GL_ARRAY_BUFFER_ARB,
+  }
+}
 
 void md2Model::SetModel(
   md2Model* a_Model

@@ -103,6 +103,8 @@ struct md2Frame
   struct md2Vertex* m_Verts;  // Frames's vertex list
   int m_DisplayList;
   GLint m_VBOID;
+  GLint m_VBOTexID;
+  GLint m_VBONormalsID;
 };
 
 struct md2GLCommand
@@ -148,6 +150,8 @@ class md2Model  {
       m_AnimationRanges[ a_Animation ].m_FPS = ( int ) a_FPS * 1000.0;
     }
 
+    void CreateVBO(void);
+
     ~md2Model();
   protected:
 
@@ -158,6 +162,7 @@ class md2Model  {
     md2Skin* m_Skins;
     md2TextureCoord* m_TextureCoords;
     md2Triangle* m_Triangles;
+    GLint *m_VBOIDS;
     static md2Vector3d m_Normals[162];
     md2Frame* m_Frames;
     int m_FramesNum;
