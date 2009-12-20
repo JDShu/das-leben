@@ -74,6 +74,10 @@ class Object3d( Vector3d ):
       
       self.m_GLName = random.randint( 1, 1000 )
       
+   def SetScale( self, scale ):
+      if self._model:
+         self._model.SetScale( scale )
+      
    def Animate(self, ticks=0):
       if self.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
          self._model.Animate( True, ticks )

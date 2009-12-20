@@ -21,6 +21,10 @@ class Vector3d:
 
     def __init__(self):
         self.m_Values = [0.0, 0.0, 0.0, 1.0]
+        
+    def __repr__( self ):
+        return "Setting Position : %s, %s, %s, %s\n" % ( self.m_Values[0], self.m_Values[1], 
+                                                        self.m_Values[2], self.m_Values[3] )
 
     def SetPosition(self, a_X, a_Y, a_Z, a_W=1.0):
         self.m_Values[0] = a_X

@@ -39,8 +39,10 @@ class oglCamera( Vector3d ):
         
 
     def EndDrawing( self ):        
-        pygame.display.flip()
         glPopMatrix()
+	
+    def Flip( self ):
+	pygame.display.flip()
 
     def LookAt(self, a_Point):
         x, y, z, w = a_Point.GetPosition()

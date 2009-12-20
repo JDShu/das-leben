@@ -97,7 +97,7 @@ class MD2Vertex:
         self.lightNormal = 0
 
 class MD2Animation:
-    def __init__(self, id, start, end, fps=12):
+    def __init__(self, id, start, end, fps=9):
         self._id = id
         self._start = start
         self._end = end
@@ -197,8 +197,10 @@ class MD2Model(object):
         self._currentFrame = IDLE1_START
         self._currentTicks = 0
         self._Animations = []
-        self._Animations.append( MD2Animation( IDLE1, IDLE1_START, IDLE1_END, 6 ) )
-        self._Animations.append( MD2Animation( RUN, RUN_START, RUN_END, 6 ) )
+        self._Animations.append( MD2Animation( IDLE1, IDLE1_START, IDLE1_END, 9 ) )
+        self._Animations.append( MD2Animation( RUN, RUN_START, RUN_END, 10 ) )
+        self._Animations.append( MD2Animation( IDLE2, IDLE2_START, IDLE2_END, 9 ) )
+        self._Animations.append( MD2Animation( IDLE3, IDLE3_START, IDLE3_END, 9 ) )
 
         self._scale = 1.0
 
@@ -602,7 +604,7 @@ class MD2Model(object):
             glEnableClientState( GL_NORMAL_ARRAY )
             glEnableClientState( GL_TEXTURE_COORD_ARRAY )
 
-            glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrames[ self._currentFrame - 1] )
+            glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrames[ self._currentFrame ] )
             glVertexPointer( 3, GL_FLOAT, 0, None )
 
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOFrameNormals[ self._currentFrame ] )
@@ -635,10 +637,10 @@ class MD2Model(object):
             self._currentTicks = 0
 
         if self._currentFrame < self._Animations[ self._currentAnimation ].GetStart():
-            self._currentFrame = self._Animations[ self._currentAnimation ].GetEnd() - 1
+            self._currentFrame = self._Animations[ self._currentAnimation ].GetEnd()
 
         if self._currentFrame >= self._Animations[ self._currentAnimation ].GetEnd():
-            self._currentFrame = self._Animations[ self._currentAnimation ].GetStart() - 1
+            self._currentFrame = self._Animations[ self._currentAnimation ].GetStart()
 
     def SetScale(self, percent):
         self._scale = percent / 100.0

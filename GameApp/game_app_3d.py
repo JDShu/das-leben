@@ -31,6 +31,7 @@ from md2 import *
 from environment import *
 from buildings import *
 from OGLExt import *
+import glFreeType
 import os
 from os import getcwd
 
@@ -46,7 +47,7 @@ class GameApp3d:
 	
 	DATA_PATH = a_CWD != None and a_CWD or getcwd()
         
-	self.m_Camera = oglCamera()
+	self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
         self.m_Camera.SetPosition(0, -40, -40.0)
         self.m_Camera.m_XRot += 45
 	
@@ -54,7 +55,7 @@ class GameApp3d:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
             modes = self.m_Camera.GetModesList()
             for mode in modes:
-                self.PrintToConsole( "%sx%s" % (mode[0], mode[1]) )
+                print "%sx%s" % (mode[0], mode[1]) 
         else:
             video_options = OPENGL|DOUBLEBUF
         
@@ -79,17 +80,16 @@ class GameApp3d:
         glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
         
-        LightAmbient  = [ 0.2, 0.2, 0.2, 1.0]
+        LightAmbient  = [ 0.4, 0.4, 0.4, 1.0]
         LightDiffuse  = [ 1.0, 1.0, 1.0, 1.0]
-        LightPosition = [ 0.0, 100.0, 0.0, 1.0]
-        
+        LightPosition = [ 10.0, 10.0, 30, 1.0]
+	
+        glEnable( GL_LIGHTING )
         glLightfv( GL_LIGHT1, GL_AMBIENT, LightAmbient )
         glLightfv( GL_LIGHT1, GL_DIFFUSE, LightDiffuse )
         glLightfv( GL_LIGHT1, GL_POSITION, LightPosition )
         glEnable( GL_LIGHT1 )
-        
-        glEnable( GL_LIGHTING )
-        
+  
         density = 0.0001
         fogColor = [0.5, 0.5, 0.5, 1.0] 
         glEnable(GL_FOG)
@@ -101,24 +101,46 @@ class GameApp3d:
         self.m_KeyBuffer = []
         for i in range(320):
             self.m_KeyBuffer.append( False )
-        
+	    
+	self.font = glFreeType.font_data( "%s/data/fonts/font.ttf" % DATA_PATH, 16 )
+	self.Titlefont = glFreeType.font_data( "%s/data/fonts/title.ttf" % DATA_PATH, 72 )
+	self.DrawSplashScreen()
+	self.m_Messages = []
+	
+	self.LoadObjects()
+	
+    def LoadObjects( self ):
+        '''load all 3d objects and models'''
         self.m_SkyBox = SkyBox("%s/data/skybox" % DATA_PATH )
+	
         self.m_Objects = []; oadd = self.m_Objects.append
+	
         Model = Object3d( "%s/data/avatar/tris.md2" % DATA_PATH, 
 	                  "%s/data/avatar/REI.PCX" % DATA_PATH, 
 	                  object_type=OBJECT_3D_ANIMATED_MESH )
         Model.m_XRot.SetAngle( -90 )
+	Model.m_ZRot.SetAngle( -90 )
 	Model.SetAnimation( IDLE1 )
+	Model.SetScale( 15 )
+	Model.SetPosition( 10, 10, 2 )
+	self.m_Model = Model
         oadd( Model )
-        Ground = Object3d( "%s/data/ground/tris.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
+
+	Ground = Object3d( "%s/data/ground/tris.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
         Ground.m_ZRot.SetAngle( -90 )
         oadd( Ground )
-        house = House( floors = 2 )
+
+	house = House( floors = 2 )
         oadd( house )
         
         
         self._currentTicks = self._oldTicks = pygame.time.get_ticks()
         self._ticks = 0
+	
+    def DrawSplashScreen( self ):
+	self.Titlefont.glPrint( 400, 400, "La Vida" )
+	self.font.glPrint( 10, 10, "Loading..." )
+	pygame.display.flip()
     
         
     def TimerUpdate(self):
@@ -179,11 +201,13 @@ class GameApp3d:
             x, y, z, w = self.m_Model.GetPosition()
             z += 1
             self.m_Model.SetPosition( x, y, z, w )
+	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
         elif self.m_KeyBuffer[ K_j ]:
             x, y, z, w = self.m_Model.GetPosition()
             z -= 1
             self.m_Model.SetPosition( x, y, z, w )
+	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
         elif self.m_KeyBuffer[ K_w ]:
             x, y, z, w = self.m_Camera.GetPosition()
@@ -217,8 +241,8 @@ class GameApp3d:
 	    
         return True
                     
-    def PrintToConsole(self, a_Message):
-	print a_Message
+    def PrintToConsole(self, a_Message, a_LineNumber ):
+	self.font.glPrint( 10 , self.m_Camera.m_ViewportHeight - ( 17 * a_LineNumber ), a_Message )
 
     def Draw(self):
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
@@ -228,11 +252,22 @@ class GameApp3d:
         self.m_Camera.BeginDrawing()
         
         for Object in self.m_Objects:
-	   #if Object.__module__ == "GameApp.object_3d":
-		#Object.Animate(self._ticks)
+	    if Object.__module__ == "GameApp.object_3d":
+		Object.Animate(self._ticks)
             Object.Draw()
             
         self.m_Camera.EndDrawing()
+	
+	# out put messages
+	for i, message in enumerate( self.m_Messages ):
+	    self.PrintToConsole( message, i )
+	
+	self.m_Camera.Flip()
+	
+    def AddMessage( self, a_Message ):
+	self.m_Messages.append( a_Message )
+	if len( self.m_Messages ) > 40:
+	    self.m_Messages = []
         
 
     def Exit(self):
