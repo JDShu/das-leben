@@ -30,6 +30,8 @@ class House:
             self.LoadLayout( filename )
         else:
             self.BuildDebugHouse( floors )
+            
+        self.m_Floors[ 1 ].m_Visible = False
     
     def LoadLayout(self, filename):
         '''loads a house lyaout file'''
@@ -38,7 +40,7 @@ class House:
         '''Builds a default layout'''
         for floor in xrange( floors ):
             self.m_Floors.append( Floor() )
-            self.m_Floors[ floor ].SetPosition( 0, floor * 10, 0 )
+            self.m_Floors[ floor ].SetPosition( 0, -2 + (floor * 10), 0 )
         
     def Draw(self):
         for floor in self.m_Floors:

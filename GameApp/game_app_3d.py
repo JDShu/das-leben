@@ -31,6 +31,7 @@ from md2 import *
 from environment import *
 from buildings import *
 from OGLExt import *
+import ogl_shader 
 import glFreeType
 import os
 from os import getcwd
@@ -48,8 +49,9 @@ class GameApp3d:
 	DATA_PATH = a_CWD != None and a_CWD or getcwd()
         
 	self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
-        self.m_Camera.SetPosition(0, -40, -40.0)
-        self.m_Camera.m_XRot += 45
+        self.m_Camera.SetPosition(0, -2, -18.0)
+        self.m_Camera.m_XRot += 356
+	self.m_Camera.m_YRot += 61
 	
         if a_Fullscreen:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
@@ -70,44 +72,67 @@ class GameApp3d:
 	    return False
 		    
 	glShadeModel(GL_SMOOTH)
-	
-	
-        
-        #glEnable(GL_TEXTURE_2D)
-        glClearColor(0.0, 0.0, 0.0, 0.0)
+        glClearColor(0.0, 0.0, 0.0, 1.0)
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
         glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+	
+	self.m_UseShader = False
+	self.m_Shader = ogl_shader.oglBumpyShader()
         
-        LightAmbient  = [ 0.4, 0.4, 0.4, 1.0]
+        self.SetupLighting()
+  
+        self.SetupFog()
+        
+	self.SetupKeyBuffer()
+	    
+	self.LoadConsole()
+	
+	self.StartMusicTrack( "MuchoCheeseyMacho.ogg" )
+	
+	self.DrawSplashScreen()
+	
+	self.LoadObjects()
+	
+    def StartMusicTrack( self, a_Filename ):
+	pass
+	#pygame.mixer.music.load( "%s/data/music/%s" % ( DATA_PATH, a_Filename ) )
+	#pygame.mixer.music.play( -1 )
+	#pygame.mixer.music.set_volume( 0.1 )
+	
+    def SetupLighting( self ):
+	LightAmbient  = [ 0.0, 0.0, 0.0, 1.0]
         LightDiffuse  = [ 1.0, 1.0, 1.0, 1.0]
         LightPosition = [ 10.0, 10.0, 30, 1.0]
+	LightSpecular = [ 1.0, 1.0, 1.0, 1.0]
 	
         glEnable( GL_LIGHTING )
-        glLightfv( GL_LIGHT1, GL_AMBIENT, LightAmbient )
-        glLightfv( GL_LIGHT1, GL_DIFFUSE, LightDiffuse )
-        glLightfv( GL_LIGHT1, GL_POSITION, LightPosition )
-        glEnable( GL_LIGHT1 )
-  
-        density = 0.0001
+	glEnable( GL_LIGHT0 )
+        glLightfv( GL_LIGHT0, GL_AMBIENT, LightAmbient )
+        glLightfv( GL_LIGHT0, GL_DIFFUSE, LightDiffuse )
+	glLightfv( GL_LIGHT0, GL_SPECULAR, LightSpecular )
+        glLightfv( GL_LIGHT0, GL_POSITION, LightPosition )
+        
+	
+    def SetupFog( self ):
+	density = 0.0001
         fogColor = [0.5, 0.5, 0.5, 1.0] 
         glEnable(GL_FOG)
         glFogi(GL_FOG_MODE, GL_EXP2)
         glFogfv(GL_FOG_COLOR, fogColor)
         glFogf(GL_FOG_DENSITY, density)
         glHint(GL_FOG_HINT, GL_NICEST)
-                
-        self.m_KeyBuffer = []
+	
+    def SetupKeyBuffer( self ):
+	self.m_KeyBuffer = []
         for i in range(320):
             self.m_KeyBuffer.append( False )
 	    
+    def LoadConsole( self ):
 	self.font = glFreeType.font_data( "%s/data/fonts/font.ttf" % DATA_PATH, 16 )
 	self.Titlefont = glFreeType.font_data( "%s/data/fonts/title.ttf" % DATA_PATH, 72 )
-	self.DrawSplashScreen()
 	self.m_Messages = []
-	
-	self.LoadObjects()
 	
     def LoadObjects( self ):
         '''load all 3d objects and models'''
@@ -131,6 +156,7 @@ class GameApp3d:
         oadd( Ground )
 
 	house = House( floors = 2 )
+	
         oadd( house )
         
         
@@ -229,6 +255,13 @@ class GameApp3d:
             x += 1
             self.m_Camera.SetPosition( x, y, z, w )
 
+	elif self.m_KeyBuffer[ K_c ]:
+            x, y, z, w = self.m_Camera.GetPosition()
+	    self.AddMessage( "Camera Position: %s,%s,%s" % ( x, y, z ) )
+	    self.AddMessage( "angles: %s,%s,%s" % ( self.m_Camera.m_XRot.GetAngle() , 
+	                                            self.m_Camera.m_YRot.GetAngle(), 
+	                                            self.m_Camera.m_ZRot.GetAngle() ) )
+	    
 	elif self.m_KeyBuffer[ K_r ]:
             x, y, z, w = self.m_Camera.GetPosition()
             y -= 1
@@ -250,7 +283,7 @@ class GameApp3d:
         # self.m_Camera.LookAt( self.m_Sphere )
         self.m_SkyBox.Draw( self.m_Camera )
         self.m_Camera.BeginDrawing()
-        
+        if self.m_UseShader: self.m_Shader.StartShader()
         for Object in self.m_Objects:
 	    if Object.__module__ == "GameApp.object_3d":
 		Object.Animate(self._ticks)

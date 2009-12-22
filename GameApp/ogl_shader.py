@@ -70,32 +70,17 @@ class oglShader:
     def __init__( self ):
         '''default cartoon shader'''
         self._program = self.compile_program('''
-        // Vertex program
-        // Vertex program
-        varying vec3 normal;
+        varying vec3 pos;
         void main() {
-            normal = gl_NormalMatrix * gl_Normal;
+            pos = gl_Vertex.xyz;
             gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-        }
-        ''', '''
-        // Fragment program
-        varying vec3 normal;
+        }''', '''
+        varying vec3 pos;
         void main() {
-            float intensity;
-            vec4 color;
-            vec3 n = normalize(normal);
-            vec3 l = normalize(gl_LightSource[0].position).xyz;
-     
-            // quantize to 5 steps (0, .25, .5, .75 and 1)
-            intensity = (floor(dot(l, n) * 4.0) + 1.0)/4.0;
-            color = vec4(intensity*1.0, intensity*0.5, intensity*0.5,
-                intensity*1.0);
-     
-            gl_FragColor = color;
-        }
-        ''')
+            gl_FragColor.rgb = pos.xyz;
+        }''')
         
-    def compile_shader(source, shader_type):
+    def compile_shader( self, source, shader_type ):
         shader = glCreateShader(shader_type)
         source = c_char_p(source)
         length = c_int(-1)
@@ -109,7 +94,7 @@ class oglShader:
             raise ValueError, 'Shader compilation failed'
         return shader
     
-    def compile_program(vertex_source, fragment_source):
+    def compile_program( self, vertex_source, fragment_source):
         vertex_shader = None
         fragment_shader = None
         program = glCreateProgram()
@@ -132,5 +117,50 @@ class oglShader:
         
     def StartShader( self ):
         glUseProgram( self._program )
+        
+class oglBumpyShader( oglShader ):
+    def __init__( self ):
+        self._program = self.compile_program('''
+        varying vec3 N;
+        varying vec3 L;
+        varying vec3 v;
+        varying float pattern;             
+        
+        const vec3 lightPos = vec3(0.0,5.0,5.0); // make this uniform
+        
+        void main(void)
+        {
+           v = vec3(gl_ModelViewMatrix * gl_Vertex);
+           L = normalize(lightPos - v);
+           N = normalize(gl_NormalMatrix * gl_Normal);
+        
+           pattern=fract(4.0*(gl_Vertex.y+gl_Vertex.x+gl_Vertex.z));
+           gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+        }''', '''
+        varying vec3 N;
+        varying vec3 L;
+        varying vec3 v;
+        varying float pattern;
+        
+        uniform vec4 color0; // Diffuse Color: 0.8, 0.0, 0.0, 1.0
+        uniform vec4 color1; // Ambient Color
+        uniform vec4 color2; // Specular Color: 0.8, 0.0, 0.0, 1.0
+        uniform vec3 eyePos; // Eye Position
+        
+        #define shininess 10.0
+        
+        void main (void)
+        {
+        vec3 E = normalize(eyePos - v);
+        vec3 R = normalize(2.0 * dot(N,L) * N-L); // R = normalize(-reflect(L,N));
+        
+        float spec = pow(max(dot(R,E),0.0), shininess);
+        float spec2= pattern*spec;
+        
+        float diffuse = max(dot(N,L),0.0);
+        diffuse = smoothstep(diffuse, 0.0, 0.5);
+        
+        gl_FragColor = color0*diffuse + color1 + color2*(spec+spec2);
+        }''')
         
         

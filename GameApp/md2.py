@@ -593,6 +593,8 @@ class MD2Model(object):
 
     # Draw the current frame
     def draw(self):
+        glMaterial( GL_FRONT_AND_BACK, GL_SPECULAR, [ 1.0, 1.0, 1.0, 1.0 ] )
+        glMaterial( GL_FRONT_AND_BACK, GL_SHININESS, 128 )
         if self.m_VBO:
             glEnable(GL_DEPTH_TEST)
             glEnable( GL_TEXTURE_2D )
