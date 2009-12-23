@@ -34,6 +34,7 @@ from pygame.locals import *
 from vector_3d import *
 from angle import *
 from md2 import *
+from wavefront import *
 from OGLExt import *
 
 
@@ -56,23 +57,32 @@ class Object3d( Vector3d ):
             self.sphere = gluNewQuadric()
             self._model = None
             self.m_Scale = scale / 100.0
+            
          elif object_type == OBJECT_3D_WALL:
             self.wall = Wall()
             self._model = None
             self.m_Scale = scale / 100.0
-      else:
+            
+      elif self.GetExtensionType( filename ) == "MD2":
          self._model = MD2Model()
-         self.m_ObjectType = OBJECT_3D_MESH
+         self.m_ObjectType = OBJECT_3D_ANIMATED_MESH
          self._model.SetScale( scale )
          self._model.load( filename, texture, True )
-         if object_type == OBJECT_3D_ANIMATED_MESH:
-            self.m_ObjectType = OBJECT_3D_ANIMATED_MESH
+         
+      elif self.GetExtensionType( filename ) == "OBJ":
+         self._model = OBJModel( filename )
+         self.m_ObjectType = OBJECT_3D_MESH
+         self._model.SetScale( scale )
+         
          
       self.m_XRot = Angle()
       self.m_YRot = Angle()
       self.m_ZRot = Angle()
       
       self.m_GLName = random.randint( 1, 1000 )
+      
+   def GetExtensionType( self, filename ):
+      return filename.split(".")[1].upper()
       
    def SetScale( self, scale ):
       if self._model:
@@ -116,10 +126,10 @@ class Wall:
            
       self.m_UseVBO = useVBO
       
-      self.vertices = array([ [-2.0, 0.0, 0.5],
-                        [2.0, 0.0, 0.5],
-                        [2.0, 5.0, 0.5],
-                        [-2.0, 5.0, 0.5],
+      self.vertices = array([ [-2.0, 0.0, 0.2],
+                        [2.0, 0.0, 0.2],
+                        [2.0, 5.0, 0.2],
+                        [-2.0, 5.0, 0.2],
                         [-2.0, 0.0, 0.0],
                         [2.0, 0.0, 0.0],
                         [2.0, 5.0, 0.0],

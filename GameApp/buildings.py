@@ -31,7 +31,7 @@ class House:
         else:
             self.BuildDebugHouse( floors )
             
-        self.m_Floors[ 1 ].m_Visible = False
+        self.SetFloorInvisible( 1 )
     
     def LoadLayout(self, filename):
         '''loads a house lyaout file'''
@@ -60,6 +60,12 @@ class House:
             nadd( floor.GetGLName() )
             
         return Names
+    
+    def SetFloorVisible( self, a_Floor ):
+        self.m_Floors[ a_Floor ].m_Visible = True
+        
+    def SetFloorInvisible( self, a_Floor ):
+        self.m_Floors[ a_Floor ].m_Visible = False
         
 class Floor:
     """
@@ -88,24 +94,24 @@ class Floor:
         xoffset = 0
         for i in xrange( 0, 4 ):
             self.m_Objects[ i ].SetPosition( a_X + xoffset, a_Y, a_Z, 1.0 )
-            xoffset += 8
+            xoffset += 5
           
         xoffset = 0
         for i in xrange( 4, 8 ):
             self.m_Objects[ i ].SetPosition( a_X + xoffset, a_Y, a_Z + 24, 1.0 )
-            xoffset += 8
+            xoffset += 7
             
         xoffset = -5
         for i in xrange( 8, 11 ):
             self.m_Objects[ i ].SetPosition( a_X + xoffset, a_Y, a_Z - 4, 1.0 )
             self.m_Objects[ i ].m_YRot.SetAngle( 90 )
-            xoffset -= 8
+            xoffset -= 7
           
         xoffset = -5
         for i in xrange( 11, 14 ):
             self.m_Objects[ i ].SetPosition( a_X + xoffset, a_Y, a_Z + 27, 1.0 )
             self.m_Objects[ i ].m_YRot.SetAngle( 90 )
-            xoffset -= 8
+            xoffset -= 7
             
         self.m_Objects[ 14 ].SetPosition( a_X + 14, a_Y, a_Z + 27, 1.0 )
         self.m_Objects[ 14 ].m_ZRot.SetAngle( 90 )
@@ -124,80 +130,7 @@ class Floor:
         
         self.SetPosition( 0, 0, 0 )
         
-        '''Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x + 8, y, z, w )
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x + 16, y, z, w )        
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x + 24, y, z, w )        
-        oadd( Wall )
-        
-        # ---------- wall 2 ---------------
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x, y, z + 24, w )
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x + 8, y, z + 24, w )
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x + 16, y, z + 24, w )        
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x + 24, y, z + 24, w )        
-        oadd( Wall )
-        
-        # ---------- wall 3 ---------------
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x - 5 , y, z - 4, w )
-        Wall.m_YRot.SetAngle( 90 )
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x - 13, y, z - 4, w )
-        Wall.m_YRot.SetAngle( 90 )
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x - 21, y, z - 4, w )        
-        Wall.m_YRot.SetAngle( 90 )
-        oadd( Wall )
-        
-        # ---------- wall 4 ---------------
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x - 5 , y, z + 27, w )
-        Wall.m_YRot.SetAngle( 90 )
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x - 13, y, z + 27, w )
-        Wall.m_YRot.SetAngle( 90 )
-        oadd( Wall )
-        
-        Wall = Object3d(object_type=OBJECT_3D_WALL, scale=200)
-        x, y, z, w = Wall.GetPosition()
-        Wall.SetPosition( x - 21, y, z + 27, w )        
-        Wall.m_YRot.SetAngle( 90 )
-        oadd( Wall )'''
-        
     def Draw(self):
         for item in self.m_Objects:
             item.Draw()
+            

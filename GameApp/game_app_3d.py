@@ -105,7 +105,7 @@ class GameApp3d:
 	LightAmbient  = [ 0.0, 0.0, 0.0, 1.0]
         LightDiffuse  = [ 1.0, 1.0, 1.0, 1.0]
         LightPosition = [ 10.0, 10.0, 30, 1.0]
-	LightSpecular = [ 1.0, 1.0, 1.0, 1.0]
+	LightSpecular = [ 0.2, 0.2, 0.2, 1.0]
 	
         glEnable( GL_LIGHTING )
 	glEnable( GL_LIGHT0 )
@@ -136,7 +136,7 @@ class GameApp3d:
 	
     def LoadObjects( self ):
         '''load all 3d objects and models'''
-        self.m_SkyBox = SkyBox("%s/data/skybox" % DATA_PATH )
+        self.m_SkyBox = SkyBox("%s/data/skybox/night" % DATA_PATH )
 	
         self.m_Objects = []; oadd = self.m_Objects.append
 	
@@ -155,11 +155,23 @@ class GameApp3d:
         Ground.m_ZRot.SetAngle( -90 )
         oadd( Ground )
 
-	house = House( floors = 2 )
+	# house = House( floors = 2 )
+	setee = Object3d( "%s/data/furniture/Free_Sofa_04.obj" % DATA_PATH, 
+	                  None, 
+	                  object_type=OBJECT_3D_MESH )
+	setee.SetScale( 0.5 )
 	
+	
+        oadd( setee )
+        house = Object3d( "%s/data/home/House010.obj" % DATA_PATH, 
+	                  None, 
+	                  object_type=OBJECT_3D_MESH )
+	house.SetScale( 2000 )
+	house.m_XRot.SetAngle( -90 )
+	house.SetPosition( 0, 0, -2 )
         oadd( house )
-        
-        
+	self.house = house
+	
         self._currentTicks = self._oldTicks = pygame.time.get_ticks()
         self._ticks = 0
 	
@@ -224,15 +236,15 @@ class GameApp3d:
             self.m_Camera.m_YRot += 1.0
             
         elif self.m_KeyBuffer[ K_u ]:
-            x, y, z, w = self.m_Model.GetPosition()
+            x, y, z, w = self.house.GetPosition()
             z += 1
-            self.m_Model.SetPosition( x, y, z, w )
+            self.house.SetPosition( x, y, z, w )
 	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
         elif self.m_KeyBuffer[ K_j ]:
-            x, y, z, w = self.m_Model.GetPosition()
+            x, y, z, w = self.house.GetPosition()
             z -= 1
-            self.m_Model.SetPosition( x, y, z, w )
+            self.house.SetPosition( x, y, z, w )
 	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
         elif self.m_KeyBuffer[ K_w ]:
