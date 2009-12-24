@@ -53,7 +53,7 @@ class Object3d( Vector3d ):
       self.m_ObjectType = object_type
 
       if filename == None:
-         if object_type == OBJECT_3D_BOX:
+         if object_type == OBJECT_3D_BOX or object_type == OBJECT_3D_SPHERE:
             self.sphere = gluNewQuadric()
             self._model = None
             self.m_Scale = scale / 100.0

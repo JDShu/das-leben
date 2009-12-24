@@ -49,9 +49,9 @@ class GameApp3d:
 	DATA_PATH = a_CWD != None and a_CWD or getcwd()
         
 	self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
-        self.m_Camera.SetPosition(0, -2, -18.0)
-        self.m_Camera.m_XRot += 356
-	self.m_Camera.m_YRot += 61
+        self.m_Camera.SetPosition(0, -44, 3.0)
+        self.m_Camera.m_XRot += 31
+	self.m_Camera.m_YRot += 157
 	
         if a_Fullscreen:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
@@ -73,6 +73,7 @@ class GameApp3d:
 		    
 	glShadeModel(GL_SMOOTH)
         glClearColor(0.0, 0.0, 0.0, 1.0)
+	glEnable(GL_COLOR_MATERIAL)
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
@@ -102,17 +103,17 @@ class GameApp3d:
 	#pygame.mixer.music.set_volume( 0.1 )
 	
     def SetupLighting( self ):
-	LightAmbient  = [ 0.0, 0.0, 0.0, 1.0]
-        LightDiffuse  = [ 1.0, 1.0, 1.0, 1.0]
-        LightPosition = [ 10.0, 10.0, 30, 1.0]
-	LightSpecular = [ 0.2, 0.2, 0.2, 1.0]
+	LightAmbient  = [ 0.2, 0.2, 0.2, 1.0 ]
+        LightDiffuse  = [ 0.2, 0.2, 0.2, 1.0 ]
+        self.LightPosition = [ 10.0, 50.0, 30, 1.0 ]
+	LightSpecular = [ 0.2, 0.2, 0.2, 1.0 ]
 	
         glEnable( GL_LIGHTING )
 	glEnable( GL_LIGHT0 )
         glLightfv( GL_LIGHT0, GL_AMBIENT, LightAmbient )
         glLightfv( GL_LIGHT0, GL_DIFFUSE, LightDiffuse )
 	glLightfv( GL_LIGHT0, GL_SPECULAR, LightSpecular )
-        glLightfv( GL_LIGHT0, GL_POSITION, LightPosition )
+        glLightfv( GL_LIGHT0, GL_POSITION, self.LightPosition )
         
 	
     def SetupFog( self ):
@@ -139,6 +140,10 @@ class GameApp3d:
         self.m_SkyBox = SkyBox("%s/data/skybox/night" % DATA_PATH )
 	
         self.m_Objects = []; oadd = self.m_Objects.append
+	
+	self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
+	self.m_Light.SetPosition( 10.0, 50.0, 30 )
+	oadd( self.m_Light )
 	
         Model = Object3d( "%s/data/avatar/tris.md2" % DATA_PATH, 
 	                  "%s/data/avatar/REI.PCX" % DATA_PATH, 
@@ -236,15 +241,17 @@ class GameApp3d:
             self.m_Camera.m_YRot += 1.0
             
         elif self.m_KeyBuffer[ K_u ]:
-            x, y, z, w = self.house.GetPosition()
-            z += 1
-            self.house.SetPosition( x, y, z, w )
+            x, y, z, w = self.m_Light.GetPosition()
+            y += 1
+            self.m_Light.SetPosition( x, y, z, w )
+	    glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
 	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
         elif self.m_KeyBuffer[ K_j ]:
-            x, y, z, w = self.house.GetPosition()
-            z -= 1
-            self.house.SetPosition( x, y, z, w )
+            x, y, z, w = self.m_Light.GetPosition()
+            y -= 1
+            self.m_Light.SetPosition( x, y, z, w )
+	    glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
 	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
         elif self.m_KeyBuffer[ K_w ]:
