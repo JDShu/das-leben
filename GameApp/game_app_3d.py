@@ -97,10 +97,9 @@ class GameApp3d:
 	self.LoadObjects()
 	
     def StartMusicTrack( self, a_Filename ):
-	pass
-	#pygame.mixer.music.load( "%s/data/music/%s" % ( DATA_PATH, a_Filename ) )
-	#pygame.mixer.music.play( -1 )
-	#pygame.mixer.music.set_volume( 0.1 )
+	pygame.mixer.music.load( "%s/data/music/%s" % ( DATA_PATH, a_Filename ) )
+	pygame.mixer.music.play( -1 )
+	pygame.mixer.music.set_volume( 0.1 )
 	
     def SetupLighting( self ):
 	LightAmbient  = [ 0.2, 0.2, 0.2, 1.0 ]
