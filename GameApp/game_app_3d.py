@@ -26,7 +26,7 @@ import sys
 import pygame
 from pygame.locals import *
 from ogl_camera import *
-from object_3d import *
+from characters import *
 from md2 import *
 from environment import *
 from buildings import *
@@ -73,7 +73,7 @@ class GameApp3d:
 		    
 	glShadeModel(GL_SMOOTH)
         glClearColor(0.0, 0.0, 0.0, 1.0)
-	glEnable(GL_COLOR_MATERIAL)
+	#glEnable(GL_COLOR_MATERIAL)
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
@@ -92,9 +92,11 @@ class GameApp3d:
 	
 	self.StartMusicTrack( "MuchoCheeseyMacho.ogg" )
 	
-	self.DrawSplashScreen()
+	self.UpdateSplash( "Loading ..." )
 	
 	self.LoadObjects()
+	
+	self.UpdateSplash( "Done!" )
 	
     def StartMusicTrack( self, a_Filename ):
 	pygame.mixer.music.load( "%s/data/music/%s" % ( DATA_PATH, a_Filename ) )
@@ -136,55 +138,54 @@ class GameApp3d:
 	
     def LoadObjects( self ):
         '''load all 3d objects and models'''
+	self.UpdateSplash( "Loading Skybox..." )
         self.m_SkyBox = SkyBox("%s/data/skybox/night" % DATA_PATH )
 	
         self.m_Objects = []; oadd = self.m_Objects.append
-	
+	self.UpdateSplash( "Loading lighting sphere..." )
 	self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
 	self.m_Light.SetPosition( 10.0, 50.0, 30 )
 	oadd( self.m_Light )
-	
-        Model = Object3d( "%s/data/avatar/tris.md2" % DATA_PATH, 
-	                  "%s/data/avatar/REI.PCX" % DATA_PATH, 
-	                  object_type=OBJECT_3D_ANIMATED_MESH )
+	self.UpdateSplash( "Loading character model..." )
+        Model = Avatar( DATA_PATH, DUDETTE )
         Model.m_XRot.SetAngle( -90 )
 	Model.m_ZRot.SetAngle( -90 )
 	Model.SetAnimation( IDLE1 )
 	Model.SetScale( 15 )
-	Model.SetPosition( 10, 10, 2 )
+	Model.SetPosition( 10, 2, 10 )
 	self.m_Model = Model
         oadd( Model )
-
+	self.UpdateSplash( "Loading Terrain..." )
 	Ground = Object3d( "%s/data/ground/tris.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
         Ground.m_ZRot.SetAngle( -90 )
         oadd( Ground )
 
-	# house = House( floors = 2 )
+	self.UpdateSplash( "Loading Furniture..." )
 	setee = Object3d( "%s/data/furniture/Free_Sofa_04.obj" % DATA_PATH, 
 	                  None, 
 	                  object_type=OBJECT_3D_MESH )
 	setee.SetScale( 0.5 )
-	
-	
         oadd( setee )
+	
+	self.UpdateSplash( "Loading House..." )
         house = Object3d( "%s/data/home/House010.obj" % DATA_PATH, 
 	                  None, 
 	                  object_type=OBJECT_3D_MESH )
 	house.SetScale( 2000 )
 	house.m_XRot.SetAngle( -90 )
-	house.SetPosition( 0, 0, -2 )
+	house.SetPosition( 0, 0, -4 )
         oadd( house )
 	self.house = house
 	
         self._currentTicks = self._oldTicks = pygame.time.get_ticks()
-        self._ticks = 0
-	
-    def DrawSplashScreen( self ):
-	self.Titlefont.glPrint( 400, 400, "La Vida" )
-	self.font.glPrint( 10, 10, "Loading..." )
-	pygame.display.flip()
-    
+        self._ticks = 0    
         
+    def UpdateSplash( self, a_Message ):
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+	self.Titlefont.glPrint( 400, 400, "La Vida" )
+	self.font.glPrint( 10, 10, a_Message )
+	pygame.display.flip()
+	
     def TimerUpdate(self):
         self._oldTicks = self._currentTicks
         self._currentTicks = pygame.time.get_ticks()
@@ -205,6 +206,11 @@ class GameApp3d:
 		print self.GetSelectedObject( l_X, l_Y )
 		l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
 		l_Position.Print()
+		x, y, z, w = self.m_Model.GetPosition()
+		x = l_Position.GetX()
+		z = l_Position.GetZ()
+		self.m_Model.SetPosition( x, y, z, w )
+		
 		
             elif event.type == QUIT:
                 return False

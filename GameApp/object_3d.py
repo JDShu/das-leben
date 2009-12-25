@@ -98,11 +98,12 @@ class Object3d( Vector3d ):
        
    def Draw(self):
       glPushMatrix()
+      glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
       glRotatef( self.m_XRot.GetAngle() , 1.0, 0, 0 )
       glRotatef( self.m_YRot.GetAngle() , 0, 1.0, 0 )
       glRotatef( self.m_ZRot.GetAngle() , 0, 0, 1.0 )
       
-      glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
+      
             
       if self._model:
          self._model.draw()
