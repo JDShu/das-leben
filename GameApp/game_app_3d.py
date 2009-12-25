@@ -73,7 +73,8 @@ class GameApp3d:
 		    
 	glShadeModel(GL_SMOOTH)
         glClearColor(0.0, 0.0, 0.0, 1.0)
-	#glEnable(GL_COLOR_MATERIAL)
+	glEnable(GL_COLOR_MATERIAL)
+	glMaterial( GL_FRONT, GL_SHININESS, 5.0 )
         glClearDepth(1.0)
         glEnable(GL_DEPTH_TEST)
         glDepthFunc(GL_LEQUAL)
@@ -104,14 +105,16 @@ class GameApp3d:
 	pygame.mixer.music.set_volume( 0.1 )
 	
     def SetupLighting( self ):
-	LightAmbient  = [ 0.2, 0.2, 0.2, 1.0 ]
-        LightDiffuse  = [ 0.2, 0.2, 0.2, 1.0 ]
+	LightAmbient  = [ 0.5, 0.5, 0.5, 1.0 ]
+        LightDiffuse  = [ 0.5, 0.5, 0.5, 1.0 ]
         self.LightPosition = [ 10.0, 50.0, 30, 1.0 ]
 	LightSpecular = [ 0.2, 0.2, 0.2, 1.0 ]
 	
         glEnable( GL_LIGHTING )
 	glEnable( GL_LIGHT0 )
-        glLightfv( GL_LIGHT0, GL_AMBIENT, LightAmbient )
+	
+	glLightModelfv( GL_LIGHT_MODEL_AMBIENT, LightAmbient )
+        #glLightfv( GL_LIGHT0, GL_AMBIENT, LightAmbient )
         glLightfv( GL_LIGHT0, GL_DIFFUSE, LightDiffuse )
 	glLightfv( GL_LIGHT0, GL_SPECULAR, LightSpecular )
         glLightfv( GL_LIGHT0, GL_POSITION, self.LightPosition )
@@ -152,25 +155,31 @@ class GameApp3d:
 	Model.m_ZRot.SetAngle( -90 )
 	Model.SetAnimation( IDLE1 )
 	Model.SetScale( 15 )
-	Model.SetPosition( 10, 2, 10 )
+	Model.SetPosition( 10, 4, 10 )
 	self.m_Model = Model
         oadd( Model )
 	self.UpdateSplash( "Loading Terrain..." )
-	Ground = Object3d( "%s/data/ground/tris.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
-        Ground.m_ZRot.SetAngle( -90 )
+	Ground = Object3d( "%s/data/ground/mountains.obj" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
+        #Ground.m_ZRot.SetAngle( -90 )
+	Ground.SetScale( 20000 )
+	Ground.SetPosition( 0.0, -263.5, 0.0 )
+	self.m_Ground = Ground
         oadd( Ground )
 
 	self.UpdateSplash( "Loading Furniture..." )
 	setee = Object3d( "%s/data/furniture/Free_Sofa_04.obj" % DATA_PATH, 
 	                  None, 
-	                  object_type=OBJECT_3D_MESH )
+	                  object_type=OBJECT_3D_MESH,
+	                  a_Colour=[1.0, 0.0, 0.0])
 	setee.SetScale( 0.5 )
         oadd( setee )
 	
 	self.UpdateSplash( "Loading House..." )
         house = Object3d( "%s/data/home/House010.obj" % DATA_PATH, 
 	                  None, 
-	                  object_type=OBJECT_3D_MESH )
+	                  object_type=OBJECT_3D_MESH,
+	                  a_Colour=[1.0, 1.0, 0.0])
+	
 	house.SetScale( 2000 )
 	house.m_XRot.SetAngle( -90 )
 	house.SetPosition( 0, 0, -4 )
@@ -246,16 +255,16 @@ class GameApp3d:
             self.m_Camera.m_YRot += 1.0
             
         elif self.m_KeyBuffer[ K_u ]:
-            x, y, z, w = self.m_Light.GetPosition()
+            x, y, z, w = self.m_Ground.GetPosition()
             y += 1
-            self.m_Light.SetPosition( x, y, z, w )
+            self.m_Ground.SetPosition( x, y, z, w )
 	    glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
 	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
         elif self.m_KeyBuffer[ K_j ]:
-            x, y, z, w = self.m_Light.GetPosition()
+            x, y, z, w = self.m_Ground.GetPosition()
             y -= 1
-            self.m_Light.SetPosition( x, y, z, w )
+            self.m_Ground.SetPosition( x, y, z, w )
 	    glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
 	    self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
             
@@ -309,7 +318,7 @@ class GameApp3d:
         self.m_Camera.BeginDrawing()
         if self.m_UseShader: self.m_Shader.StartShader()
         for Object in self.m_Objects:
-	    if Object.__module__ == "GameApp.object_3d":
+	    if Object.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
 		Object.Animate(self._ticks)
             Object.Draw()
             

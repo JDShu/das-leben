@@ -17,25 +17,42 @@
 
 from OpenGL.GL import *
 from math3D import *
+import pygame
 
 class OBJModel:
 	triangles = []
 	normals = []
 	listname = 0
-	def __init__(self,filepath):
+	def __init__(self,filepath, texture=None, a_Colour=[1.0,1.0,1.0]):
 		self.scale = 1.0
-		self.loadObj(filepath)
+		self._texture = None
+		self.loadObj(filepath, texture)
 		self.makeNormals()
-		self.createList()
+		self.createList(a_Colour)
 		
-		
-	def createList(self):
+	def createList(self, a_Colour):
 		self.listname = glGenLists(1)
+		glDisable( GL_TEXTURE_2D )
 		glNewList(self.listname,GL_COMPILE)
-		self.rawDraw()
+		self.rawDraw(a_Colour)
+		glColor3f( 1.0, 1.0, 1.0 )
 		glEndList()
 	
-	def loadObj(self,filepath):
+	def loadObj(self,filepath, texture=None):
+		if texture:
+			textureSurface = pygame.image.load(texture)
+	    
+			textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
+	    
+			width = textureSurface.get_width()
+			height = textureSurface.get_height()
+	    
+			self._texture = glGenTextures(1)
+			glBindTexture(GL_TEXTURE_2D, self._texture)
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData)
+		
 		modelFile = open(filepath,"r")
 		triangles = []
 		vertices = []
@@ -67,20 +84,36 @@ class OBJModel:
 		self.normals = normals
 	
 	def draw(self):
+		glPushMatrix()
+		glDisable( GL_TEXTURE_2D )
+		
+		if self._texture:
+			glEnable( GL_TEXTURE_2D )
+			glBindTexture( GL_TEXTURE_2D, self._texture )
+		
 		glScale( self.scale, self.scale, self.scale )
 		glCallList(self.listname)
+		
+		if self._texture: glDisable( GL_TEXTURE_2D )
+		glPopMatrix()
 		
 	def SetScale( self, scale ):
 		self.scale = scale / 100.0
 	
-	def rawDraw(self):
+	def rawDraw(self, a_Colour):
 		
 		glBegin(GL_TRIANGLES)
 		i = 0
 		for triangle in self.triangles:
 			glNormal3f(self.normals[i][0],self.normals[i][1],self.normals[i][2])
+			glColor3f( a_Colour[ 0 ], a_Colour[ 1 ], a_Colour[ 2 ] )
 			glVertex3f(triangle[0][0],triangle[0][1],triangle[0][2])
+			glNormal3f(self.normals[i][0],self.normals[i][1],self.normals[i][2])
+			glColor3f( a_Colour[ 0 ], a_Colour[ 1 ], a_Colour[ 2 ] )
 			glVertex3f(triangle[1][0],triangle[1][1],triangle[1][2])
+			glNormal3f(self.normals[i][0],self.normals[i][1],self.normals[i][2])
+			glColor3f( a_Colour[ 0 ], a_Colour[ 1 ], a_Colour[ 2 ] )
 			glVertex3f(triangle[2][0],triangle[2][1],triangle[2][2])
 			i+=1
 		glEnd()
+		

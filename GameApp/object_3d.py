@@ -47,10 +47,11 @@ OBJECT_3D_ANIMATED_MESH = 5
 
 class Object3d( Vector3d ):
    """A 3d object"""   
-   def __init__(self, filename=None, texture=None, scale=100.0, object_type=2):
+   def __init__(self, filename=None, texture=None, scale=100.0, object_type=2, a_Colour=[1.0,1.0,1.0]):
       Vector3d.__init__(self)
       
       self.m_ObjectType = object_type
+      self.m_Colour = a_Colour
 
       if filename == None:
          if object_type == OBJECT_3D_BOX or object_type == OBJECT_3D_SPHERE:
@@ -70,7 +71,7 @@ class Object3d( Vector3d ):
          self._model.load( filename, texture, True )
          
       elif self.GetExtensionType( filename ) == "OBJ":
-         self._model = OBJModel( filename )
+         self._model = OBJModel( filename, texture, a_Colour )
          self.m_ObjectType = OBJECT_3D_MESH
          self._model.SetScale( scale )
          
@@ -102,8 +103,7 @@ class Object3d( Vector3d ):
       glRotatef( self.m_XRot.GetAngle() , 1.0, 0, 0 )
       glRotatef( self.m_YRot.GetAngle() , 0, 1.0, 0 )
       glRotatef( self.m_ZRot.GetAngle() , 0, 0, 1.0 )
-      
-      
+      glColor3f( self.m_Colour[0],self.m_Colour[1], self.m_Colour[2] )      
             
       if self._model:
          self._model.draw()
