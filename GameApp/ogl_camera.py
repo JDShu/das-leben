@@ -64,7 +64,7 @@ class oglCamera( Vector3d ):
         glPushMatrix()
         glLoadIdentity()
         gluPickMatrix( a_X, l_Viewport[ 3 ] - a_Y, 1.0, 1.0, l_Viewport )
-        gluPerspective( 45, self.m_ViewportWidth / self.m_ViewportHeight, 0.0001, 1000.0 )
+        gluPerspective( 45, self.m_ViewportWidth / self.m_ViewportHeight, 0.0001, 100000.0 )
         
         glMatrixMode( GL_MODELVIEW )
         glLoadIdentity()

@@ -149,20 +149,19 @@ class GameApp3d:
 	self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
 	self.m_Light.SetPosition( 10.0, 50.0, 30 )
 	oadd( self.m_Light )
+	
 	self.UpdateSplash( "Loading character model..." )
         Model = Avatar( DATA_PATH, DUDETTE )
-        Model.m_XRot.SetAngle( -90 )
-	Model.m_ZRot.SetAngle( -90 )
-	Model.SetAnimation( IDLE1 )
-	Model.SetScale( 15 )
 	Model.SetPosition( 10, 4, 10 )
 	self.m_Model = Model
         oadd( Model )
+	
 	self.UpdateSplash( "Loading Terrain..." )
-	Ground = Object3d( "%s/data/ground/mountains.obj" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
-        #Ground.m_ZRot.SetAngle( -90 )
+	Ground = Object3d( "%s/data/ground/mountains.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
+	Ground.m_ObjectType = OBJECT_3D_MESH
+        Ground.m_XRot.SetAngle( -90 )
 	Ground.SetScale( 20000 )
-	Ground.SetPosition( 0.0, -263.5, 0.0 )
+	Ground.SetPosition( 0.0, -18, 0.0 )
 	self.m_Ground = Ground
         oadd( Ground )
 
@@ -171,7 +170,7 @@ class GameApp3d:
 	                  None, 
 	                  object_type=OBJECT_3D_MESH,
 	                  a_Colour=[1.0, 0.0, 0.0])
-	setee.SetScale( 0.5 )
+	setee.SetScale( 0.25 )
         oadd( setee )
 	
 	self.UpdateSplash( "Loading House..." )
@@ -180,7 +179,7 @@ class GameApp3d:
 	                  object_type=OBJECT_3D_MESH,
 	                  a_Colour=[1.0, 1.0, 0.0])
 	
-	house.SetScale( 2000 )
+	house.SetScale( 200 )
 	house.m_XRot.SetAngle( -90 )
 	house.SetPosition( 0, 0, -4 )
         oadd( house )
@@ -217,6 +216,7 @@ class GameApp3d:
 		l_Position.Print()
 		x, y, z, w = self.m_Model.GetPosition()
 		x = l_Position.GetX()
+		y = l_Position.GetY()
 		z = l_Position.GetZ()
 		self.m_Model.SetPosition( x, y, z, w )
 		
