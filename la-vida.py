@@ -17,12 +17,6 @@
 import GameApp
 from GameApp.game_app_3d import GameApp3d
 
-try:
-    import psyco
-    
-except ImportError:
-    print "For best results install psyco"
-
 def main():
 
     l_Game = GameApp3d(a_AppName="La Vida")
@@ -31,6 +25,7 @@ def main():
 
     while Running:
         Running = l_Game.ProcessEvents()
+        l_Game.ProcessBehaviours()
         l_Game.Draw()
 
     l_Game.Exit()

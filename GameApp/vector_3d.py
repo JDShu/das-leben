@@ -16,12 +16,31 @@
 
 from math import sqrt
        
+VECTOR_THRESHOLD = 0.03
+
 class Vector3d:
     '''3d Vector'''
 
     def __init__(self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_W=1.0):
         self.m_Values = [a_X, a_Y, a_Z, a_W]
         
+    def __eq__( self, rhs ):
+        l_RetVal = False
+        l_Count = 0
+        if self.m_Values[ 0 ] >= ( rhs.GetX() - VECTOR_THRESHOLD ) and self.m_Values[ 0 ] <= ( rhs.GetX() + VECTOR_THRESHOLD ):
+            l_Count += 1 
+            
+        if self.m_Values[ 1 ] >= ( rhs.GetY() - VECTOR_THRESHOLD ) and self.m_Values[ 1 ] <= ( rhs.GetY() + VECTOR_THRESHOLD ):
+            l_Count += 1
+            
+        if self.m_Values[ 2 ] >= ( rhs.GetZ() - VECTOR_THRESHOLD ) and self.m_Values[ 2 ] <= ( rhs.GetZ() + VECTOR_THRESHOLD ):
+            l_Count += 1
+            
+        if l_Count == 3:
+            l_RetVal = True
+            
+        return l_RetVal
+    
     def __add__( self, rhs ):
         return Vector3d( self.m_Values[ 0 ] + rhs.m_Values[ 0 ],
                          self.m_Values[ 1 ] + rhs.m_Values[ 1 ],
@@ -46,7 +65,7 @@ class Vector3d:
                          self.m_Values[ 2 ] / rhs.m_Values[ 2 ],
                          self.m_Values[ 3 ] / rhs.m_Values[ 3 ] )
     
-    def scale( self, a_Scale=1.0 ):
+    def Scale( self, a_Scale=1.0 ):
         for i in xrange(4):
             self.m_Values[ i ] *= a_Scale
             
@@ -65,7 +84,10 @@ class Vector3d:
                                                         self.m_Values[2], self.m_Values[3] )
 
     def GetPosition(self):
-        return self.m_Values    
+        return self.m_Values
+    
+    def GetPositionVector(self):
+        return Vector3d( self.m_Values[ 0 ], self.m_Values[ 1 ], self.m_Values[ 2 ] )
 
     def GetX(self):
         return self.m_Values[0]

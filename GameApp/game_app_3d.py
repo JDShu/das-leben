@@ -49,7 +49,7 @@ class GameApp3d:
 	DATA_PATH = a_CWD != None and a_CWD or getcwd()
         
 	self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
-        self.m_Camera.SetPosition(0, -44, 3.0)
+        self.m_Camera.SetPosition(0, -4, 3.0)
         self.m_Camera.m_XRot += 31
 	self.m_Camera.m_YRot += 157
 	
@@ -82,6 +82,12 @@ class GameApp3d:
 	
 	self.m_UseShader = False
 	self.m_Shader = ogl_shader.oglBumpyShader()
+	
+	self.m_SelectedObject = None
+	
+	self.m_Ticks = 0
+	self.m_OldTicks = 0
+	self.m_CurrentTicks = 0
         
         self.SetupLighting()
   
@@ -142,7 +148,7 @@ class GameApp3d:
     def LoadObjects( self ):
         '''load all 3d objects and models'''
 	self.UpdateSplash( "Loading Skybox..." )
-        self.m_SkyBox = SkyBox("%s/data/skybox/night" % DATA_PATH )
+        self.m_SkyBox = SkyBox("%s/data/skybox/open fields" % DATA_PATH )
 	
         self.m_Objects = []; oadd = self.m_Objects.append
 	self.UpdateSplash( "Loading lighting sphere..." )
@@ -170,7 +176,7 @@ class GameApp3d:
 	                  None, 
 	                  object_type=OBJECT_3D_MESH,
 	                  a_Colour=[1.0, 0.0, 0.0])
-	setee.SetScale( 0.25 )
+	setee.SetScale( 200 )
         oadd( setee )
 	
 	self.UpdateSplash( "Loading House..." )
@@ -202,6 +208,10 @@ class GameApp3d:
     def ProcessEvents(self):
         self.TimerUpdate()
         events = pygame.event.get()
+	self.m_OldTicks = self.m_CurrentTicks
+	self.m_CurrentTicks = pygame.time.get_ticks()
+	self.m_Ticks = self.m_CurrentTicks - self.m_OldTicks
+	
         for event in events:
             if event.type == KEYDOWN:
                 self.m_KeyBuffer[ event.key ] = True
@@ -211,14 +221,9 @@ class GameApp3d:
                 
 	    elif event.type == MOUSEBUTTONDOWN:
 		l_X, l_Y = pygame.mouse.get_pos()
-		print self.GetSelectedObject( l_X, l_Y )
+		self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
 		l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
-		l_Position.Print()
-		x, y, z, w = self.m_Model.GetPosition()
-		x = l_Position.GetX()
-		y = l_Position.GetY()
-		z = l_Position.GetZ()
-		self.m_Model.SetPosition( x, y, z, w )
+		self.AddMessage( l_Position.__repr__() )
 		
 		
             elif event.type == QUIT:
@@ -226,6 +231,13 @@ class GameApp3d:
                 
         return self.ProccessKeys()
 
+    def ProcessBehaviours( self ):
+	for game_object in self.m_Objects:
+	    if game_object.__module__ == "GameApp.characters":
+		game_object.UpdateTicks( self.m_Ticks )
+		game_object.DoBehaviours()
+		# self.AddMessage( "Avatar : %s,%s,%s" % ( game_object.GetX(), game_object.GetY(), game_object.GetZ() ) )
+		
     def GetSelectedObject( self, a_X, a_Y ):
 	return "The Selected Object ID is %s" % self.m_Camera.GetObjectSelected( a_X, a_Y, self.m_Objects )
 

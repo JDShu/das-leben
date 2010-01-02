@@ -1,0 +1,24 @@
+# Blender3D MTL File: setee.blend
+# Material Count: 2
+newmtl wood_Converted1_al_02_al_023.jpg
+Ns 3.921569
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd al_023.jpg
+
+
+newmtl wood_Converted_al_t_3_al_t_358.jpg
+Ns 3.921569
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.512000 0.512000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 0.000000
+illum 2
+map_Kd al_t_358.jpg
+
+
