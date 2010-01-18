@@ -28,14 +28,25 @@ class RegionQuad( Vector3d, BoundingBox3d ):
         Vector3d.__init__( self, a_X, a_Y, a_Z )
         BoundingBox3d.__init__( self, a_X, a_Y, a_Z, a_Size )
         
-        self.upperleft = Vector3d(-1.0, 0.0, 1.0 ).Scale( a_Size )
-        self.lowerleft = Vector3d(-1.0, 0.0, -1.0 ).Scale( a_Size )
-        self.upperright = Vector3d(1.0, 0.0, -1.0 ).Scale( a_Size )
-        self.lowerright = Vector3d(1.0, 0.0, -1.0 ).Scale( a_Size )
+    def SetAsObject( self, a_Object3d ):
+        self.ObjectToRender = a_Object3d
+        self.ObjectToRender.SetPosition( self.GetX(), self.GetY(), self.GetY() )
         
+    def Draw( self ):
+        self.ObjectToRender.Draw()
+    
+    
 class Region( Vector3d ):
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=64 ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=64, a_Size=1.0 ):
         Vector3d.__init__( self, a_X, a_Y, a_Z )
+        self.quads = []; qadd = self.quads.append
+        for x in xrange( a_Width ):
+            for z in xrange( a_Width ):
+                qadd( RegionQuad( a_X + ( a_Size / 2 ) + ( float( x ) * a_Size ), 
+                                  a_Y + ( a_Size / 2 ), 
+                                  a_Z + ( a_Size / 2 ) + ( float( z ) * a_Size ),
+                                  a_Size ) )
+                
         
         
         

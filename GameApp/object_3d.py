@@ -82,6 +82,16 @@ class Object3d( Vector3d ):
       
       self.m_GLName = random.randint( 1, 1000 )
       
+   def Clone( self ):
+      cloned_object3d = Object3d()
+      cloned_object3d.m_Colour = self.m_Colour
+      cloned_object3d.m_ObjectType = self.m_ObjectType
+      cloned_object3d.m_Scale = self.m_Scale
+      cloned_object3d.SetPosition( self.GetX(), self.GetY(), self.GetZ() )
+      cloned_object3d._model = self._model
+      
+      return cloned_object3d
+      
    def GetExtensionType( self, filename ):
       return filename.split(".")[1].upper()
       
