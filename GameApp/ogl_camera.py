@@ -76,7 +76,8 @@ class oglCamera( Vector3d ):
 	    if hasattr( Object, "DrawSelectMode" ):
 		Object.DrawSelectMode()
 	    else:
-		glPushName( Object.GetGLName() )
+		if hasattr( Object, "GetGLName" ):
+		    glPushName( Object.GetGLName() )
 		Object.Draw()
 		glPopName()
             

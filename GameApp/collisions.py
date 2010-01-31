@@ -14,6 +14,8 @@
  *
 '''
 
+from vector_3d import *
+
 class BoundingBox3d:
     ''' this is a AAB type bounding box '''
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=1.0 ):

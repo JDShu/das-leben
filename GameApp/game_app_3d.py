@@ -31,6 +31,7 @@ from md2 import *
 from environment import *
 from buildings import *
 from OGLExt import *
+from terrain_objects import *
 import ogl_shader 
 import glFreeType
 import os
@@ -45,6 +46,8 @@ class GameApp3d:
     def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_CWD=None):
         
         pygame.init()
+	
+	glutInit()
 	
 	DATA_PATH = a_CWD != None and a_CWD or getcwd()
         
@@ -111,10 +114,10 @@ class GameApp3d:
 	pygame.mixer.music.set_volume( 0.1 )
 	
     def SetupLighting( self ):
-	LightAmbient  = [ 0.5, 0.5, 0.5, 1.0 ]
-        LightDiffuse  = [ 0.5, 0.5, 0.5, 1.0 ]
+	LightAmbient  = [ 0.2, 0.2, 0.2, 1.0 ]
+        LightDiffuse  = [ 0.8, 0.8, 0.8, 1.0 ]
         self.LightPosition = [ 10.0, 50.0, 30, 1.0 ]
-	LightSpecular = [ 0.2, 0.2, 0.2, 1.0 ]
+	LightSpecular = [ 1.0, 1.0, 1.0, 1.0 ]
 	
         glEnable( GL_LIGHTING )
 	glEnable( GL_LIGHT0 )
@@ -163,11 +166,12 @@ class GameApp3d:
         oadd( Model )
 	
 	self.UpdateSplash( "Loading Terrain..." )
-	Ground = Object3d( "%s/data/ground/mountains.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
-	Ground.m_ObjectType = OBJECT_3D_MESH
-        Ground.m_XRot.SetAngle( -90 )
-	Ground.SetScale( 20000 )
-	Ground.SetPosition( 0.0, -18, 0.0 )
+	Ground = Region( 0.0, 0.0, 0.0, 50, 2 )
+	#Object3d( "%s/data/ground/mountains.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
+	#Ground.m_ObjectType = OBJECT_3D_MESH
+        #Ground.m_XRot.SetAngle( -90 )
+	#Ground.SetScale( 20000 )
+	#Ground.SetPosition( 0.0, -18, 0.0 )
 	self.m_Ground = Ground
         oadd( Ground )
 
@@ -224,7 +228,7 @@ class GameApp3d:
 		self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
 		l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
 		self.AddMessage( l_Position.__repr__() )
-		
+		self.m_Ground.raiseQuad( l_Position )
 		
             elif event.type == QUIT:
                 return False
@@ -326,7 +330,7 @@ class GameApp3d:
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
         # self.m_Camera.LookAt( self.m_Sphere )
-        self.m_SkyBox.Draw( self.m_Camera )
+        # self.m_SkyBox.Draw( self.m_Camera )
         self.m_Camera.BeginDrawing()
         if self.m_UseShader: self.m_Shader.StartShader()
         for Object in self.m_Objects:

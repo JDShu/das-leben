@@ -45,6 +45,10 @@ OBJECT_3D_WALL = 3
 OBJECT_3D_MESH = 4
 OBJECT_3D_ANIMATED_MESH = 5
 
+OBJECT_3D_DRAW_SOLID = 1
+OBJECT_3D_DRAW_WIREFRAME = 2
+OBJECT_3D_DRAW_HIGHLIGHTED = 3
+
 class Object3d( Vector3d ):
    """A 3d object"""   
    def __init__(self, filename=None, texture=None, scale=100.0, object_type=2, a_Colour=[1.0,1.0,1.0]):
@@ -82,6 +86,8 @@ class Object3d( Vector3d ):
       
       self.m_GLName = random.randint( 1, 1000 )
       
+      self.drawmode = OBJECT_3D_DRAW_SOLID
+      
    def Clone( self ):
       cloned_object3d = Object3d()
       cloned_object3d.m_Colour = self.m_Colour
@@ -107,8 +113,13 @@ class Object3d( Vector3d ):
       if self.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
          self._model.SetAnimation( animation )
        
+   def SetDrawMode( self, a_DrawMode ):
+      self.drawmode = a_DrawMode
+      
    def Draw(self):
       glPushMatrix()
+      if self.drawmode == OBJECT_3D_DRAW_WIREFRAME:
+         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
       glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
       glRotatef( self.m_XRot.GetAngle() , 1.0, 0, 0 )
       glRotatef( self.m_YRot.GetAngle() , 0, 1.0, 0 )
