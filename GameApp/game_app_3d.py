@@ -154,19 +154,19 @@ class GameApp3d:
         self.m_SkyBox = SkyBox("%s/data/skybox/open fields" % DATA_PATH )
 
         self.m_Objects = []; oadd = self.m_Objects.append
-        self.UpdateSplash( "Loading lighting sphere..." )
-        self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
-        self.m_Light.SetPosition( 10.0, 50.0, 30 )
-        oadd( self.m_Light )
-
-        self.UpdateSplash( "Loading character model..." )
-        Model = Avatar( DATA_PATH, DUDETTE )
-        Model.SetPosition( 10, 4, 10 )
-        self.m_Model = Model
-        oadd( Model )
+##        self.UpdateSplash( "Loading lighting sphere..." )
+##        self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
+##        self.m_Light.SetPosition( 10.0, 50.0, 30 )
+##        oadd( self.m_Light )
+##
+##        self.UpdateSplash( "Loading character model..." )
+##        Model = Avatar( DATA_PATH, DUDETTE )
+##        Model.SetPosition( 10, 4, 10 )
+##        self.m_Model = Model
+##        oadd( Model )
 
         self.UpdateSplash( "Loading Terrain..." )
-        Ground = Region( 0.0, 0.0, 0.0, 2, 2 )
+        Ground = Region( 0.0, 0.0, 0.0, 50, 0.5 )
         #Object3d( "%s/data/ground/mountains.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
         #Ground.m_ObjectType = OBJECT_3D_MESH
         #Ground.m_XRot.SetAngle( -90 )
@@ -175,25 +175,25 @@ class GameApp3d:
         self.m_Ground = Ground
         oadd( Ground )
 
-        self.UpdateSplash( "Loading Furniture..." )
-        setee = Object3d( "%s/data/furniture/Free_Sofa_04.obj" % DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH,
-                          a_Colour=[1.0, 0.0, 0.0])
-        setee.SetScale( 200 )
-        oadd( setee )
-
-        self.UpdateSplash( "Loading House..." )
-        house = Object3d( "%s/data/home/House010.obj" % DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH,
-                          a_Colour=[1.0, 1.0, 0.0])
-
-        house.SetScale( 200 )
-        house.m_XRot.SetAngle( -90 )
-        house.SetPosition( 0, 0, -4 )
-        oadd( house )
-        self.house = house
+##        self.UpdateSplash( "Loading Furniture..." )
+##        setee = Object3d( "%s/data/furniture/Free_Sofa_04.obj" % DATA_PATH, 
+##                          None, 
+##                          object_type=OBJECT_3D_MESH,
+##                          a_Colour=[1.0, 0.0, 0.0])
+##        setee.SetScale( 200 )
+##        oadd( setee )
+##
+##        self.UpdateSplash( "Loading House..." )
+##        house = Object3d( "%s/data/home/House010.obj" % DATA_PATH, 
+##                          None, 
+##                          object_type=OBJECT_3D_MESH,
+##                          a_Colour=[1.0, 1.0, 0.0])
+##
+##        house.SetScale( 200 )
+##        house.m_XRot.SetAngle( -90 )
+##        house.SetPosition( 0, 0, -4 )
+##        oadd( house )
+##        self.house = house
 
         self._currentTicks = self._oldTicks = pygame.time.get_ticks()
         self._ticks = 0    

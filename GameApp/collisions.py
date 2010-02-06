@@ -40,6 +40,22 @@ class BoundingBox3d( Vector3d ):
             
         return inside
     
+    def PointInsideXZPlane( self, a_Vector3d=None ):
+        inside = False
+        match_count = 0
+        
+        x, y, z, w = self.GetPosition()
+        
+        if a_Vector3d.GetX() >= ( x - self.m_Width ) and a_Vector3d.GetX() <= ( x + self.m_Width ):
+            match_count += 1
+        if a_Vector3d.GetZ() >= ( z - self.m_Width ) and a_Vector3d.GetZ() <= ( z + self.m_Width ):
+            match_count += 1
+            
+        if match_count > 1:
+            inside = True
+            
+        return inside
+    
 ##    def CollidesWithBoundingBox( self, a_BoundingBox ):
 ##        collides = False
 ##        collides_count = 0
