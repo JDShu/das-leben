@@ -28,9 +28,8 @@ import random
 REGION_NORMAL = 1
 REGION_EDITING = 2
 
-class RegionQuad( Vector3d, BoundingBox3d ):
+class RegionQuad( BoundingBox3d ):
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=0.5 ):
-        Vector3d.__init__( self, a_X, a_Y, a_Z )
         BoundingBox3d.__init__( self, a_X, a_Y, a_Z, a_Size )
         
         # y values for quad
@@ -57,6 +56,11 @@ class RegionQuad( Vector3d, BoundingBox3d ):
         self.ur = a_Heights[ 'ur' ]
         self.ll = a_Heights[ 'll' ]
         self.lr = a_Heights[ 'lr' ]
+        
+        for key, value in a_Heights:
+            total += a_Heights[ key ]
+            
+        self.m_Values[ 2 ] = total / 4.0
         
     def SetAsObject( self, a_Object3d ):
         self.ObjectToRender = a_Object3d
