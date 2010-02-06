@@ -50,7 +50,7 @@ class RegionQuad( Vector3d, BoundingBox3d ):
         
         
     def __repr__( self ):
-        return "ul:%f, ur:%f, ll:%f, lr:%f" % ( self.ul, self.ur, self.ll, self.lr )
+        return "ul:%f,ur:%f,ll:%f,lr:%f" % ( self.ul, self.ur, self.ll, self.lr )
     
     def SetHeights( self, a_Heights ):
         self.ul = a_Heights[ 'ul' ]
@@ -205,7 +205,7 @@ class Region( Vector3d ):
                     heights = {}
                     for part in parts:
                         key, value = part.split(":")
-                        heights[ key ] = value + self.m_Width
+                        heights[ key ] = float( value ) + float( self.m_Width )
                     quad.SetHeights( heights )
                     quad.recompile_list()
                     self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID

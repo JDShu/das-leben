@@ -16,35 +16,23 @@
 
 from vector_3d import *
 
-class BoundingBox3d:
+class BoundingBox3d( Vector3d ):
     ''' this is a AAB type bounding box '''
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=1.0 ):
-        self.points = []; padd = self.points.append
-        self.Topupperleft = Vector3d(-1.0, 1.0, 1.0 ).Scale( a_Size )
-        padd( self.Topupperleft )
-        self.Toplowerleft = Vector3d(-1.0, 1.0, -1.0 ).Scale( a_Size )
-        padd( self.Toplowerleft )
-        self.Topupperright = Vector3d(1.0, 1.0, -1.0 ).Scale( a_Size )
-        padd( self.Topupperright )
-        self.Toplowerright = Vector3d(1.0, 1.0, 1.0 ).Scale( a_Size )
-        padd( self.Toplowerright )
-        self.Bottomupperleft = Vector3d(-1.0, -1.0, 1.0 ).Scale( a_Size )
-        padd( self.Bottomupperleft )
-        self.Bottomlowerleft = Vector3d(-1.0, -1.0, -1.0 ).Scale( a_Size )
-        padd( self.Bottomlowerleft )
-        self.Bottomupperright = Vector3d(1.0, -1.0, -1.0 ).Scale( a_Size )
-        padd( self.Bottomupperright )
-        self.Bottomlowerright = Vector3d(1.0, -1.0, 1.0 ).Scale( a_Size )
-        padd( self.Bottomlowerright )
+        Vector3d.__init__( self, a_X, a_Y, a_Z )
+        self.m_Width = a_Size / 2.0
         
     def PointInside( self, a_Vector3d=None ):
         inside = False
         match_count = 0
-        if a_Vector3d >= self.Bottomlowerleft and a_Vector3d <= self.Bottomlowerright:
+        
+        x, y, z, w = self.GetPosition()
+        
+        if a_Vector3d.GetX() >= ( x - self.m_Width ) and a_Vector3d.GetX() <= ( x + self.m_Width ):
             match_count += 1
-        if a_Vector3d >= self.Bottomlowerleft and a_Vector3d <= self.Bottomupperleft:
+        if a_Vector3d.GetY() >= ( y - self.m_Width ) and a_Vector3d.GetY() <= ( y + self.m_Width ):
             match_count += 1
-        if a_Vector3d >= self.Bottomlowerleft and a_Vector3d <= self.Toplowerleft:
+        if a_Vector3d.GetZ() >= ( z - self.m_Width ) and a_Vector3d.GetZ() <= ( z + self.m_Width ):
             match_count += 1
             
         if match_count > 2:
@@ -52,14 +40,14 @@ class BoundingBox3d:
             
         return inside
     
-    def CollidesWithBoundingBox( self, a_BoundingBox ):
-        collides = False
-        collides_count = 0
-        for point in a_BoundingBox:
-            collides_count =+ self.PointInside( point ) and 1 or 0
-            
-        if collides_count > 0:
-            collides = True
-            
-        return collides
+##    def CollidesWithBoundingBox( self, a_BoundingBox ):
+##        collides = False
+##        collides_count = 0
+##        for point in a_BoundingBox:
+##            collides_count =+ self.PointInside( point ) and 1 or 0
+##            
+##        if collides_count > 0:
+##            collides = True
+##            
+##        return collides
     
