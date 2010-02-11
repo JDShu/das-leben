@@ -36,6 +36,7 @@ import ogl_shader
 import glFreeType
 import os
 from os import getcwd
+from constants import *
 
 DATA_PATH = getcwd()
 
@@ -228,7 +229,10 @@ class GameApp3d:
                 self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
                 self.AddMessage( l_Position.__repr__() )
-                self.m_Ground.raiseQuad( l_Position )
+                if event.button == LEFT_MOUSE:
+                    self.m_Ground.raiseQuad( l_Position )
+                else:
+                    self.m_Ground.lowerQuad( l_Position )
 
             elif event.type == QUIT:
                 return False

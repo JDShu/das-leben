@@ -239,7 +239,7 @@ class font_data:
 		ft = None
 		return
 
-	def glPrint (self, x, y, string):
+	def glPrint (self, x, y, string, color=[ 1.0, 1.0, 1.0 ]):
 		"""
 		# ///Much like Nehe's glPrint function, but modified to work
 		# ///with freetype fonts.
@@ -299,6 +299,7 @@ class font_data:
 			# //  If you decide to use it make sure to also uncomment the glBitmap command
 			# //  in make_dlist().
 			# //	glRasterPos2f(0,0);
+			glColor3f( color[ 0 ], color[ 1 ], color[ 2 ] )
 			glCallLists (line)
 			# //	rpos = glGetFloatv (GL_CURRENT_RASTER_POSITION)
 			# //	float len=x-rpos[0];

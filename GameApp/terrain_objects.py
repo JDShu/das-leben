@@ -36,7 +36,7 @@ qadd( { 'ul': 1.0, 'ur': 1.0, 'll': 0.0, 'lr': 0.0, 'name':'top middle' } )
 qadd( { 'ul': 1.0, 'ur': 0.0, 'll': 0.0, 'lr': 0.0, 'name':'top right' } )
 # second row
 qadd( { 'ul': 0.0, 'ur': 1.0, 'll': 0.0, 'lr': 1.0, 'name':'middle left' } )
-qadd( { 'ul': 1.0, 'ur': 1.0, 'll': 1.0, 'lr': 1.0, 'name':'middle middle' } )
+qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 0.0, 'lr': 0.0, 'name':'middle middle' } )
 qadd( { 'ul': 1.0, 'ur': 0.0, 'll': 1.0, 'lr': 0.0, 'name':'middle right' } )
 # third row
 qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 0.0, 'lr': 1.0, 'name':'bottom left' } )
@@ -59,7 +59,9 @@ class RegionQuad( BoundingBox3d ):
         self.selected = False
         self.compiled = False
         self.oldListID = 0
-        self.listID = 0        
+        self.listID = 0     
+        
+        self.colour_adjust = random.random()
         
     def __repr__( self ):
         return "ul:%f,ur:%f,ll:%f,lr:%f" % ( self.ul, self.ur, self.ll, self.lr )
@@ -78,22 +80,27 @@ class RegionQuad( BoundingBox3d ):
     def GetGLName( self ):
         return self.ObjectToRender.GetGLName()
         
+    def Draw( self ):
+        glBegin( GL_QUADS )
+        glColor3f( 0.5 - self.colour_adjust, 1.0 - self.colour_adjust , 0.5 - self.colour_adjust ) # green grass
+        glNormal3f( 0.0, 1.0, 0.0 )
+        glVertex3f( float( self.GetX() - ( self.size / 2.0 ) ) , float( self.GetY() + self.ul ), float( self.GetZ() + ( self.size / 2.0 ) ) )
+        glNormal3f( 0.0, 1.0, 0.0 )
+        glVertex3f( float( self.GetX() + ( self.size / 2.0 ) ) , float( self.GetY() + self.ur ), float( self.GetZ() + ( self.size / 2.0 ) ) )
+        glNormal3f( 0.0, 1.0, 0.0 )
+        glVertex3f( float( self.GetX() + ( self.size / 2.0 ) ) , float( self.GetY() + self.lr ), float( self.GetZ() - ( self.size / 2.0 ) ) )
+        glNormal3f( 0.0, 1.0, 0.0 )
+        glVertex3f( float( self.GetX() - ( self.size / 2.0 ) ) , float( self.GetY() + self.ll ), float( self.GetZ() - ( self.size / 2.0 ) ) )
+        glColor3f( 1.0, 1.0, 1.0 )
+        glEnd()
+        
     def compile_list( self ):
         if not self.compiled:
             self.listID = glGenLists( 1 )
             glNewList( self.listID, GL_COMPILE )
-            glBegin( GL_QUADS )
-            colour_adjust = random.random()
-            glColor3f( 0.5 - colour_adjust, 1.0 - colour_adjust , 0.5 - colour_adjust ) # green grass
-            glNormal3f( 0.0, 1.0, 0.0 )
-            glVertex3f( float( self.GetX() - ( self.size / 2.0 ) ) , float( self.GetY() + self.ul ), float( self.GetZ() + ( self.size / 2.0 ) ) )
-            glNormal3f( 0.0, 1.0, 0.0 )
-            glVertex3f( float( self.GetX() + ( self.size / 2.0 ) ) , float( self.GetY() + self.ur ), float( self.GetZ() + ( self.size / 2.0 ) ) )
-            glNormal3f( 0.0, 1.0, 0.0 )
-            glVertex3f( float( self.GetX() + ( self.size / 2.0 ) ) , float( self.GetY() + self.lr ), float( self.GetZ() - ( self.size / 2.0 ) ) )
-            glNormal3f( 0.0, 1.0, 0.0 )
-            glVertex3f( float( self.GetX() - ( self.size / 2.0 ) ) , float( self.GetY() + self.ll ), float( self.GetZ() - ( self.size / 2.0 ) ) )
-            glEnd()
+            
+            
+            self.Draw()
             glEndList()
             
     def recompile_list( self ):
@@ -121,7 +128,7 @@ class Region( Vector3d ):
                                   a_Z + ( float( z ) * a_Size ),
                                   a_Size ) 
                 rq.SetAsObject( Object3d() )
-                rq.compile_list()
+                # rq.compile_list()
                 
                 qadd( rq )
                 iadd( rq.listID )
@@ -132,8 +139,21 @@ class Region( Vector3d ):
         self.selected_quads = []
         
         self.m_ObjectType = OBJECT_3D_MESH
+        self.listID = None
+        self.compile_list()
         
         self.compiled = False
+        
+    def compile_list( self ):
+        self.listID = glGenLists( 1 )
+        glNewList( self.listID, GL_COMPILE )
+        for quad in self.quads:
+            quad.Draw()
+        glEndList()
+        
+    def recompile_list( self ):
+        glDeleteLists( self.listID, 1 )
+        self.compile_list()
         
     def Save( self, a_Filename ):
         f = open( a_Filename, "w" )
@@ -189,7 +209,7 @@ class Region( Vector3d ):
         glPushMatrix()
         glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
         
-        glCallLists( self.quadIDS )
+        glCallList( self.listID )
         
         glPopMatrix()
             
@@ -218,8 +238,14 @@ class Region( Vector3d ):
                 quad = self.quads[ ( x * self.m_Width ) + z ]
                 if quad.PointInsideXZPlane( a_Location ):
                     
+                    quad.colour_adjust = 0.01
+                    xco, yco, zco, wco = quad.GetPosition() 
+                    yco += float( self.m_Size ) / 5.0 
+                    quad.SetPosition( xco, yco, zco )
+                    
                     cur_x = x - 1
                     cur_z = z - 1
+                    
                     for u in xrange( 3 ):
                         for v in xrange( 3 ):
                             try:
@@ -234,11 +260,9 @@ class Region( Vector3d ):
                                     key, value = part.split(":")
                                     heights[ key ] = float( value ) + ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
                                 adjusted_quad.SetHeights( heights )
-                                if adjusted_quad == quad: 
-                                    xco, yco, zco, wco = adjusted_quad.GetPosition() 
-                                    yco += float( self.m_Size ) / 5.0 
-                                    adjusted_quad.SetPostion( xco, yco, zco )
-                                adjusted_quad.recompile_list()
+                                
+                                    
+                                #adjusted_quad.recompile_list()
                                 self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
                             except:
                                 pass
@@ -249,14 +273,65 @@ class Region( Vector3d ):
                         cur_z += 1
                         
                     
-                    quad.SetHeights( heights )
-                    quad.recompile_list()
+                    #quad.recompile_list()
                     self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
                     
+        
     
             
         
+        self.recompile_list()
+        
+    def lowerQuad( self, a_Location ):
+        for x in xrange( self.m_Width ):
+            for z in xrange( self.m_Width ):
+                quad = self.quads[ ( x * self.m_Width ) + z ]
+                if quad.PointInsideXZPlane( a_Location ):
+                    
+                    quad.colour_adjust = 0.01
+                    xco, yco, zco, wco = quad.GetPosition() 
+                    yco -= float( self.m_Size ) / 5.0 
+                    quad.SetPosition( xco, yco, zco )
+                    
+                    cur_x = x - 1
+                    cur_z = z - 1
+                    
+                    for u in xrange( 3 ):
+                        for v in xrange( 3 ):
+                            try:
+                                adjusted_quad = self.quads[ ( cur_x * self.m_Width ) + cur_z ]
+                                line = adjusted_quad.__repr__()
+                                parts = line.split(",")
+                                heights = {}
+                                adjustment = quad_adjustments[ ( u * 3 ) + v ]
+                                if adjustment[ 'name' ] == "middle middle": 
+                                    adjusted_quad = quad
+                                for part in parts:
+                                    key, value = part.split(":")
+                                    heights[ key ] = float( value ) - ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
+                                adjusted_quad.SetHeights( heights )
+                                
+                                    
+                                #adjusted_quad.recompile_list()
+                                self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
+                            except:
+                                pass
+                            
+                            cur_x += 1
+                            
+                        cur_x -= 3
+                        cur_z += 1
+                        
+                    
+                    #quad.recompile_list()
+                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
+                    
+        
     
+            
+        
+        self.recompile_list()
+        
     def getQuad( self, a_X, a_Z ):
         try:
             self.quads[ ( a_X * self.m_Width ) + a_Z ]
