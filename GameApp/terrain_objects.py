@@ -21,8 +21,10 @@ import pygame
 from pygame.locals import *
 from vector_3d import *
 from object_3d import *
+from ogl_vbo import *
 from collisions import BoundingBox3d
 import random
+from ctypes import *
 
 
 REGION_NORMAL = 1
@@ -133,7 +135,33 @@ class Region( Vector3d ):
                 qadd( rq )
                 iadd( rq.listID )
                 
-        
+        vertexes = []; vadd = vertexes.append
+        colours = []; cadd = colours.append
+        normals = []; nadd = normals.append
+        for x in xrange( a_Width ):
+            for z in xrange( a_Width ):
+                extra_light = random.random()
+                vadd( Vector3d( float( x ) * a_Size, 1.0, float( z ) * a_Size ) )
+                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
+                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
+                
+                extra_light = random.random()
+                vadd( Vector3d( float( x + 1 ) * a_Size, 1.0, float( z ) * a_Size ) )
+                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
+                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
+                
+                extra_light = random.random()
+                vadd( Vector3d( float( x + 1 ) * a_Size, 1.0, float( z + 1 ) * a_Size ) )
+                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
+                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
+                
+                extra_light = random.random()
+                vadd( Vector3d( float( x ) * a_Size, 1.0, float( z + 1 ) * a_Size ) )
+                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
+                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
+                
+        self.vbo = VBO( vertexes, normals, None, colours, a_BufferType=GL_STREAM_DRAW_ARB )
+        self.useVBO = True
         self.mode = REGION_NORMAL
         
         self.selected_quads = []
@@ -209,21 +237,13 @@ class Region( Vector3d ):
         glPushMatrix()
         glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
         
-        glCallList( self.listID )
+        if not self.useVBO:
+            glCallList( self.listID )
+        else:
+            self.vbo.Draw()
         
         glPopMatrix()
-            
-        #if self.mode == REGION_EDITING:
-            #for quad in self.quads:
-                #quad.SetDrawMode( OBJECT_3D_DRAW_WIREFRAME ) 
-                #quad.Draw()
-                #quad.SetDrawMode( OBJECT_3D_DRAW_SOLID )
-        
-            #for quad in self.selected_quads:
-                #quad.SetDrawMode( OBJECT_3D_DRAW_HIGHLIGHTED ) 
-                #quad.Draw()
-                #quad.SetDrawMode( OBJECT_3D_DRAW_SOLID )
-                
+                            
                 
     def GetGLNames( self ):
         quads = []; qadd = quads.append
@@ -233,48 +253,51 @@ class Region( Vector3d ):
         return quads
     
     def raiseQuad( self, a_Location ):
-        for x in xrange( self.m_Width ):
-            for z in xrange( self.m_Width ):
-                quad = self.quads[ ( x * self.m_Width ) + z ]
-                if quad.PointInsideXZPlane( a_Location ):
-                    
-                    quad.colour_adjust = 0.01
-                    xco, yco, zco, wco = quad.GetPosition() 
-                    yco += float( self.m_Size ) / 5.0 
-                    quad.SetPosition( xco, yco, zco )
-                    
-                    cur_x = x - 1
-                    cur_z = z - 1
-                    
-                    for u in xrange( 3 ):
-                        for v in xrange( 3 ):
-                            try:
-                                adjusted_quad = self.quads[ ( cur_x * self.m_Width ) + cur_z ]
-                                line = adjusted_quad.__repr__()
-                                parts = line.split(",")
-                                heights = {}
-                                adjustment = quad_adjustments[ ( u * 3 ) + v ]
-                                if adjustment[ 'name' ] == "middle middle": 
-                                    adjusted_quad = quad
-                                for part in parts:
-                                    key, value = part.split(":")
-                                    heights[ key ] = float( value ) + ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
-                                adjusted_quad.SetHeights( heights )
-                                
-                                    
-                                #adjusted_quad.recompile_list()
-                                self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
-                            except:
-                                pass
-                            
-                            cur_x += 1
-                            
-                        cur_x -= 3
-                        cur_z += 1
-                        
-                    
-                    #quad.recompile_list()
-                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
+        verts = self.vbo.GetVertexArray()
+        
+        
+##        for x in xrange( self.m_Width ):
+##            for z in xrange( self.m_Width ):
+##                quad = self.quads[ ( x * self.m_Width ) + z ]
+##                if quad.PointInsideXZPlane( a_Location ):
+##                    
+##                    quad.colour_adjust = 0.01
+##                    xco, yco, zco, wco = quad.GetPosition() 
+##                    yco += float( self.m_Size ) / 5.0 
+##                    quad.SetPosition( xco, yco, zco )
+##                    
+##                    cur_x = x - 1
+##                    cur_z = z - 1
+##                    
+##                    for u in xrange( 3 ):
+##                        for v in xrange( 3 ):
+##                            try:
+##                                adjusted_quad = self.quads[ ( cur_x * self.m_Width ) + cur_z ]
+##                                line = adjusted_quad.__repr__()
+##                                parts = line.split(",")
+##                                heights = {}
+##                                adjustment = quad_adjustments[ ( u * 3 ) + v ]
+##                                if adjustment[ 'name' ] == "middle middle": 
+##                                    adjusted_quad = quad
+##                                for part in parts:
+##                                    key, value = part.split(":")
+##                                    heights[ key ] = float( value ) + ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
+##                                adjusted_quad.SetHeights( heights )
+##                                
+##                                    
+##                                #adjusted_quad.recompile_list()
+##                                self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
+##                            except:
+##                                pass
+##                            
+##                            cur_x += 1
+##                            
+##                        cur_x -= 3
+##                        cur_z += 1
+##                        
+##                    
+##                    #quad.recompile_list()
+##                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
                     
         
     

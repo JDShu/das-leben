@@ -18,6 +18,7 @@ import OpenGL
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from ctypes import *
 import sys
 
 try:
@@ -30,7 +31,10 @@ from numpy import *
 import pygame
 
 class VBO:
-    def __init__( self, a_Vertexes, a_Normals=None, a_TexCoords=None, a_Colours=None ):
+    def __init__( self, a_Vertexes, a_Normals=None, a_TexCoords=None, a_Colours=None, a_Quads=True, a_BufferType=GL_STATIC_DRAW_ARB ):
+        '''
+        create a vbo from a list of face points, normals, texture coords and colours
+        '''
         self.vertxCount = len( a_Vertexes )
         vertexes = zeros( ( len( a_Vertexes ), 3 ), dtype=float32 ) 
         
@@ -41,9 +45,9 @@ class VBO:
             
         self.vboVertArray = glGenBuffersARB( 1 )
         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
-        glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexes, GL_STATIC_DRAW_ARB )
+        glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexes, a_BufferType )
         
-        self.useNormals = a_Normals == None and None or True
+        self.useNormals = a_Normals != None and True or False
         if self.useNormals:
             normals = zeros( ( len( a_Normals ), 3 ), dtype=float32 ) 
             for i, vert in enumerate( a_Normals ):
@@ -53,9 +57,9 @@ class VBO:
                 
             self.vboNormalArray = glGenBuffersARB( 1 )
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboNormalArray )
-            glBufferDataARB( GL_ARRAY_BUFFER_ARB, normals, GL_STATIC_DRAW_ARB )
+            glBufferDataARB( GL_ARRAY_BUFFER_ARB, normals, a_BufferType )
             
-        self.useTexCoords = a_TexCoords == None and None or True
+        self.useTexCoords = a_TexCoords != None and True or False
         if self.useTexCoords:
             texCoords = zeros( ( len( a_TexCoords ), 3 ), dtype=float32 ) 
             for i, vert in enumerate( a_TexCoords ):
@@ -67,17 +71,19 @@ class VBO:
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboTexCoordArray )
             glBufferDataARB( GL_ARRAY_BUFFER_ARB, texCoords, GL_STATIC_DRAW_ARB )
             
-        self.useColoursCoords = a_Colours == None and None or True
+        self.useColoursCoords = a_Colours != None and True or False
         if self.useColoursCoords:
             coloursCoords = zeros( ( len( a_Colours ), 3 ), dtype=float32 ) 
             for i, vert in enumerate( a_Colours ):
-                coloursCoords[ i ][ 0 ] = vert.GetX()
-                coloursCoords[ i ][ 1 ] = vert.GetY()
-                coloursCoords[ i ][ 2 ] = vert.GetZ()
+                coloursCoords[ i ][ 0 ] = vert[ 0 ]
+                coloursCoords[ i ][ 1 ] = vert[ 1 ]
+                coloursCoords[ i ][ 2 ] = vert[ 2 ]
                 
             self.vbocColourCoordsArray = glGenBuffersARB( 1 )
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vbocColourCoordsArray )
             glBufferDataARB( GL_ARRAY_BUFFER_ARB, coloursCoords, GL_STATIC_DRAW_ARB )
+            
+        self.Facetype = a_Quads == True and GL_QUADS or GL_TRIANGLES
             
     def Draw( self ):
         glEnableClientState( GL_VERTEX_ARRAY )
@@ -97,9 +103,9 @@ class VBO:
         if self.useColoursCoords: 
             glEnableClientState( GL_COLOR_ARRAY )
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vbocColourCoordsArray )
-            glColorPointer(3, GL_FLOAT, 0, Colors)
+            glColorPointer(3, GL_FLOAT, 0, None)
             
-        glDrawArrays( GL_TRIANGLES, 0, self.vertxCount )
+        glDrawArrays( self.Facetype, 0, self.vertxCount )
 
         glDisableClientState( GL_VERTEX_ARRAY )
         
@@ -109,4 +115,16 @@ class VBO:
         
         if self.useColoursCoords: glDisableClientState( GL_COLOR_ARRAY )
         
+    Render = Draw
+    
+    def GetVertexArray( self ):
+        glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
+        verts = glMapBuffer( GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB )
+        return verts
+    
+    def __del__( self ):
+        glDeleteBuffersARB( 1, self.vboVertArray )
+        if self.useNormals: glDeleteBuffersARB( 1, self.vboNormalArray )
+        if self.useTexCoords: glDeleteBuffersARB( 1, self.vboTexCoordArray )
+        if self.useColoursCoords: glDeleteBuffersARB( 1, self.vbocColourCoordsArray )
         
