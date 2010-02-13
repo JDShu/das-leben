@@ -15,7 +15,8 @@
 '''
 
 from math import sqrt
-       
+from numpy import *
+
 VECTOR_THRESHOLD = 0.03
 
 class Vector3d:
@@ -73,6 +74,7 @@ class Vector3d:
         return "Setting Position : %s, %s, %s, %s\n" % ( self.m_Values[0], self.m_Values[1], 
                                                         self.m_Values[2], self.m_Values[3] )
 
+    
     def SetPosition(self, a_X, a_Y, a_Z, a_W=1.0):
         self.m_Values[0] = a_X
         self.m_Values[1] = a_Y
