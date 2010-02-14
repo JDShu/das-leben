@@ -50,10 +50,10 @@ class RegionQuad( BoundingBox3d ):
         BoundingBox3d.__init__( self, a_X, a_Y, a_Z, a_Size )
         
         # y values for quad
-        self.ul = 0.0
-        self.ur = 0.0
-        self.ll = 0.0
-        self.lr = 0.0
+        self.ul = None
+        self.ur = None
+        self.ll = None
+        self.lr = None
         
         # quad size
         self.size = a_Size
@@ -130,6 +130,10 @@ class Region( Vector3d ):
                                   a_Z + ( float( z ) * a_Size ),
                                   a_Size ) 
                 rq.SetAsObject( Object3d() )
+                rq.ul = [ x, z ]
+                rq.ur = [ x + 1, z ]
+                rq.ll = [ x, z + 1 ]
+                rq.lr = [ x + 1, z + 1 ]
                 # rq.compile_list()
                 
                 qadd( rq )
@@ -168,7 +172,7 @@ class Region( Vector3d ):
         
         self.m_ObjectType = OBJECT_3D_MESH
         self.listID = None
-        self.compile_list()
+        #self.compile_list()
         
         self.compiled = False
         
@@ -254,7 +258,14 @@ class Region( Vector3d ):
     
     def raiseQuad( self, a_Location ):
         verts = self.vbo.GetVertexArray()
+        f = open( "cheese.vtx", "w" )
+        for vert in verts:
+            f.write( "%s\n" % str(vert) )
+            
+        f.close()
+#        verts[ 10 ][ 1 ] = 0.4
         
+        self.vbo.FinishUsingVertexArray()
         
 ##        for x in xrange( self.m_Width ):
 ##            for z in xrange( self.m_Width ):
@@ -299,61 +310,59 @@ class Region( Vector3d ):
 ##                    #quad.recompile_list()
 ##                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
                     
-        
-    
-            
-        
-        self.recompile_list()
+       
+##        self.recompile_list()
         
     def lowerQuad( self, a_Location ):
-        for x in xrange( self.m_Width ):
-            for z in xrange( self.m_Width ):
-                quad = self.quads[ ( x * self.m_Width ) + z ]
-                if quad.PointInsideXZPlane( a_Location ):
-                    
-                    quad.colour_adjust = 0.01
-                    xco, yco, zco, wco = quad.GetPosition() 
-                    yco -= float( self.m_Size ) / 5.0 
-                    quad.SetPosition( xco, yco, zco )
-                    
-                    cur_x = x - 1
-                    cur_z = z - 1
-                    
-                    for u in xrange( 3 ):
-                        for v in xrange( 3 ):
-                            try:
-                                adjusted_quad = self.quads[ ( cur_x * self.m_Width ) + cur_z ]
-                                line = adjusted_quad.__repr__()
-                                parts = line.split(",")
-                                heights = {}
-                                adjustment = quad_adjustments[ ( u * 3 ) + v ]
-                                if adjustment[ 'name' ] == "middle middle": 
-                                    adjusted_quad = quad
-                                for part in parts:
-                                    key, value = part.split(":")
-                                    heights[ key ] = float( value ) - ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
-                                adjusted_quad.SetHeights( heights )
-                                
-                                    
-                                #adjusted_quad.recompile_list()
-                                self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
-                            except:
-                                pass
-                            
-                            cur_x += 1
-                            
-                        cur_x -= 3
-                        cur_z += 1
-                        
-                    
-                    #quad.recompile_list()
-                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
-                    
-        
-    
-            
-        
-        self.recompile_list()
+        pass
+##        for x in xrange( self.m_Width ):
+##            for z in xrange( self.m_Width ):
+##                quad = self.quads[ ( x * self.m_Width ) + z ]
+##                if quad.PointInsideXZPlane( a_Location ):
+##                    
+##                    quad.colour_adjust = 0.01
+##                    xco, yco, zco, wco = quad.GetPosition() 
+##                    yco -= float( self.m_Size ) / 5.0 
+##                    quad.SetPosition( xco, yco, zco )
+##                    
+##                    cur_x = x - 1
+##                    cur_z = z - 1
+##                    
+##                    for u in xrange( 3 ):
+##                        for v in xrange( 3 ):
+##                            try:
+##                                adjusted_quad = self.quads[ ( cur_x * self.m_Width ) + cur_z ]
+##                                line = adjusted_quad.__repr__()
+##                                parts = line.split(",")
+##                                heights = {}
+##                                adjustment = quad_adjustments[ ( u * 3 ) + v ]
+##                                if adjustment[ 'name' ] == "middle middle": 
+##                                    adjusted_quad = quad
+##                                for part in parts:
+##                                    key, value = part.split(":")
+##                                    heights[ key ] = float( value ) - ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
+##                                adjusted_quad.SetHeights( heights )
+##                                
+##                                    
+##                                #adjusted_quad.recompile_list()
+##                                self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
+##                            except:
+##                                pass
+##                            
+##                            cur_x += 1
+##                            
+##                        cur_x -= 3
+##                        cur_z += 1
+##                        
+##                    
+##                    #quad.recompile_list()
+##                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
+##                    
+##        
+##    
+##            
+##        
+##        self.recompile_list()
         
     def getQuad( self, a_X, a_Z ):
         try:

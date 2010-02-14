@@ -119,8 +119,17 @@ class VBO:
     
     def GetVertexArray( self ):
         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
-        verts = glMapBuffer( GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY_ARB )
-        return verts
+        func = ctypes.pythonapi.PyBuffer_FromMemory
+        func.restype = ctypes.py_object
+        vp = glMapBufferARB( GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY )
+        buffer = func( 
+            ctypes.c_void_p(vp), self.vertxCount * 3 
+        )
+        array = frombuffer( buffer, dtype=float32 )
+        return array
+    
+    def FinishUsingVertexArray( self ):
+        glUnmapBufferARB( GL_ARRAY_BUFFER_ARB )
     
     def __del__( self ):
         glDeleteBuffersARB( 1, self.vboVertArray )
