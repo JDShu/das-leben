@@ -19,6 +19,8 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from ctypes import *
+import numpy
+
 import sys
 
 try:
@@ -121,15 +123,22 @@ class VBO:
         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
         func = ctypes.pythonapi.PyBuffer_FromMemory
         func.restype = ctypes.py_object
-        vp = glMapBufferARB( GL_ARRAY_BUFFER_ARB, GL_WRITE_ONLY )
+        vp = glMapBufferARB( GL_ARRAY_BUFFER_ARB, GL_READ_WRITE_ARB )
         buffer = func( 
             ctypes.c_void_p(vp), self.vertxCount * 3 
         )
         array = frombuffer( buffer, dtype=float32 )
         return array
     
+    def SetVertex( self, start_offset, vertexes ):
+        glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
+        offset = start_offset * 12
+        glBufferSubData( GL_ARRAY_BUFFER, offset, numpy.array([0.5, 1.5, 1.5], 'f' ) )
+              
+        
     def FinishUsingVertexArray( self ):
         glUnmapBufferARB( GL_ARRAY_BUFFER_ARB )
+        glPopClientAttrib()  
     
     def __del__( self ):
         glDeleteBuffersARB( 1, self.vboVertArray )

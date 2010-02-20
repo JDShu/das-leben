@@ -101,7 +101,7 @@ class GameApp3d:
 
         self.LoadConsole()
 
-        self.StartMusicTrack( "MuchoCheeseyMacho.ogg" )
+        # self.StartMusicTrack( "MuchoCheeseyMacho.ogg" )
 
         self.UpdateSplash( "Loading ..." )
 

@@ -22,10 +22,11 @@ from pygame.locals import *
 from vector_3d import *
 from object_3d import *
 from ogl_vbo import *
+from ogl_va import *
 from collisions import BoundingBox3d
 import random
 from ctypes import *
-
+from numpy import array
 
 REGION_NORMAL = 1
 REGION_EDITING = 2
@@ -130,10 +131,10 @@ class Region( Vector3d ):
                                   a_Z + ( float( z ) * a_Size ),
                                   a_Size ) 
                 rq.SetAsObject( Object3d() )
-                rq.ul = [ x, z ]
-                rq.ur = [ x + 1, z ]
-                rq.ll = [ x, z + 1 ]
-                rq.lr = [ x + 1, z + 1 ]
+                rq.ul = ( x * a_Width ) + z
+                rq.ur = ( ( x + 1 ) * a_Width ) + z
+                rq.ll = ( x * a_Width ) + ( z + 1 )
+                rq.lr = ( ( x + 1 ) * a_Width ) + ( z + 1 )
                 # rq.compile_list()
                 
                 qadd( rq )
@@ -141,6 +142,7 @@ class Region( Vector3d ):
                 
         vertexes = []; vadd = vertexes.append
         colours = []; cadd = colours.append
+        indexes = []; iadd = indexes.append
         normals = []; nadd = normals.append
         for x in xrange( a_Width ):
             for z in xrange( a_Width ):
@@ -164,7 +166,7 @@ class Region( Vector3d ):
                 nadd( Vector3d( 0.0, 1.0, 0.0 ) )
                 cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
                 
-        self.vbo = VBO( vertexes, normals, None, colours, a_BufferType=GL_STREAM_DRAW_ARB )
+        self.va = VA( vertexes, normals, None, colours )
         self.useVBO = True
         self.mode = REGION_NORMAL
         
@@ -244,7 +246,7 @@ class Region( Vector3d ):
         if not self.useVBO:
             glCallList( self.listID )
         else:
-            self.vbo.Draw()
+            self.va.Draw()
         
         glPopMatrix()
                             
@@ -257,15 +259,13 @@ class Region( Vector3d ):
         return quads
     
     def raiseQuad( self, a_Location ):
-        verts = self.vbo.GetVertexArray()
-        f = open( "cheese.vtx", "w" )
-        for vert in verts:
-            f.write( "%s\n" % str(vert) )
-            
-        f.close()
-#        verts[ 10 ][ 1 ] = 0.4
         
-        self.vbo.FinishUsingVertexArray()
+        x, y, z = self.va.GetVertexPoint( 10 )
+        
+        point = array([ x, y + 0.5, z ], float32 )
+        
+        self.va.SetVertex( 10, point )
+##        self.va.FinishUsingVertexArray()
         
 ##        for x in xrange( self.m_Width ):
 ##            for z in xrange( self.m_Width ):
