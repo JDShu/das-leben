@@ -67,7 +67,7 @@ class RegionQuad( BoundingBox3d ):
         self.colour_adjust = random.random()
         
     def __repr__( self ):
-        return "ul:%f,ur:%f,ll:%f,lr:%f" % ( self.ul, self.ur, self.ll, self.lr )
+        return "ll:%s,lr:%s,ul:%s,ur:%s" % ( self.ll, self.lr , self.ul, self.ur)
     
     def SetHeights( self, a_Heights ):
         self.ul = a_Heights[ 'ul' ]
@@ -83,19 +83,8 @@ class RegionQuad( BoundingBox3d ):
     def GetGLName( self ):
         return self.ObjectToRender.GetGLName()
         
-    def Draw( self ):
-        glBegin( GL_QUADS )
-        glColor3f( 0.5 - self.colour_adjust, 1.0 - self.colour_adjust , 0.5 - self.colour_adjust ) # green grass
-        glNormal3f( 0.0, 1.0, 0.0 )
-        glVertex3f( float( self.GetX() - ( self.size / 2.0 ) ) , float( self.GetY() + self.ul ), float( self.GetZ() + ( self.size / 2.0 ) ) )
-        glNormal3f( 0.0, 1.0, 0.0 )
-        glVertex3f( float( self.GetX() + ( self.size / 2.0 ) ) , float( self.GetY() + self.ur ), float( self.GetZ() + ( self.size / 2.0 ) ) )
-        glNormal3f( 0.0, 1.0, 0.0 )
-        glVertex3f( float( self.GetX() + ( self.size / 2.0 ) ) , float( self.GetY() + self.lr ), float( self.GetZ() - ( self.size / 2.0 ) ) )
-        glNormal3f( 0.0, 1.0, 0.0 )
-        glVertex3f( float( self.GetX() - ( self.size / 2.0 ) ) , float( self.GetY() + self.ll ), float( self.GetZ() - ( self.size / 2.0 ) ) )
-        glColor3f( 1.0, 1.0, 1.0 )
-        glEnd()
+    def makeList( self ):
+        return [ self.ll, self.lr, self.ur, self.ul ]
         
     def compile_list( self ):
         if not self.compiled:
@@ -124,17 +113,14 @@ class Region( Vector3d ):
         self.m_Width = a_Width
         self.m_Size = a_Size
         
-        for x in xrange( a_Width ):
-            for z in xrange( a_Width ):
+        for z in xrange( a_Width ):
+            for x in xrange( a_Width ):
                 rq = RegionQuad( a_X + ( float( x ) * a_Size ), 
                                   a_Y, 
                                   a_Z + ( float( z ) * a_Size ),
                                   a_Size ) 
                 rq.SetAsObject( Object3d() )
-                rq.ul = ( x * a_Width ) + z
-                rq.ur = ( ( x + 1 ) * a_Width ) + z
-                rq.ll = ( x * a_Width ) + ( z + 1 )
-                rq.lr = ( ( x + 1 ) * a_Width ) + ( z + 1 )
+                
                 # rq.compile_list()
                 
                 qadd( rq )
@@ -142,31 +128,48 @@ class Region( Vector3d ):
                 
         vertexes = []; vadd = vertexes.append
         colours = []; cadd = colours.append
-        indexes = []; iadd = indexes.append
         normals = []; nadd = normals.append
-        for x in xrange( a_Width ):
-            for z in xrange( a_Width ):
+        indexes = []; ixadd = indexes.append
+        
+        for z in xrange( a_Width + 1 ):
+            for x in xrange( a_Width + 1):
                 extra_light = random.random()
                 vadd( Vector3d( float( x ) * a_Size, 1.0, float( z ) * a_Size ) )
                 nadd( Vector3d( 0.0, 1.0, 0.0 ) )
                 cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
                 
-                extra_light = random.random()
-                vadd( Vector3d( float( x + 1 ) * a_Size, 1.0, float( z ) * a_Size ) )
-                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
-                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
+                if x < a_Width and z < a_Width:
+                    ixadd( int( ( z * ( a_Width + 1 ) ) + x ) )
+                    ixadd( int( ( z * ( a_Width + 1 ) ) + ( x + 1 ) ) )
+                    ixadd( int( ( ( z + 1 ) * ( a_Width + 1 ) ) + ( x + 1 ) ) )
+                    ixadd( int( ( ( z + 1 ) * ( a_Width + 1 ) ) + x ) )
                 
-                extra_light = random.random()
-                vadd( Vector3d( float( x + 1 ) * a_Size, 1.0, float( z + 1 ) * a_Size ) )
-                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
-                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
-                
-                extra_light = random.random()
-                vadd( Vector3d( float( x ) * a_Size, 1.0, float( z + 1 ) * a_Size ) )
-                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
-                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
-                
-        self.va = VA( vertexes, normals, None, colours )
+        for i, rq in enumerate( self.quads ):
+            rq.ll = indexes[ i * 4 ]
+            rq.lr = indexes[ ( i * 4 ) + 1 ]
+            rq.ur = indexes[ ( i * 4 ) + 2 ]
+            rq.ul = indexes[ ( i * 4 ) + 3 ]
+            
+        va_vertexes = []; vadd = va_vertexes.append
+        va_colours = []; cadd = va_colours.append
+        va_normals = []; nadd = va_normals.append
+        for rq in self.quads:
+            vadd( vertexes[ rq.ll ] )
+            vadd( vertexes[ rq.lr ] )
+            vadd( vertexes[ rq.ur ] )
+            vadd( vertexes[ rq.ul ] )
+            #normals
+            nadd( normals[ rq.ll ] )
+            nadd( normals[ rq.lr ] )
+            nadd( normals[ rq.ur ] )
+            nadd( normals[ rq.ul ] )
+            #colours
+            cadd( colours[ rq.ll ] )
+            cadd( colours[ rq.lr ] )
+            cadd( colours[ rq.ur ] )
+            cadd( colours[ rq.ul ] )
+        
+        self.va = VA( va_vertexes, va_normals, None, None, va_colours )
         self.useVBO = True
         self.mode = REGION_NORMAL
         

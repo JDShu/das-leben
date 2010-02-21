@@ -33,7 +33,7 @@ import pygame
 
 class VA:
     '''A vertex array handling class'''
-    def __init__( self, a_Vertexes, a_Normals=None, a_TexCoords=None, a_Colours=None, a_Quads=True ):
+    def __init__( self, a_Vertexes, a_Normals=None, a_Indices=None, a_TexCoords=None, a_Colours=None, a_Quads=True ):
         '''
         create a vbo from a list of face points, normals, texture coords and colours
         '''
@@ -52,6 +52,10 @@ class VA:
                 self.normals[ i ][ 0 ] = vert.GetX()
                 self.normals[ i ][ 1 ] = vert.GetY()
                 self.normals[ i ][ 2 ] = vert.GetZ()
+                
+        self.useIndices = a_Indices != None and True or False
+        if self.useIndices:
+            self.indices = a_Indices
             
         self.useTexCoords = a_TexCoords != None and True or False
         if self.useTexCoords:
@@ -78,13 +82,15 @@ class VA:
         if self.useTexCoords: glEnableClientState( GL_TEXTURE_COORD_ARRAY )
         if self.useColoursCoords: glEnableClientState( GL_COLOR_ARRAY )
         
-        glVertexPointer(3, GL_FLOAT, 0, self.vertexes )
-        
         if self.useNormals: glNormalPointer( GL_FLOAT, 0, self.normals )
         if self.useTexCoords: glTexCoordPointer( 2, GL_FLOAT, 0, self.texCoords )
         if self.useColoursCoords:glColorPointer( 3, GL_FLOAT, 0, self.coloursCoords )
-            
-        glDrawArrays( self.Facetype, 0, self.vertxCount )
+        glVertexPointer(3, GL_FLOAT, 0, self.vertexes )
+        
+        if not self.useIndices:
+            glDrawArrays( self.Facetype, 0, self.vertxCount )
+        else:
+            glDrawElements( self.Facetype, len( self.indices ), GL_UNSIGNED_SHORT, self.indices )
 
         glDisableClientState( GL_VERTEX_ARRAY )
         
