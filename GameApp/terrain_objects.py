@@ -56,6 +56,9 @@ class RegionQuad( BoundingBox3d ):
         self.ll = None
         self.lr = None
         
+        # vertex array index for when we are shaping the region later
+        self.va_index = 0
+        
         # quad size
         self.size = a_Size
         
@@ -150,10 +153,15 @@ class Region( Vector3d ):
             rq.ur = indexes[ ( i * 4 ) + 2 ]
             rq.ul = indexes[ ( i * 4 ) + 3 ]
             
+        # save vertexes for later ediing
+        self.vertexes = vertexes
+        
+        # now generate a vertex array for opengl
         va_vertexes = []; vadd = va_vertexes.append
         va_colours = []; cadd = va_colours.append
         va_normals = []; nadd = va_normals.append
-        for rq in self.quads:
+        for i, rq in enumerate( self.quads ):
+            rq.va_index = 1 * 4 # index to first vertex of the quad
             vadd( vertexes[ rq.ll ] )
             vadd( vertexes[ rq.lr ] )
             vadd( vertexes[ rq.ur ] )
@@ -263,55 +271,52 @@ class Region( Vector3d ):
     
     def raiseQuad( self, a_Location ):
         
-        x, y, z = self.va.GetVertexPoint( 10 )
+        va_vertexes = self.va.GetVertexArray()
         
-        point = array([ x, y + 0.5, z ], float32 )
-        
-        self.va.SetVertex( 10, point )
-##        self.va.FinishUsingVertexArray()
-        
-##        for x in xrange( self.m_Width ):
-##            for z in xrange( self.m_Width ):
-##                quad = self.quads[ ( x * self.m_Width ) + z ]
-##                if quad.PointInsideXZPlane( a_Location ):
-##                    
-##                    quad.colour_adjust = 0.01
-##                    xco, yco, zco, wco = quad.GetPosition() 
-##                    yco += float( self.m_Size ) / 5.0 
-##                    quad.SetPosition( xco, yco, zco )
-##                    
-##                    cur_x = x - 1
-##                    cur_z = z - 1
-##                    
-##                    for u in xrange( 3 ):
-##                        for v in xrange( 3 ):
-##                            try:
-##                                adjusted_quad = self.quads[ ( cur_x * self.m_Width ) + cur_z ]
-##                                line = adjusted_quad.__repr__()
-##                                parts = line.split(",")
-##                                heights = {}
-##                                adjustment = quad_adjustments[ ( u * 3 ) + v ]
-##                                if adjustment[ 'name' ] == "middle middle": 
-##                                    adjusted_quad = quad
-##                                for part in parts:
-##                                    key, value = part.split(":")
-##                                    heights[ key ] = float( value ) + ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
-##                                adjusted_quad.SetHeights( heights )
-##                                
-##                                    
-##                                #adjusted_quad.recompile_list()
-##                                self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
-##                            except:
-##                                pass
-##                            
-##                            cur_x += 1
-##                            
-##                        cur_x -= 3
-##                        cur_z += 1
-##                        
-##                    
-##                    #quad.recompile_list()
-##                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
+        for x in xrange( self.m_Width ):
+            for z in xrange( self.m_Width ):
+                quad = self.quads[ ( x * self.m_Width ) + z ]
+                if quad.PointInsideXZPlane( a_Location ):
+                    
+                    xco, yco, zco, wco = quad.GetPosition() 
+                    yco += float( self.m_Size ) / 5.0 
+                    quad.SetPosition( xco, yco, zco )
+                    
+                    xco, temp_yco, zco, wco = self.vertexes[ quad.ll ].GetPosition() 
+                    quad.SetPosition( xco, yco, zco )
+                    
+                    vxco, temp_yco, zco, wco = self.vertexes[ quad.lr ].GetPosition() 
+                    quad.SetPosition( xco, yco, zco )
+                    
+                    xco, temp_yco, zco, wco = self.vertexes[ quad.ur ].GetPosition() 
+                    quad.SetPosition( xco, yco, zco )
+                    
+                    xco, temp_yco, zco, wco = self.vertexes[ quad.ul ].GetPosition() 
+                    quad.SetPosition( xco, yco, zco )
+                    
+                    cur_x = x - 1
+                    cur_z = z - 1
+                    
+                    # apply 9 quad patch to the VA
+                    for u in xrange( 3 ):
+                        for v in xrange( 3 ):
+                            try:
+                                rq = self.quads[ ( cur_z * self.m_Width ) + x ]
+                                va_vertexes[ rq.va_index ] = self.vertexes[ rq.ll ].GetNumpyPosition() 
+                                va_vertexes[ rq.va_index + 1 ] = self.vertexes[ rq.lr ].GetNumpyPosition() 
+                                va_vertexes[ rq.va_index + 2 ] = self.vertexes[ rq.ur ].GetNumpyPosition() 
+                                va_vertexes[ rq.va_index + 3 ] = self.vertexes[ rq.ul ].GetNumpyPosition() 
+                            except:
+                                pass
+                            
+                            cur_x += 1
+                            
+                        cur_x -= 3
+                        cur_z += 1
+                        
+                    
+                    #quad.recompile_list()
+                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
                     
        
 ##        self.recompile_list()

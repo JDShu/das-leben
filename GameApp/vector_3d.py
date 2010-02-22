@@ -88,6 +88,9 @@ class Vector3d:
     def GetPosition(self):
         return self.m_Values
     
+    def GetNumpyPosition( self ):
+        return array( [ self.m_Values[ 0 ], self.m_Values[ 1 ], self.m_Values[ 2 ] ], dtype=float32 )
+    
     def GetPositionVector(self):
         return Vector3d( self.m_Values[ 0 ], self.m_Values[ 1 ], self.m_Values[ 2 ] )
 
