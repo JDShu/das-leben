@@ -228,7 +228,7 @@ class GameApp3d:
                 l_X, l_Y = pygame.mouse.get_pos()
                 self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
-                self.AddMessage( l_Position.__repr__() )
+                # self.AddMessage( l_Position.__repr__() )
                 if event.button == LEFT_MOUSE:
                     self.m_Ground.raiseQuad( l_Position )
                 else:

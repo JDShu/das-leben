@@ -137,8 +137,8 @@ class Region( Vector3d ):
         for z in xrange( a_Width + 1 ):
             for x in xrange( a_Width + 1):
                 extra_light = random.random()
-                vadd( Vector3d( float( x ) * a_Size, 1.0, float( z ) * a_Size ) )
-                nadd( Vector3d( 0.0, 1.0, 0.0 ) )
+                vadd( Vector3d( float( x ) * a_Size, a_Y, float( z ) * a_Size ) )
+                nadd( Vector3d( 0.0, .737, 0.0 ) )
                 cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
                 
                 if x < a_Width and z < a_Width:
@@ -161,7 +161,7 @@ class Region( Vector3d ):
         va_colours = []; cadd = va_colours.append
         va_normals = []; nadd = va_normals.append
         for i, rq in enumerate( self.quads ):
-            rq.va_index = 1 * 4 # index to first vertex of the quad
+            rq.va_index = i * 4 # index to first vertex of the quad
             vadd( vertexes[ rq.ll ] )
             vadd( vertexes[ rq.lr ] )
             vadd( vertexes[ rq.ur ] )
@@ -273,9 +273,9 @@ class Region( Vector3d ):
         
         va_vertexes = self.va.GetVertexArray()
         
-        for x in xrange( self.m_Width ):
-            for z in xrange( self.m_Width ):
-                quad = self.quads[ ( x * self.m_Width ) + z ]
+        for z in xrange( self.m_Width ):
+            for x in xrange( self.m_Width ):
+                quad = self.quads[ ( z * self.m_Width ) + x ]
                 if quad.PointInsideXZPlane( a_Location ):
                     
                     xco, yco, zco, wco = quad.GetPosition() 
@@ -283,16 +283,16 @@ class Region( Vector3d ):
                     quad.SetPosition( xco, yco, zco )
                     
                     xco, temp_yco, zco, wco = self.vertexes[ quad.ll ].GetPosition() 
-                    quad.SetPosition( xco, yco, zco )
+                    self.vertexes[ quad.ll ].SetPosition( xco, yco, zco )
                     
                     vxco, temp_yco, zco, wco = self.vertexes[ quad.lr ].GetPosition() 
-                    quad.SetPosition( xco, yco, zco )
+                    self.vertexes[ quad.lr ].SetPosition( xco, yco, zco )
                     
                     xco, temp_yco, zco, wco = self.vertexes[ quad.ur ].GetPosition() 
-                    quad.SetPosition( xco, yco, zco )
+                    self.vertexes[ quad.ur ].SetPosition( xco, yco, zco )
                     
                     xco, temp_yco, zco, wco = self.vertexes[ quad.ul ].GetPosition() 
-                    quad.SetPosition( xco, yco, zco )
+                    self.vertexes[ quad.ul ].SetPosition( xco, yco, zco )
                     
                     cur_x = x - 1
                     cur_z = z - 1
@@ -301,10 +301,14 @@ class Region( Vector3d ):
                     for u in xrange( 3 ):
                         for v in xrange( 3 ):
                             try:
-                                rq = self.quads[ ( cur_z * self.m_Width ) + x ]
+                                rq = self.quads[ ( cur_z * self.m_Width ) + cur_x ]
+                                tmp = va_vertexes[ rq.va_index ]
                                 va_vertexes[ rq.va_index ] = self.vertexes[ rq.ll ].GetNumpyPosition() 
+                                tmp = va_vertexes[ rq.va_index + 1 ]
                                 va_vertexes[ rq.va_index + 1 ] = self.vertexes[ rq.lr ].GetNumpyPosition() 
+                                tmp = va_vertexes[ rq.va_index + 2 ]
                                 va_vertexes[ rq.va_index + 2 ] = self.vertexes[ rq.ur ].GetNumpyPosition() 
+                                tmp = va_vertexes[ rq.va_index + 3 ]
                                 va_vertexes[ rq.va_index + 3 ] = self.vertexes[ rq.ul ].GetNumpyPosition() 
                             except:
                                 pass
@@ -316,7 +320,7 @@ class Region( Vector3d ):
                         
                     
                     #quad.recompile_list()
-                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
+                    #self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
                     
        
 ##        self.recompile_list()
