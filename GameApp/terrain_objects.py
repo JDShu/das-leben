@@ -48,7 +48,7 @@ qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 1.0, 'lr': 0.0, 'name':'bottom right' } )
 
 class RegionQuad( BoundingBox3d ):
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=0.5 ):
-        BoundingBox3d.__init__( self, a_X, a_Y, a_Z, a_Size )
+        BoundingBox3d.__init__( self, a_X - (a_Size / 2.0), a_Y, a_Z - (a_Size / 2.0), a_Size )
         
         # y values for quad
         self.ul = None
@@ -129,7 +129,7 @@ class Region( Vector3d ):
                 qadd( rq )
                 iadd( rq.listID )
                 
-        vertexes = []; vadd = vertexes.append
+        self.vertexes = []; vadd = self.vertexes.append
         colours = []; cadd = colours.append
         normals = []; nadd = normals.append
         indexes = []; ixadd = indexes.append
@@ -153,8 +153,6 @@ class Region( Vector3d ):
             rq.ur = indexes[ ( i * 4 ) + 2 ]
             rq.ul = indexes[ ( i * 4 ) + 3 ]
             
-        # save vertexes for later ediing
-        self.vertexes = vertexes
         
         # now generate a vertex array for opengl
         va_vertexes = []; vadd = va_vertexes.append
@@ -162,10 +160,10 @@ class Region( Vector3d ):
         va_normals = []; nadd = va_normals.append
         for i, rq in enumerate( self.quads ):
             rq.va_index = i * 4 # index to first vertex of the quad
-            vadd( vertexes[ rq.ll ] )
-            vadd( vertexes[ rq.lr ] )
-            vadd( vertexes[ rq.ur ] )
-            vadd( vertexes[ rq.ul ] )
+            vadd( self.vertexes[ rq.ll ] )
+            vadd( self.vertexes[ rq.lr ] )
+            vadd( self.vertexes[ rq.ur ] )
+            vadd( self.vertexes[ rq.ul ] )
             #normals
             nadd( normals[ rq.ll ] )
             nadd( normals[ rq.lr ] )
@@ -173,9 +171,9 @@ class Region( Vector3d ):
             nadd( normals[ rq.ul ] )
             #colours
             cadd( colours[ rq.ll ] )
-            cadd( colours[ rq.lr ] )
-            cadd( colours[ rq.ur ] )
-            cadd( colours[ rq.ul ] )
+            cadd( colours[ rq.ll ] )
+            cadd( colours[ rq.ll ] )
+            cadd( colours[ rq.ll ] )
         
         self.va = VA( va_vertexes, va_normals, None, None, va_colours )
         self.useVBO = True
@@ -279,7 +277,7 @@ class Region( Vector3d ):
                 if quad.PointInsideXZPlane( a_Location ):
                     
                     xco, yco, zco, wco = quad.GetPosition() 
-                    yco += float( self.m_Size ) / 5.0 
+                    yco += float( self.m_Size ) / 2.0 
                     quad.SetPosition( xco, yco, zco )
                     
                     xco, temp_yco, zco, wco = self.vertexes[ quad.ll ].GetPosition() 
@@ -295,28 +293,29 @@ class Region( Vector3d ):
                     self.vertexes[ quad.ul ].SetPosition( xco, yco, zco )
                     
                     cur_x = x - 1
-                    cur_z = z - 1
+                    cur_z = z + 1
+                    
                     
                     # apply 9 quad patch to the VA
                     for u in xrange( 3 ):
                         for v in xrange( 3 ):
                             try:
                                 rq = self.quads[ ( cur_z * self.m_Width ) + cur_x ]
-                                tmp = va_vertexes[ rq.va_index ]
-                                va_vertexes[ rq.va_index ] = self.vertexes[ rq.ll ].GetNumpyPosition() 
-                                tmp = va_vertexes[ rq.va_index + 1 ]
-                                va_vertexes[ rq.va_index + 1 ] = self.vertexes[ rq.lr ].GetNumpyPosition() 
-                                tmp = va_vertexes[ rq.va_index + 2 ]
-                                va_vertexes[ rq.va_index + 2 ] = self.vertexes[ rq.ur ].GetNumpyPosition() 
-                                tmp = va_vertexes[ rq.va_index + 3 ]
-                                va_vertexes[ rq.va_index + 3 ] = self.vertexes[ rq.ul ].GetNumpyPosition() 
+                                tmp = self.vertexes[ rq.ll ].GetNumpyPosition() 
+                                va_vertexes[ rq.va_index ] = tmp
+                                tmp = self.vertexes[ rq.lr ].GetNumpyPosition()
+                                va_vertexes[ rq.va_index + 1 ] = tmp 
+                                tmp = self.vertexes[ rq.ur ].GetNumpyPosition()
+                                va_vertexes[ rq.va_index + 2 ] = tmp 
+                                tmp = self.vertexes[ rq.ul ].GetNumpyPosition()
+                                va_vertexes[ rq.va_index + 3 ] = tmp 
                             except:
                                 pass
                             
                             cur_x += 1
                             
                         cur_x -= 3
-                        cur_z += 1
+                        cur_z -= 1
                         
                     
                     #quad.recompile_list()
