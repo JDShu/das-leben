@@ -158,11 +158,11 @@ class GameApp3d:
 ##        self.m_Light.SetPosition( 10.0, 50.0, 30 )
 ##        oadd( self.m_Light )
 ##
-##        self.UpdateSplash( "Loading character model..." )
-##        Model = Avatar( self.DATA_PATH, DUDETTE )
-##        Model.SetPosition( 10, 4, 10 )
-##        self.m_Model = Model
-##        oadd( Model )
+        self.UpdateSplash( "Loading character model..." )
+        Model = Avatar( self.DATA_PATH, DUDETTE )
+        Model.SetPosition( 10, 4, 10 )
+        self.m_Model = Model
+        oadd( Model )
 
         self.UpdateSplash( "Loading Terrain..." )
         Ground = Region( 0.0, 0.0, 0.0, 50, 0.5 )
@@ -274,14 +274,14 @@ class GameApp3d:
 
         elif self.m_KeyBuffer[ K_u ]:
             x, y, z, w = self.m_Ground.GetPosition()
-            y += 1
+            y += 0.25
             self.m_Ground.SetPosition( x, y, z, w )
             glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
             self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
 
         elif self.m_KeyBuffer[ K_j ]:
             x, y, z, w = self.m_Ground.GetPosition()
-            y -= 1
+            y -= 0.25
             self.m_Ground.SetPosition( x, y, z, w )
             glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
             self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
@@ -293,17 +293,17 @@ class GameApp3d:
 
         elif self.m_KeyBuffer[ K_s ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            z += 1
+            z += 0.25
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_a ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            x -= 1
+            x -= 0.25
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_d ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            x += 1
+            x += 0.25
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_c ]:
@@ -315,12 +315,12 @@ class GameApp3d:
 
         elif self.m_KeyBuffer[ K_r ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            y -= 1
+            y -= 0.25
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_f ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            y += 1
+            y += 0.25
             self.m_Camera.SetPosition( x, y, z, w )
 
         return True

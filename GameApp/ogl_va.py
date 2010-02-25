@@ -41,29 +41,37 @@ class VA:
         self.vertexes = zeros( ( len( a_Vertexes ), 3 ), dtype=float32 ) 
         
         for i, vert in enumerate( a_Vertexes ):
-            self.vertexes[ i ][ 0 ] = vert.GetX()
-            self.vertexes[ i ][ 1 ] = vert.GetY()
-            self.vertexes[ i ][ 2 ] = vert.GetZ()
-        
+            if hasattr( vert, "GetX" ):
+                self.vertexes[ i ][ 0 ] = vert.GetX()
+                self.vertexes[ i ][ 1 ] = vert.GetY()
+                self.vertexes[ i ][ 2 ] = vert.GetZ()
+            else:
+                self.vertexes[ i ] = vert
+                
         self.useNormals = a_Normals != None and True or False
         if self.useNormals:
             self.normals = zeros( ( len( a_Normals ), 3 ), dtype=float32 ) 
             for i, vert in enumerate( a_Normals ):
-                self.normals[ i ][ 0 ] = vert.GetX()
-                self.normals[ i ][ 1 ] = vert.GetY()
-                self.normals[ i ][ 2 ] = vert.GetZ()
-                
+                if hasattr( vert, "GetX" ):
+                    self.normals[ i ][ 0 ] = vert.GetX()
+                    self.normals[ i ][ 1 ] = vert.GetY()
+                    self.normals[ i ][ 2 ] = vert.GetZ()
+                else:
+                    self.normals[ i ] = vert
+                    
         self.useIndices = a_Indices != None and True or False
         if self.useIndices:
             self.indices = a_Indices
             
         self.useTexCoords = a_TexCoords != None and True or False
         if self.useTexCoords:
-            self.texCoords = zeros( ( len( a_TexCoords ), 3 ), dtype=float32 ) 
-            for i, vert in enumerate( a_TexCoords ):
-                self.texCoords[ i ][ 0 ] = vert.GetX()
-                self.texCoords[ i ][ 1 ] = vert.GetY()
-                self.texCoords[ i ][ 2 ] = vert.GetZ()
+            self.texCoords = zeros( ( len( a_TexCoords ), 2 ), dtype=float32 ) 
+            for i, coord in enumerate( a_TexCoords ):
+                if hasattr( coord, "GetX" ):
+                    self.texCoords[ i ][ 0 ] = vert.GetX()
+                    self.texCoords[ i ][ 1 ] = vert.GetY()
+                else: 
+                    self.texCoords[ i ] = coord
                             
         self.useColoursCoords = a_Colours != None and True or False
         if self.useColoursCoords:
