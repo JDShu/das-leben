@@ -14,21 +14,22 @@
  *
 '''
 
-import GameApp
-from GameApp.game_app_3d import GameApp3d
-from lavida_config import getDataPath
+__la_vida_data_path__ = "data/"
 
-def main():
+import os
 
-    l_Game = GameApp3d(a_AppName="La Vida", a_DataPath=getDataPath() )
 
-    Running = True
+def getDataPath():
+    
+    # get pathname absolute or relative
+    if __la_vida_data_path__.startswith('/'):
+        pathname = __la_vida_data_path__
+    else:
+        pathname = "%s/%s" % ( os.path.dirname(__file__), __la_vida_data_path__ )
 
-    while Running:
-        Running = l_Game.ProcessEvents()
-        l_Game.ProcessBehaviours()
-        l_Game.Draw()
-
-    l_Game.Exit()
-
-if __name__ == "__main__": main()
+    abs_data_path = os.path.abspath(pathname)
+    if os.path.exists(abs_data_path):
+        return abs_data_path
+    else:
+        raise Exception, "Cant find La Vida data folder"
+    

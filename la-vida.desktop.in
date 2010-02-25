@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=La Vida
+Comment=La Vida - realtime life simulation
+Categories=GNOME;Games;
+Exec=la-vida
+Icon=jotty
+Terminal=false
+Type=Application

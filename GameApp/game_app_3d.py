@@ -35,22 +35,20 @@ from terrain_objects import *
 import ogl_shader 
 import glFreeType
 import os
-from os import getcwd
+from os import getcwd, path
 from constants import *
-
-DATA_PATH = getcwd()
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
 class GameApp3d:
     """A 3d GameApp"""
-    def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_CWD=None):
+    def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_DataPath=None):
 
         pygame.init()
 
         glutInit()
 
-        DATA_PATH = a_CWD != None and a_CWD or getcwd()
+        self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
         self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
         self.m_Camera.SetPosition(0, -4, 3.0)
@@ -110,7 +108,7 @@ class GameApp3d:
         self.UpdateSplash( "Done!" )
 
     def StartMusicTrack( self, a_Filename ):
-        pygame.mixer.music.load( "%s/data/music/%s" % ( DATA_PATH, a_Filename ) )
+        pygame.mixer.music.load( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) )
         pygame.mixer.music.play( -1 )
         pygame.mixer.music.set_volume( 0.1 )
 
@@ -145,14 +143,14 @@ class GameApp3d:
             self.m_KeyBuffer.append( False )
 
     def LoadConsole( self ):
-        self.font = glFreeType.font_data( "%s/data/fonts/font.ttf" % DATA_PATH, 16 )
-        self.Titlefont = glFreeType.font_data( "%s/data/fonts/title.ttf" % DATA_PATH, 72 )
+        self.font = glFreeType.font_data( "%s/fonts/font.ttf" % self.DATA_PATH, 16 )
+        self.Titlefont = glFreeType.font_data( "%s/fonts/title.ttf" % self.DATA_PATH, 72 )
         self.m_Messages = []
 
     def LoadObjects( self ):
         '''load all 3d objects and models'''
         self.UpdateSplash( "Loading Skybox..." )
-        self.m_SkyBox = SkyBox("%s/data/skybox/open fields" % DATA_PATH )
+        self.m_SkyBox = SkyBox("%s/skybox/open fields" % self.DATA_PATH )
 
         self.m_Objects = []; oadd = self.m_Objects.append
 ##        self.UpdateSplash( "Loading lighting sphere..." )
@@ -161,14 +159,14 @@ class GameApp3d:
 ##        oadd( self.m_Light )
 ##
 ##        self.UpdateSplash( "Loading character model..." )
-##        Model = Avatar( DATA_PATH, DUDETTE )
+##        Model = Avatar( self.DATA_PATH, DUDETTE )
 ##        Model.SetPosition( 10, 4, 10 )
 ##        self.m_Model = Model
 ##        oadd( Model )
 
         self.UpdateSplash( "Loading Terrain..." )
         Ground = Region( 0.0, 0.0, 0.0, 50, 0.5 )
-        #Object3d( "%s/data/ground/mountains.md2" % DATA_PATH, "%s/data/ground/grass.png" % DATA_PATH, 120 )
+        #Object3d( "%s/data/ground/mountains.md2" % self.DATA_PATH, "%s/ground/grass.png" % self.DATA_PATH, 120 )
         #Ground.m_ObjectType = OBJECT_3D_MESH
         #Ground.m_XRot.SetAngle( -90 )
         #Ground.SetScale( 20000 )
@@ -177,7 +175,7 @@ class GameApp3d:
         oadd( Ground )
 
 ##        self.UpdateSplash( "Loading Furniture..." )
-##        setee = Object3d( "%s/data/furniture/Free_Sofa_04.obj" % DATA_PATH, 
+##        setee = Object3d( "%s/furniture/Free_Sofa_04.obj" % self.DATA_PATH, 
 ##                          None, 
 ##                          object_type=OBJECT_3D_MESH,
 ##                          a_Colour=[1.0, 0.0, 0.0])
@@ -185,7 +183,7 @@ class GameApp3d:
 ##        oadd( setee )
 ##
 ##        self.UpdateSplash( "Loading House..." )
-##        house = Object3d( "%s/data/home/House010.obj" % DATA_PATH, 
+##        house = Object3d( "%s/home/House010.obj" % self.DATA_PATH, 
 ##                          None, 
 ##                          object_type=OBJECT_3D_MESH,
 ##                          a_Colour=[1.0, 1.0, 0.0])
