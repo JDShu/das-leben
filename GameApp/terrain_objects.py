@@ -48,7 +48,7 @@ qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 1.0, 'lr': 0.0, 'name':'bottom right' } )
 
 class RegionQuad( BoundingBox3d ):
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=0.5 ):
-        BoundingBox3d.__init__( self, a_X - (a_Size / 2.0), a_Y, a_Z - (a_Size / 2.0), a_Size )
+        BoundingBox3d.__init__( self, a_X + (a_Size / 2.0), a_Y, a_Z + (a_Size / 2.0), a_Size )
         
         # y values for quad
         self.ul = None
@@ -58,6 +58,7 @@ class RegionQuad( BoundingBox3d ):
         
         # vertex array index for when we are shaping the region later
         self.va_index = 0
+        self.i = 0
         
         # quad size
         self.size = a_Size
@@ -71,12 +72,6 @@ class RegionQuad( BoundingBox3d ):
         
     def __repr__( self ):
         return "ll:%s,lr:%s,ul:%s,ur:%s" % ( self.ll, self.lr , self.ul, self.ur)
-    
-    def SetHeights( self, a_Heights ):
-        self.ul = a_Heights[ 'ul' ]
-        self.ur = a_Heights[ 'ur' ]
-        self.ll = a_Heights[ 'll' ]
-        self.lr = a_Heights[ 'lr' ]
         
        
     def SetAsObject( self, a_Object3d ):
@@ -158,12 +153,15 @@ class Region( Vector3d ):
         va_vertexes = []; vadd = va_vertexes.append
         va_colours = []; cadd = va_colours.append
         va_normals = []; nadd = va_normals.append
+        f = open( "debug.log", "w" )
         for i, rq in enumerate( self.quads ):
             rq.va_index = i * 4 # index to first vertex of the quad
+            rq.i = i
             vadd( self.vertexes[ rq.ll ] )
             vadd( self.vertexes[ rq.lr ] )
             vadd( self.vertexes[ rq.ur ] )
             vadd( self.vertexes[ rq.ul ] )
+            f.write( "quad %s: %s, %s, %s, %s\n" % ( i, rq.ll, rq.lr, rq.ur, rq.ul ) )
             #normals
             nadd( normals[ rq.ll ] )
             nadd( normals[ rq.lr ] )
@@ -174,6 +172,8 @@ class Region( Vector3d ):
             cadd( colours[ rq.ll ] )
             cadd( colours[ rq.ll ] )
             cadd( colours[ rq.ll ] )
+            
+        f.close()
         
         self.va = VA( va_vertexes, va_normals, None, None, va_colours )
         self.useVBO = True
@@ -270,7 +270,7 @@ class Region( Vector3d ):
     def raiseQuad( self, a_Location ):
         
         va_vertexes = self.va.GetVertexArray()
-        
+        f = open( "selection.log" , "w" )
         for z in xrange( self.m_Width ):
             for x in xrange( self.m_Width ):
                 quad = self.quads[ ( z * self.m_Width ) + x ]
@@ -279,11 +279,11 @@ class Region( Vector3d ):
                     xco, yco, zco, wco = quad.GetPosition() 
                     yco += float( self.m_Size ) / 2.0 
                     quad.SetPosition( xco, yco, zco )
-                    
+                    f.write( "quad %s: %s, %s, %s, %s\n\n" % ( quad.i, quad.ll, quad.lr, quad.ur, quad.ul ) )
                     xco, temp_yco, zco, wco = self.vertexes[ quad.ll ].GetPosition() 
                     self.vertexes[ quad.ll ].SetPosition( xco, yco, zco )
                     
-                    vxco, temp_yco, zco, wco = self.vertexes[ quad.lr ].GetPosition() 
+                    xco, temp_yco, zco, wco = self.vertexes[ quad.lr ].GetPosition() 
                     self.vertexes[ quad.lr ].SetPosition( xco, yco, zco )
                     
                     xco, temp_yco, zco, wco = self.vertexes[ quad.ur ].GetPosition() 
@@ -297,18 +297,24 @@ class Region( Vector3d ):
                     
                     
                     # apply 9 quad patch to the VA
+                    
                     for u in xrange( 3 ):
                         for v in xrange( 3 ):
                             try:
                                 rq = self.quads[ ( cur_z * self.m_Width ) + cur_x ]
+                                f.write( "quad %s: %s, %s, %s, %s\n" % ( rq.i, rq.ll, rq.lr, rq.ur, rq.ul ) )
                                 tmp = self.vertexes[ rq.ll ].GetNumpyPosition() 
                                 va_vertexes[ rq.va_index ] = tmp
+                                f.write( "%s\n" % tmp )
                                 tmp = self.vertexes[ rq.lr ].GetNumpyPosition()
                                 va_vertexes[ rq.va_index + 1 ] = tmp 
+                                f.write( "%s\n" % tmp )
                                 tmp = self.vertexes[ rq.ur ].GetNumpyPosition()
                                 va_vertexes[ rq.va_index + 2 ] = tmp 
+                                f.write( "%s\n" % tmp )
                                 tmp = self.vertexes[ rq.ul ].GetNumpyPosition()
                                 va_vertexes[ rq.va_index + 3 ] = tmp 
+                                f.write( "%s\n\n" % tmp )
                             except:
                                 pass
                             
@@ -320,7 +326,7 @@ class Region( Vector3d ):
                     
                     #quad.recompile_list()
                     #self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
-                    
+        f.close()
        
 ##        self.recompile_list()
         
