@@ -2,7 +2,6 @@ Dependencies
 ------------
 
 python-2.5			python-2.6
-python-2.5-dev		python-2.6-dev
 python-opengl	OR	python-opengl
 pygame				pygame
 numpy				numpy
