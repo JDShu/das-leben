@@ -131,7 +131,7 @@ class Region( Vector3d ):
         
         for z in xrange( a_Width + 1 ):
             for x in xrange( a_Width + 1):
-                extra_light = random.random()
+                extra_light = random.uniform( 0.25, 0.4 )
                 vadd( Vector3d( float( x ) * a_Size, a_Y, float( z ) * a_Size ) )
                 nadd( Vector3d( 0.0, .737, 0.0 ) )
                 cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
@@ -169,9 +169,9 @@ class Region( Vector3d ):
             nadd( normals[ rq.ul ] )
             #colours
             cadd( colours[ rq.ll ] )
-            cadd( colours[ rq.ll ] )
-            cadd( colours[ rq.ll ] )
-            cadd( colours[ rq.ll ] )
+            cadd( colours[ rq.lr ] )
+            cadd( colours[ rq.ur ] )
+            cadd( colours[ rq.ul ] )
             
         f.close()
         
@@ -249,6 +249,7 @@ class Region( Vector3d ):
         self.mode = a_Mode
                 
     def Draw( self ):
+        glEnable( GL_FOG )
         glPushMatrix()
         glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
         
@@ -258,7 +259,7 @@ class Region( Vector3d ):
             self.va.Draw()
         
         glPopMatrix()
-                            
+        glDisable( GL_FOG )      
                 
     def GetGLNames( self ):
         quads = []; qadd = quads.append

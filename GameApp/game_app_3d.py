@@ -75,7 +75,7 @@ class GameApp3d:
             return False
 
         glShadeModel(GL_SMOOTH)
-        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glClearColor( 0.5, 0.5, 1.0, 1.0 )
         glEnable(GL_COLOR_MATERIAL)
         glMaterial( GL_FRONT, GL_SHININESS, 5.0 )
         glClearDepth(1.0)
@@ -100,7 +100,7 @@ class GameApp3d:
 
         self.LoadConsole()
 
-        # self.StartMusicTrack( "MuchoCheeseyMacho.ogg" )
+        self.StartMusicTrack( "Every thought has been thought.ogg" )
         self.m_SplashBg = TexturedRect( "%s/splash/background.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
                                        self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
 
@@ -113,9 +113,13 @@ class GameApp3d:
         self.UpdateSplash( "Done!" )
 
     def StartMusicTrack( self, a_Filename ):
-        pygame.mixer.music.load( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) )
-        pygame.mixer.music.play( -1 )
-        pygame.mixer.music.set_volume( 0.1 )
+        try:
+            if os.path.exists( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) ):
+                pygame.mixer.music.load( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) )
+                pygame.mixer.music.play( -1 )
+                pygame.mixer.music.set_volume( 0.05 )
+        except IOError, e:
+            raise Exception, "Unable to load %s: %s" ( a_Filename, e )
 
     def SetupLighting( self ):
         LightAmbient  = [ 0.2, 0.2, 0.2, 1.0 ]
@@ -127,20 +131,22 @@ class GameApp3d:
         glEnable( GL_LIGHT0 )
 
         glLightModelfv( GL_LIGHT_MODEL_AMBIENT, LightAmbient )
-        #glLightfv( GL_LIGHT0, GL_AMBIENT, LightAmbient )
+        glLightfv( GL_LIGHT0, GL_AMBIENT, LightAmbient )
         glLightfv( GL_LIGHT0, GL_DIFFUSE, LightDiffuse )
         glLightfv( GL_LIGHT0, GL_SPECULAR, LightSpecular )
         glLightfv( GL_LIGHT0, GL_POSITION, self.LightPosition )
 
 
     def SetupFog( self ):
-        density = 0.0001
-        fogColor = [0.5, 0.5, 0.5, 1.0] 
+        density = 0.05
+        fogColor = [0.5, 0.5, 1.0, 1.0] 
         glEnable(GL_FOG)
         glFogi(GL_FOG_MODE, GL_EXP2)
         glFogfv(GL_FOG_COLOR, fogColor)
         glFogf(GL_FOG_DENSITY, density)
         glHint(GL_FOG_HINT, GL_NICEST)
+        glDisable( GL_FOG )
+    
 
     def SetupKeyBuffer( self ):
         self.m_KeyBuffer = []
@@ -370,6 +376,7 @@ class GameApp3d:
 
 
     def Exit(self):
+        pygame.mixer.music.stop()
         pygame.quit()
         sys.exit()
 
