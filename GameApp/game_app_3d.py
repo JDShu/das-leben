@@ -37,6 +37,7 @@ import glFreeType
 import os
 from os import getcwd, path
 from constants import *
+from misc_ui import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -100,7 +101,11 @@ class GameApp3d:
         self.LoadConsole()
 
         # self.StartMusicTrack( "MuchoCheeseyMacho.ogg" )
+        self.m_SplashBg = TexturedRect( "%s/splash/background.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
+                                       self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
 
+        self.m_SplashLogo = TexturedRect( "%s/splash/logo.png" % self.DATA_PATH, Vector3d( 200, 211, 1.0 ), 676, 200 )
+        
         self.UpdateSplash( "Loading ..." )
 
         self.LoadObjects()
@@ -149,6 +154,7 @@ class GameApp3d:
 
     def LoadObjects( self ):
         '''load all 3d objects and models'''
+        
         self.UpdateSplash( "Loading Skybox..." )
         self.m_SkyBox = SkyBox("%s/skybox/open fields" % self.DATA_PATH )
 
@@ -158,11 +164,11 @@ class GameApp3d:
 ##        self.m_Light.SetPosition( 10.0, 50.0, 30 )
 ##        oadd( self.m_Light )
 ##
-##        self.UpdateSplash( "Loading character model..." )
-##        Model = Avatar( self.DATA_PATH, DUDETTE )
-##        Model.SetPosition( 10, 4, 10 )
-##        self.m_Model = Model
-##        oadd( Model )
+        self.UpdateSplash( "Loading character model..." )
+        Model = Avatar( self.DATA_PATH, DUDETTE )
+        Model.SetPosition( 10, 4, 10 )
+        self.m_Model = Model
+        oadd( Model )
 
         self.UpdateSplash( "Loading Terrain..." )
         Ground = Region( 0.0, 0.0, 0.0, 50, 0.5 )
@@ -198,10 +204,19 @@ class GameApp3d:
         self._ticks = 0    
 
     def UpdateSplash( self, a_Message ):
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-        self.Titlefont.glPrint( 400, 400, "La Vida" )
-        self.font.glPrint( 10, 10, a_Message )
+        glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT )
+        glDisable( GL_LIGHTING )
+        self.m_Camera.BeginDrawing2d()
+        
+        self.m_SplashBg.Draw()
+        self.m_SplashLogo.Draw()
+        
+        self.m_Camera.EndDrawing2d()
+        
+        self.font.glPrint( 10, 10, a_Message, [ 0.0, 0.0, 0.0 ] )
         pygame.display.flip()
+        
+        glEnable( GL_LIGHTING )
 
     def TimerUpdate(self):
         self._oldTicks = self._currentTicks

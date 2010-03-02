@@ -19,6 +19,7 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from vector_3d import *
+import pygame
 
 class TexturedRect( Vector3d ):
     '''a textured rectangle'''
@@ -27,7 +28,7 @@ class TexturedRect( Vector3d ):
         self.m_Width = a_Width
         self.m_Height = a_Height
 
-        if a_TextureFilename.upper.endswith( '.SVG' ):
+        if a_TextureFilename.upper().endswith( '.SVG' ):
             pass
         else:
             textureSurface = pygame.image.load( a_TextureFilename )
@@ -42,29 +43,28 @@ class TexturedRect( Vector3d ):
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR )
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
             glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData )
+            
+        
 
     def Draw( self ):
-        glMatrixMode( GL_PROJECTION )
-        glPushMatrix()
-        glLoadIdentity()
-        viewport = glGetIntegerv( GL_VIEWPORT )
-        gluOrtho2D( viewport[0],viewport[2],viewport[1],viewport[3] )
-        glMatrixMode( GL_MODELVIEW )
-        glPushMatrix()
-        glLoadIdentity()
-
         glEnable( GL_TEXTURE_2D )
-        glBindTexture( self.m_Texture )
-        glTranslatef( self.m_Position.GetX(), ( self.m_Position.GetY() - self.m_Height ), self.m_Position.GetZ() )
+        glBindTexture( GL_TEXTURE_2D, self.m_Texture )
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glEnable(GL_BLEND)
+        
+        glTranslate( self.GetX(), self.GetY(), self.GetZ() )
         glBegin(GL_QUADS)
-        glColor4f( 1.0, 1.0, 1.0, 1.0 )
-        glVertex2f( self.m_Position.GetX() - self.m_Width/2, ( self.m_Position.GetY() - self.m_Height ) - self.m_Height/2 )
-        glVertex2f( self.m_Position.GetX() + self.m_Width/2, ( self.m_Position.GetY() - self.m_Height ) - self.m_Height/2 )
-        glVertex2f( self.m_Position.GetX() + self.m_Width/2, ( self.m_Position.GetY() - self.m_Height ) + self.m_Height/2 )
-        glVertex2f( self.m_Position.GetX() - self.m_Width/2, ( self.m_Position.GetY() - self.m_Height ) + self.m_Height/2 )
+        glColor(1, 1, 1, 1)
+        glTexCoord2f(0.0, 0.0)
+        glVertex2f( 0, 0 )
+        glTexCoord2f(1.0, 0.0)
+        glVertex2f( self.m_Width, 0 )
+        
+        glTexCoord2f(1.0, 1.0)
+        glVertex2f( self.m_Width, self.m_Height )
+        glTexCoord2f(0.0, 1.0)
+        glVertex2f( 0, self.m_Height )
         glEnd()
         glDisable( GL_TEXTURE_2D )
-        glMatrixMode( GL_PROJECTION )
-        glPopMatrix()
-        glMatrixMode( GL_MODELVIEW )
-        glPopMatrix()
+        

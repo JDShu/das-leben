@@ -101,3 +101,24 @@ class oglCamera( Vector3d ):
         l_RetVal = Vector3d()
         l_RetVal.SetPosition( l_Position[ 0 ], l_Position[ 1 ], l_Position[ 2 ] )
         return l_RetVal
+    
+    def BeginDrawing2d( self ):
+        glPushMatrix()
+        glDisable(GL_DEPTH_TEST)
+        glMatrixMode( GL_PROJECTION )
+        glPushMatrix()        
+        viewport = glGetIntegerv( GL_VIEWPORT )
+        glOrtho( viewport[0],viewport[2],viewport[1],viewport[3], -1, 1 )
+        glMatrixMode( GL_MODELVIEW )
+        glPushMatrix()
+        glLoadIdentity()
+        
+    def EndDrawing2d( self ):
+        glMatrixMode( GL_PROJECTION )
+        glPopMatrix()
+    
+        glMatrixMode( GL_MODELVIEW )
+        glPopMatrix()
+    
+        glEnable( GL_DEPTH_TEST )
+        glPopMatrix()
