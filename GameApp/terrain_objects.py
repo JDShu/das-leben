@@ -103,7 +103,7 @@ class RegionQuad( BoundingBox3d ):
     
     
 class Region( Vector3d ):
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5 ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5, a_Colour=0.5 ):
         Vector3d.__init__( self, a_X, a_Y, a_Z )
         self.quads = []; qadd = self.quads.append
         self.quadIDS = []; iadd = self.quadIDS.append
@@ -134,7 +134,7 @@ class Region( Vector3d ):
                 extra_light = random.uniform( 0.25, 0.4 )
                 vadd( Vector3d( float( x ) * a_Size, a_Y, float( z ) * a_Size ) )
                 nadd( Vector3d( 0.0, .737, 0.0 ) )
-                cadd( [ 0.5 - extra_light, 0.5, 0.5 - extra_light ] )
+                cadd( [ a_Colour - extra_light, a_Colour, a_Colour - extra_light ] )
                 
                 if x < a_Width and z < a_Width:
                     ixadd( int( ( z * ( a_Width + 1 ) ) + x ) )
@@ -248,8 +248,7 @@ class Region( Vector3d ):
     def SetMode( self, a_Mode ):
         self.mode = a_Mode
                 
-    def Draw( self ):
-        glEnable( GL_FOG )
+    def _draw( self ):
         glPushMatrix()
         glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
         
@@ -258,8 +257,7 @@ class Region( Vector3d ):
         else:
             self.va.Draw()
         
-        glPopMatrix()
-        glDisable( GL_FOG )      
+        glPopMatrix()      
                 
     def GetGLNames( self ):
         quads = []; qadd = quads.append
@@ -390,4 +388,25 @@ class Region( Vector3d ):
         return quad
         
         
+class TerrainRegion( Region ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5 ):
+        Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Size )
+        
+    def Draw( self ):
+        glEnable( GL_FOG )
+        self._draw()
+        glDisable( GL_FOG ) 
+        
+    
+        
+class TerrainGridedRegion( TerrainRegion ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5 ):
+        TerrainRegion.__init__( self, a_X, a_Y, a_Z, a_Width, a_Size )
+        self.m_Grid = Region( a_X, a_Y + 0.5, a_Z, a_Width, a_Size, a_Colour=0.8 )
+        
+    def Draw( self ):
+        self.Draw()
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
+        self.m_Grid._draw()
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )
         

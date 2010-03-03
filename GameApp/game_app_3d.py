@@ -170,14 +170,14 @@ class GameApp3d:
 ##        self.m_Light.SetPosition( 10.0, 50.0, 30 )
 ##        oadd( self.m_Light )
 ##
-        self.UpdateSplash( "Loading character model..." )
-        Model = Avatar( self.DATA_PATH, DUDETTE )
-        Model.SetPosition( 10, 4, 10 )
-        self.m_Model = Model
-        oadd( Model )
+##        self.UpdateSplash( "Loading character model..." )
+##        Model = Avatar( self.DATA_PATH, DUDETTE )
+##        Model.SetPosition( 10, 0, 10 )
+##        self.m_Model = Model
+##        oadd( Model )
 
         self.UpdateSplash( "Loading Terrain..." )
-        Ground = Region( 0.0, 0.0, 0.0, 50, 0.5 )
+        Ground = TerrainRegion( 0.0, 0.0, 0.0, 50, 0.5 )
         #Object3d( "%s/data/ground/mountains.md2" % self.DATA_PATH, "%s/ground/grass.png" % self.DATA_PATH, 120 )
         #Ground.m_ObjectType = OBJECT_3D_MESH
         #Ground.m_XRot.SetAngle( -90 )
