@@ -100,7 +100,7 @@ class GameApp3d:
 
         self.LoadConsole()
 
-        self.StartMusicTrack( "Every thought has been thought.ogg" )
+        self.StartMusicTrack( "01_every_thought_has_been_thought.ogg" )
         self.m_SplashBg = TexturedRect( "%s/splash/background.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
                                        self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
 
