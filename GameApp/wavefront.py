@@ -120,10 +120,10 @@ class OBJModel:
             i+=1
         glEnd()
 
-def MTL(filename):
+def MTL( path, filename ):
     contents = {}
     mtl = None
-    for line in open(filename, "r"):
+    for line in open( os.path.join( path, filename ), "r" ):
         if line.startswith('#'): continue
         values = line.split()
         if not values: continue
@@ -134,7 +134,7 @@ def MTL(filename):
         elif values[0] == 'map_Kd':
             # load the texture referred to by this declaration
             mtl[values[0]] = values[1]
-            surf = pygame.image.load(mtl['map_Kd'])
+            surf = pygame.image.load( os.path.join( path, mtl['map_Kd'] ))
             image = pygame.image.tostring(surf, 'RGBA', 1)
             ix, iy = surf.get_rect().size
             texid = mtl['texture_Kd'] = glGenTextures(1)
@@ -150,16 +150,15 @@ def MTL(filename):
     return contents
 
 class OBJ( Vector3d ):
-    def __init__(self, filename, a_X=0.0, a_Y=0.0, a_Z=0.0, a_W=1.0, swapyz=False, outline=False):
+    def __init__(self, filename, swapyz=False, outline=False):
         """Loads a Wavefront OBJ file. """
-        Vector3d.__init__( self, a_X, a_Y, a_Z, a_W )
         self.filename = filename
         self.vertices = []
         self.normals = []
         self.texcoords = []
         self.faces = []
         self.mtl = None
-    
+        self.scale = 1.0
         material = None
         path = os.path.split(filename)[0]
         use_texture = False
@@ -182,7 +181,7 @@ class OBJ( Vector3d ):
             elif values[0] in ('usemtl', 'usemat'):
                 material = values[1]
             elif values[0] == 'mtllib':
-                self.mtl = MTL( os.path.join( path, values[1] ) )
+                self.mtl = MTL( path, values[1]  )
                 for name in self.mtl:
                     if 'texture_Kd' in self.mtl[ name ]:
                         use_texture = True
@@ -225,7 +224,10 @@ class OBJ( Vector3d ):
                     self.textureID = mtl['texture_Kd']
                 else:
                     # just use diffuse colour
-                    cadd( mtl['Kd'] )
+                    if mtl[ 'Kd' ]:
+                        cadd( mtl['Kd'] )
+                    else:
+                        cadd( array( [1.0,1.0,1.0], dtype=float32) )
             else:
                 cadd( array( [1.0,1.0,1.0], dtype=float32) )
     
@@ -236,16 +238,29 @@ class OBJ( Vector3d ):
                 if texture_coords[i]:
                     tadd( self.texcoords[texture_coords[i] - 1] )
                 vadd( self.vertices[vertices[i] - 1] )
-                
+        
+        if va_colours == []: va_colours = None
+        
         self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours, False )
 
-        def __repr__(self):
-            return '<OBJ %r>'%self.filename
+    def __repr__(self):
+        return '<OBJ %r>'%self.filename
+    
+    def SetScale( self, a_Scale ):
+        self.scale = a_Scale
         
-        def Draw( self ):
-            glPushMatrix()
-            glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
+    def draw( self ):
+        glPushMatrix()
+        glScale( self.scale, self.scale, self.scale )
+        glEnable(GL_DEPTH_TEST)
+        glEnable( GL_TEXTURE_2D )
+
+        if self.textureID:
+            glBindTexture( GL_TEXTURE_2D, self.textureID )
             
-            self.va.Draw()
-            
-            glPopMatrix() 
+        self.va.Draw()
+        
+        glDisable( GL_TEXTURE_2D )
+        glDisable(GL_DEPTH_TEST)
+        
+        glPopMatrix() 

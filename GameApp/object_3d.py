@@ -75,7 +75,7 @@ class Object3d( Vector3d ):
          self._model.load( filename, texture, True )
          
       elif self.GetExtensionType( filename ) == "OBJ":
-         self._model = OBJModel( filename, texture, a_Colour )
+         self._model = OBJ( filename )
          self.m_ObjectType = OBJECT_3D_MESH
          self._model.SetScale( scale )
          

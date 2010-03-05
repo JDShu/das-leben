@@ -186,13 +186,14 @@ class GameApp3d:
         self.m_Ground = Ground
         oadd( Ground )
 
-##        self.UpdateSplash( "Loading Furniture..." )
-##        setee = Object3d( "%s/furniture/Free_Sofa_04.obj" % self.DATA_PATH, 
-##                          None, 
-##                          object_type=OBJECT_3D_MESH,
-##                          a_Colour=[1.0, 0.0, 0.0])
-##        setee.SetScale( 200 )
-##        oadd( setee )
+        self.UpdateSplash( "Loading Furniture..." )
+        chair = Object3d( "%s/furniture/chair_70th.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        chair.SetScale( 0.1 )
+        chair.SetPosition( 2.0, 0.0, 2.0 )
+        oadd( chair )
 ##
 ##        self.UpdateSplash( "Loading House..." )
 ##        house = Object3d( "%s/home/House010.obj" % self.DATA_PATH, 
