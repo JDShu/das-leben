@@ -40,6 +40,12 @@ class VA:
         self.vertxCount = len( a_Vertexes )
         self.vertexes = zeros( ( len( a_Vertexes ), 3 ), dtype=float32 ) 
         
+        min_x = 1000000.0
+        max_x = -1000000.0
+        min_y = 1000000.0
+        max_y = -1000000.0
+        min_z = 1000000.0
+        max_z = -1000000.0
         for i, vert in enumerate( a_Vertexes ):
             if hasattr( vert, "GetX" ):
                 self.vertexes[ i ][ 0 ] = vert.GetX()
@@ -47,6 +53,15 @@ class VA:
                 self.vertexes[ i ][ 2 ] = vert.GetZ()
             else:
                 self.vertexes[ i ] = vert
+                
+            if self.vertexes[ i ][0] < min_x: min_x = self.vertexes[ i ][ 0 ]
+            if self.vertexes[ i ][0] > max_x: max_x = self.vertexes[ i ][ 0 ]
+            if self.vertexes[ i ][1] < min_y: min_y = self.vertexes[ i ][ 1 ]
+            if self.vertexes[ i ][1] > max_y: max_y = self.vertexes[ i ][ 1 ]
+            if self.vertexes[ i ][2] < min_z: min_z = self.vertexes[ i ][ 2 ]
+            if self.vertexes[ i ][2] > max_z: max_z = self.vertexes[ i ][ 2 ]
+            
+        self.m_Dimensions = array( [ max_x - min_y, max_y - min_y, max_z - min_z ], dtype=float32 )
                 
         self.useNormals = a_Normals != None and True or False
         if self.useNormals:
@@ -82,6 +97,9 @@ class VA:
                 self.coloursCoords[ i ][ 2 ] = vert[ 2 ]
             
         self.Facetype = a_Quads == True and GL_QUADS or GL_TRIANGLES
+        
+    def GetDimensions( self ):
+        return self.m_Dimensions
             
     def Draw( self ):
         

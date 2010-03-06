@@ -401,11 +401,23 @@ class TerrainRegion( Region ):
 class TerrainGridedRegion( TerrainRegion ):
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5 ):
         TerrainRegion.__init__( self, a_X, a_Y, a_Z, a_Width, a_Size )
-        self.m_Grid = Region( a_X, a_Y + 0.5, a_Z, a_Width, a_Size, a_Colour=0.8 )
+        self.m_Grid = Region( a_X, a_Y, a_Z, a_Width, a_Size, a_Colour=0.8 )
+        self.m_ShowGrid = False
+        
+    def ToggleGrid( self, a_Value=True ):
+        self.m_ShowGrid = a_Value
         
     def Draw( self ):
-        self.Draw()
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
-        self.m_Grid._draw()
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )
+        glEnable( GL_FOG )
+        self._draw()
+        glDisable( GL_FOG ) 
+        if self.m_ShowGrid:
+            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
+            glLineWidth( 2 )
+            glEnable( GL_LINE_SMOOTH )
+            glDisable( GL_DEPTH_TEST )
+            self.m_Grid._draw()
+            glEnable( GL_DEPTH_TEST )
+            glDisable( GL_LINE_SMOOTH )
+            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )
         

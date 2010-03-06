@@ -2,15 +2,61 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.1"
    width="768"
    height="256"
-   id="svg2">
+   id="svg2"
+   inkscape:version="0.47pre4 r22446"
+   sodipodi:docname="LaVidaLogo.svg">
+  <metadata
+     id="metadata217">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1440"
+     inkscape:window-height="825"
+     id="namedview215"
+     showgrid="false"
+     inkscape:zoom="1.4140625"
+     inkscape:cx="325.69413"
+     inkscape:cy="99.481421"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
   <defs
      id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 128 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="768 : 128 : 1"
+       inkscape:persp3d-origin="384 : 85.333333 : 1"
+       id="perspective219" />
     <linearGradient
        x1="110.00001"
        y1="189.75"
@@ -1165,29 +1211,47 @@
   <path
      d="m 111.17102,221.89364 -1e-5,-147.499989 -67,117.999979 c 0,0 13,18.50001 67.00001,29.50001 l 0,0 z"
      id="path3635"
-     style="fill:url(#linearGradient2497);fill-opacity:1;stroke:url(#linearGradient2499);stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3354)" />
+     style="fill:url(#linearGradient2497);fill-opacity:1;stroke:url(#linearGradient2499);stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3354)"
+     inkscape:export-filename="/home/mike/Documents/la-vida/trunk/data/splash/logo.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" />
   <path
      d="m 145.65511,223.06794 1,-148.000069 65.5,117.500059 c 0,0 -12.5,19.50001 -66.5,30.50001 z"
      id="path3635-8"
-     style="fill:url(#linearGradient2492);fill-opacity:1;stroke:url(#linearGradient2494);stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3330)" />
+     style="fill:url(#linearGradient2492);fill-opacity:1;stroke:url(#linearGradient2494);stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3330)"
+     inkscape:export-filename="/home/mike/Documents/la-vida/trunk/data/splash/logo.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" />
   <path
      d="m 240.05689,172.45054 c -10.98404,38.82087 -57.16157,66.6655 -110.75342,66.7833 -53.591855,0.1178 -99.992057,-27.52333 -111.287485,-66.29523"
      id="path2841"
-     style="fill:none;stroke:url(#linearGradient2489);stroke-width:5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3306)" />
+     style="fill:none;stroke:url(#linearGradient2489);stroke-width:5;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3306)"
+     inkscape:export-filename="/home/mike/Documents/la-vida/trunk/data/splash/logo.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" />
   <path
      d="M 116,55 C 116,72.39697 101.89697,86.5 84.5,86.5 67.10303,86.5 53,72.39697 53,55 53,37.60303 67.10303,23.5 84.5,23.5 101.89697,23.5 116,37.60303 116,55 l 0,0 z"
      transform="matrix(0.761194,0,0,0.761194,35.790169,-2.0440294)"
      id="path4480"
-     style="fill:url(#linearGradient4488);fill-opacity:1;stroke:url(#linearGradient4496);stroke-width:3;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3282)" />
+     style="fill:url(#linearGradient4488);fill-opacity:1;stroke:url(#linearGradient4496);stroke-width:3;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3282)"
+     inkscape:export-filename="/home/mike/Documents/la-vida/trunk/data/splash/logo.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" />
   <path
      d="M 116,55 C 116,72.39697 101.89697,86.5 84.5,86.5 67.10303,86.5 53,72.39697 53,55 53,37.60303 67.10303,23.5 84.5,23.5 101.89697,23.5 116,37.60303 116,55 l 0,0 z"
      transform="matrix(0.761194,0,0,0.761194,93.640914,-1.2828294)"
      id="path4504"
-     style="fill:url(#linearGradient4506);fill-opacity:1;stroke:url(#linearGradient4508);stroke-width:3;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3258)" />
+     style="fill:url(#linearGradient4506);fill-opacity:1;stroke:url(#linearGradient4508);stroke-width:3;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;filter:url(#filter3258)"
+     inkscape:export-filename="/home/mike/Documents/la-vida/trunk/data/splash/logo.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90" />
   <g
-     transform="translate(0,10)"
+     transform="matrix(1.3415393,0,0,1.3415393,-109.37804,-28.512277)"
      id="text4113"
-     style="font-size:40px;font-style:normal;font-weight:normal;fill:url(#linearGradient5235);fill-opacity:1;stroke:url(#linearGradient5237);stroke-width:0.5;filter:url(#filter5557);font-family:Bitstream Vera Sans">
+     style="font-size:40px;font-style:normal;font-weight:normal;fill:url(#linearGradient5235);fill-opacity:1;stroke:url(#linearGradient5237);stroke-width:0.5;filter:url(#filter5557);font-family:Bitstream Vera Sans"
+     inkscape:export-filename="/home/mike/Documents/la-vida/trunk/data/splash/logo.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
     <path
        d="m 256,82.984497 0,-3.3125 5.9375,0 0,-40 -5.9375,0 0,-3.34375 18.21875,0 0,3.34375 -5.9375,0 0,39.46875 21.3125,0 0,-7.8125 3.84375,0 0,11.65625 z"
        id="path5124"
@@ -1200,7 +1264,10 @@
   <g
      transform="translate(0,10)"
      id="text4117"
-     style="font-size:40px;font-style:normal;font-weight:normal;fill:url(#linearGradient5255);fill-opacity:1;stroke:url(#linearGradient5257);stroke-width:1.5;filter:url(#filter5459);font-family:Bitstream Vera Sans">
+     style="font-size:40px;font-style:normal;font-weight:normal;fill:url(#linearGradient5255);fill-opacity:1;stroke:url(#linearGradient5257);stroke-width:1.5;filter:url(#filter5459);font-family:Bitstream Vera Sans"
+     inkscape:export-filename="/home/mike/Documents/la-vida/trunk/data/splash/logo.png"
+     inkscape:export-xdpi="90"
+     inkscape:export-ydpi="90">
     <path
        d="m 319.64966,92.507812 31.00781,80.578128 30.9375,-80.578128 -11.8125,0 0,-7.523437 30.79688,0 0,7.523437 -10.19532,0 -37.47656,97.453128 -12.09375,0 -37.26562,-97.453128 -10.47657,0 0,-7.523437 38.25,0 0,7.523437 z"
        id="path5129"

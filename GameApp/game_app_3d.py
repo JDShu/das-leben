@@ -91,6 +91,7 @@ class GameApp3d:
         self.m_Ticks = 0
         self.m_OldTicks = 0
         self.m_CurrentTicks = 0
+        self.m_EditTerrain = False
 
         self.SetupLighting()
 
@@ -104,7 +105,13 @@ class GameApp3d:
         self.m_SplashBg = TexturedRect( "%s/splash/background.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
                                        self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
 
-        self.m_SplashLogo = TexturedRect( "%s/splash/logo.png" % self.DATA_PATH, Vector3d( 200, 211, 1.0 ), 676, 200 )
+        self.m_SplashLogo = TexturedRect( "%s/splash/logo.png" % self.DATA_PATH, Vector3d( 200, 311, 1.0 ), 676, 200 )
+        pos_x = self.m_Camera.m_ViewportWidth - 110
+        pos_y = -15 - ( self.m_Camera.m_ViewportHeight / 2 )
+        self.m_WingIDELogo = TexturedRect( "%s/splash/coded_w_wing_large.png" % 
+                                           self.DATA_PATH, 
+                                           Vector3d( pos_x, pos_y, 1.0 ),
+                                           197, 80 )
         
         self.UpdateSplash( "Loading ..." )
 
@@ -172,12 +179,12 @@ class GameApp3d:
 ##
 ##        self.UpdateSplash( "Loading character model..." )
 ##        Model = Avatar( self.DATA_PATH, DUDETTE )
-##        Model.SetPosition( 10, 0, 10 )
+##        Model.SetPosition( 10, 0.5, 10 )
 ##        self.m_Model = Model
 ##        oadd( Model )
 
         self.UpdateSplash( "Loading Terrain..." )
-        Ground = TerrainRegion( 0.0, 0.0, 0.0, 50, 0.5 )
+        Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 0.5 )
         #Object3d( "%s/data/ground/mountains.md2" % self.DATA_PATH, "%s/ground/grass.png" % self.DATA_PATH, 120 )
         #Ground.m_ObjectType = OBJECT_3D_MESH
         #Ground.m_XRot.SetAngle( -90 )
@@ -192,7 +199,7 @@ class GameApp3d:
                           object_type=OBJECT_3D_MESH)
         
         chair.SetScale( 0.1 )
-        chair.SetPosition( 2.0, 0.0, 2.0 )
+        chair.SetPosition( 2.0, 0.5, 2.0 )
         oadd( chair )
 ##
 ##        self.UpdateSplash( "Loading House..." )
@@ -217,7 +224,7 @@ class GameApp3d:
         
         self.m_SplashBg.Draw()
         self.m_SplashLogo.Draw()
-        
+        self.m_WingIDELogo.Draw()
         self.m_Camera.EndDrawing2d()
         
         self.font.glPrint( 10, 10, a_Message, [ 0.0, 0.0, 0.0 ] )
@@ -344,6 +351,10 @@ class GameApp3d:
             x, y, z, w = self.m_Camera.GetPosition()
             y += 0.25
             self.m_Camera.SetPosition( x, y, z, w )
+            
+        elif self.m_KeyBuffer[ K_e ]:
+            self.m_EditTerrain = not self.m_EditTerrain
+            self.m_Ground.ToggleGrid( self.m_EditTerrain  )
 
         return True
 

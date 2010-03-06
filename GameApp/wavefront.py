@@ -252,7 +252,7 @@ class OBJ( Vector3d ):
     def draw( self ):
         glPushMatrix()
         glScale( self.scale, self.scale, self.scale )
-        glEnable(GL_DEPTH_TEST)
+        
         glEnable( GL_TEXTURE_2D )
 
         if self.textureID:
@@ -261,6 +261,5 @@ class OBJ( Vector3d ):
         self.va.Draw()
         
         glDisable( GL_TEXTURE_2D )
-        glDisable(GL_DEPTH_TEST)
         
         glPopMatrix() 
