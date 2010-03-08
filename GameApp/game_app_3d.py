@@ -102,13 +102,13 @@ class GameApp3d:
         self.LoadConsole()
 
         self.StartMusicTrack( "01_every_thought_has_been_thought.ogg" )
-        self.m_SplashBg = TexturedRect( "%s/splash/background.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
+        self.m_SplashBg = TexturedRect( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
                                        self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
 
-        self.m_SplashLogo = TexturedRect( "%s/splash/logo.png" % self.DATA_PATH, Vector3d( 200, 311, 1.0 ), 676, 200 )
+        self.m_SplashLogo = TexturedRect( "%s/gui/graphics/logo_la_vida.png" % self.DATA_PATH, Vector3d( 200, 311, 1.0 ), 676, 200 )
         pos_x = self.m_Camera.m_ViewportWidth - 110
         pos_y = -15 - ( self.m_Camera.m_ViewportHeight / 2 )
-        self.m_WingIDELogo = TexturedRect( "%s/splash/coded_w_wing_large.png" % 
+        self.m_WingIDELogo = TexturedRect( "%s/gui/graphics/logo_wing_ide.png" % 
                                            self.DATA_PATH, 
                                            Vector3d( pos_x, pos_y, 1.0 ),
                                            197, 80 )
@@ -161,15 +161,15 @@ class GameApp3d:
             self.m_KeyBuffer.append( False )
 
     def LoadConsole( self ):
-        self.font = glFreeType.font_data( "%s/fonts/font.ttf" % self.DATA_PATH, 16 )
-        self.Titlefont = glFreeType.font_data( "%s/fonts/title.ttf" % self.DATA_PATH, 72 )
+        self.font = glFreeType.font_data( "%s/gui/fonts/body.ttf" % self.DATA_PATH, 16 )
+        self.Titlefont = glFreeType.font_data( "%s/gui/fonts/head.ttf" % self.DATA_PATH, 72 )
         self.m_Messages = []
 
     def LoadObjects( self ):
         '''load all 3d objects and models'''
         
-        self.UpdateSplash( "Loading Skybox..." )
-        self.m_SkyBox = SkyBox("%s/skybox/open fields" % self.DATA_PATH )
+        #self.UpdateSplash( "Loading Skybox..." )
+        #self.m_SkyBox = SkyBox("%s/enviroment/nature/skies/open fields" % self.DATA_PATH )
 
         self.m_Objects = []; oadd = self.m_Objects.append
 ##        self.UpdateSplash( "Loading lighting sphere..." )
@@ -194,7 +194,7 @@ class GameApp3d:
         oadd( Ground )
 
         self.UpdateSplash( "Loading Furniture..." )
-        chair = Object3d( "%s/furniture/chair_70th.obj" % self.DATA_PATH, 
+        chair = Object3d( "%s/enviroment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
                           None, 
                           object_type=OBJECT_3D_MESH)
         
