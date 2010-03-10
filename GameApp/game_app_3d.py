@@ -185,11 +185,7 @@ class GameApp3d:
 
         self.UpdateSplash( "Loading Terrain..." )
         Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 0.5 )
-        #Object3d( "%s/data/ground/mountains.md2" % self.DATA_PATH, "%s/ground/grass.png" % self.DATA_PATH, 120 )
-        #Ground.m_ObjectType = OBJECT_3D_MESH
-        #Ground.m_XRot.SetAngle( -90 )
-        #Ground.SetScale( 20000 )
-        #Ground.SetPosition( 0.0, -18, 0.0 )
+
         self.m_Ground = Ground
         oadd( Ground )
 
@@ -199,8 +195,18 @@ class GameApp3d:
                           object_type=OBJECT_3D_MESH)
         
         chair.SetScale( 0.1 )
-        chair.SetPosition( 2.0, 0.5, 2.0 )
+        chair.SetPosition( 4.0, chair._model.va.GetDimensions()[ 1 ] * chair._model.GetScale() * 0.5, 4.0 )
         oadd( chair )
+        
+        self.UpdateSplash( "Loading Wall with window..." )
+        wall = Object3d( "%s/enviroment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        wall.SetScale( 0.25 )
+        wall.SetPosition( 2.25, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
+        oadd( wall )
+        print str( wall._model.__repr__() )
 ##
 ##        self.UpdateSplash( "Loading House..." )
 ##        house = Object3d( "%s/home/House010.obj" % self.DATA_PATH, 
@@ -372,6 +378,7 @@ class GameApp3d:
             if Object.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
                 Object.Animate(self._ticks)
             Object.Draw()
+            
 
         self.m_Camera.EndDrawing()
 

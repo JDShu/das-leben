@@ -750,5 +750,7 @@ class MD2Model(object):
     def SetScale(self, percent):
         self._scale = percent / 100.0
 
-
+    def GetScale( self ):
+        return self._scale
+    
 

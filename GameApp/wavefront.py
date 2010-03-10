@@ -210,10 +210,12 @@ class OBJ( Vector3d ):
                 #print 'UNHANDLED', values
                 continue
     
+        self.textureID = 0
         va_vertexes = []; vadd = va_vertexes.append
         va_normals = []; nadd = va_normals.append
         va_texcoords = []; tadd = va_texcoords.append
         va_colours = []; cadd = va_colours.append
+        
         for face in self.faces:
             vertices, normals, texture_coords, material = face
     
@@ -224,7 +226,7 @@ class OBJ( Vector3d ):
                     self.textureID = mtl['texture_Kd']
                 else:
                     # just use diffuse colour
-                    if mtl[ 'Kd' ]:
+                    if len( mtl[ 'Kd' ] ):
                         cadd( mtl['Kd'] )
                     else:
                         cadd( array( [1.0,1.0,1.0], dtype=float32) )
@@ -244,22 +246,27 @@ class OBJ( Vector3d ):
         self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours, False )
 
     def __repr__(self):
-        return '<OBJ %r>'%self.filename
+        x, y, z = self.va.GetDimensions()
+        return '<OBJ %r> %s, %s, %s' % ( self.filename, x, y, z )
     
     def SetScale( self, a_Scale ):
         self.scale = a_Scale
         
+    def GetScale( self ):
+        return self.scale
+    
     def draw( self ):
         glPushMatrix()
         glScale( self.scale, self.scale, self.scale )
         
-        glEnable( GL_TEXTURE_2D )
-
         if self.textureID:
+            glEnable( GL_TEXTURE_2D )
             glBindTexture( GL_TEXTURE_2D, self.textureID )
             
         self.va.Draw()
         
-        glDisable( GL_TEXTURE_2D )
+        if self.textureID:
+            glDisable( GL_TEXTURE_2D )
+        
         
         glPopMatrix() 
