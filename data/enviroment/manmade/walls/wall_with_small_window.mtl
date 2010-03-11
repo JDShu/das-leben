@@ -8,6 +8,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Kd wall_with_large_window.tga
 
 
 newmtl wall_inside
@@ -18,7 +19,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-
+map_Kd wall_with_large_window.tga
 
 newmtl wall
 Ns 90.196078
@@ -28,7 +29,7 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-
+map_Kd wall_with_large_window.tga
 
 newmtl window_border
 Ns 90.196078
@@ -38,5 +39,5 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-
+map_Kd wall_with_large_window.tga
 

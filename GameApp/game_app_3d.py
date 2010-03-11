@@ -46,7 +46,7 @@ class GameApp3d:
     def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_DataPath=None):
 
         pygame.init()
-
+        self.m_Clock = pygame.time.Clock()
         glutInit()
 
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
@@ -198,6 +198,15 @@ class GameApp3d:
         chair.SetPosition( 4.0, chair._model.va.GetDimensions()[ 1 ] * chair._model.GetScale() * 0.5, 4.0 )
         oadd( chair )
         
+        self.UpdateSplash( "Loading Wall..." )
+        wall = Object3d( "%s/enviroment/manmade/walls/wall.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        wall.SetScale( 0.25 )
+        wall.SetPosition( 2.75, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
+        oadd( wall )
+        
         self.UpdateSplash( "Loading Wall with window..." )
         wall = Object3d( "%s/enviroment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
                           None, 
@@ -245,6 +254,7 @@ class GameApp3d:
 
     def ProcessEvents(self):
         self.TimerUpdate()
+        self.m_Clock.tick()
         events = pygame.event.get()
         self.m_OldTicks = self.m_CurrentTicks
         self.m_CurrentTicks = pygame.time.get_ticks()
@@ -385,7 +395,8 @@ class GameApp3d:
         # out put messages
         for i, message in enumerate( self.m_Messages ):
             self.PrintToConsole( message, i )
-
+        self.font.glPrint( 900, 10, "FPS:%f" % self.m_Clock.get_fps() )
+        
         self.m_Camera.Flip()
 
     def AddMessage( self, a_Message ):
