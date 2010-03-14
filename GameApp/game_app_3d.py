@@ -116,8 +116,17 @@ class GameApp3d:
         self.UpdateSplash( "Loading ..." )
 
         self.LoadObjects()
+        
+        self.UpdateSplash( "Loading ..." )
+        
+        self.SetupUI()
 
         self.UpdateSplash( "Done!" )
+        
+    def SetupUI( self ):
+        self.m_SelectedArea = SelectedRegion( 0.5, 0.0, Vector3d(), Vector3d(), pygame.time.get_ticks() )
+        self.m_SelectedStart = 0
+        self.m_SelectStartTicks = 0
 
     def StartMusicTrack( self, a_Filename ):
         try:
@@ -259,7 +268,8 @@ class GameApp3d:
         self.m_OldTicks = self.m_CurrentTicks
         self.m_CurrentTicks = pygame.time.get_ticks()
         self.m_Ticks = self.m_CurrentTicks - self.m_OldTicks
-
+        l_X, l_Y = pygame.mouse.get_pos()
+        
         for event in events:
             if event.type == KEYDOWN:
                 self.m_KeyBuffer[ event.key ] = True
@@ -268,18 +278,31 @@ class GameApp3d:
                 self.m_KeyBuffer[ event.key ] = False
 
             elif event.type == MOUSEBUTTONDOWN:
-                l_X, l_Y = pygame.mouse.get_pos()
+                
                 self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
-                # self.AddMessage( l_Position.__repr__() )
                 if event.button == LEFT_MOUSE:
-                    self.m_Ground.raiseQuad( l_Position )
-                else:
-                    self.m_Ground.lowerQuad( l_Position )
+                    self.m_SelectedArea.m_Enabled = True
+                    #self.AddMessage( "Started at %s" % l_Position )
+                    addVec = Vector3d( 0.5, 0, 0.5 )
+                    self.m_SelectedArea.BeginEditing()
+                    self.m_SelectedArea.SetBegin( l_Position, l_Position + addVec )
+               
+                    
+            elif event.type == MOUSEBUTTONUP:
+                if event.button == LEFT_MOUSE:
+                    self.m_SelectedArea.EndEditing()
 
             elif event.type == QUIT:
                 return False
 
+            
+        if self.m_SelectedArea.IsEditing():
+            self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
+            l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
+            #self.AddMessage( "Ending at %s" % l_Position )
+            self.m_SelectedArea.UpdateEnd( l_Position )
+                    
         return self.ProccessKeys()
 
     def ProcessBehaviours( self ):
@@ -389,6 +412,7 @@ class GameApp3d:
                 Object.Animate(self._ticks)
             Object.Draw()
             
+        self.m_SelectedArea.Draw()
 
         self.m_Camera.EndDrawing()
 

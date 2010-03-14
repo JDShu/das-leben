@@ -31,21 +31,6 @@ from numpy import array
 REGION_NORMAL = 1
 REGION_EDITING = 2
 
-# which parts of the height values to change
-quad_adjustments = []; qadd = quad_adjustments.append
-# first row
-qadd( { 'ul': 0.0, 'ur': 1.0, 'll': 0.0, 'lr': 0.0, 'name':'top left' } )
-qadd( { 'ul': 1.0, 'ur': 1.0, 'll': 0.0, 'lr': 0.0, 'name':'top middle' } )
-qadd( { 'ul': 1.0, 'ur': 0.0, 'll': 0.0, 'lr': 0.0, 'name':'top right' } )
-# second row
-qadd( { 'ul': 0.0, 'ur': 1.0, 'll': 0.0, 'lr': 1.0, 'name':'middle left' } )
-qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 0.0, 'lr': 0.0, 'name':'middle middle' } )
-qadd( { 'ul': 1.0, 'ur': 0.0, 'll': 1.0, 'lr': 0.0, 'name':'middle right' } )
-# third row
-qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 0.0, 'lr': 1.0, 'name':'bottom left' } )
-qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 1.0, 'lr': 1.0, 'name':'bottom middle' } )
-qadd( { 'ul': 0.0, 'ur': 0.0, 'll': 1.0, 'lr': 0.0, 'name':'bottom right' } )
-
 class RegionQuad( BoundingBox3d ):
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=0.5 ):
         BoundingBox3d.__init__( self, a_X + (a_Size / 2.0), a_Y, a_Z + (a_Size / 2.0), a_Size )

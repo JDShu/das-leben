@@ -19,7 +19,10 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from vector_3d import *
+from ogl_va import VA
 import pygame
+import numpy
+from numpy import *
 
 class TexturedRect( Vector3d ):
     '''a textured rectangle'''
@@ -27,6 +30,8 @@ class TexturedRect( Vector3d ):
         self.m_Values = a_Position.m_Values
         self.m_Width = a_Width
         self.m_Height = a_Height
+        
+        
 
         if a_TextureFilename.upper().endswith( '.SVG' ):
             pass
@@ -44,7 +49,7 @@ class TexturedRect( Vector3d ):
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
             glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData )
             
-        
+    
 
     def Draw( self ):
         glEnable( GL_TEXTURE_2D )
@@ -68,3 +73,76 @@ class TexturedRect( Vector3d ):
         glEnd()
         glDisable( GL_TEXTURE_2D )
         
+class SelectedRegion:
+    def __init__( self, a_StepWidth, a_Altitude, a_StartPosition, a_EndPosition, a_StartTicks):
+        self.m_Start = a_StartPosition
+        self.m_End = a_EndPosition
+        self.SetStartTicks( a_StartTicks )
+        self.m_Enabled = False
+        self.m_StepWidth = a_StepWidth
+        self.m_Altitude = a_Altitude
+        self.m_Editing = False
+        vertexes = self.CreateVertexes( a_StartPosition, a_EndPosition )
+        
+        normals = []; nadd = normals.append
+        nadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        nadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        nadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        nadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        
+        texcoords = []; tadd = texcoords.append 
+        tadd( array( [ 0.0, 0.0 ], dtype=float32 ) )
+        tadd( array( [ 1.0, 0.0 ], dtype=float32 ) )
+        tadd( array( [ 1.0, 1.0 ], dtype=float32 ) )
+        tadd( array( [ 0.0, 1.0 ], dtype=float32 ) )
+        
+        colours = []; cadd = colours.append
+        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        
+        self.m_VA = VA( vertexes, normals, None, texcoords, colours )
+        
+    def BeginEditing(self ):
+        self.m_Editing = True
+        
+    def IsEditing( self ):
+        return self.m_Editing
+    
+    def EndEditing( self ):
+        self.m_Editing = False
+        
+    def GetStartTicks( self ):
+        return self.m_StartTicks
+    
+    def SetStartTicks( self, a_Ticks ):
+        self.m_StartTicks = a_Ticks
+        
+    def CreateVertexes( self, a_StartPosition, a_EndPosition ):
+        vertexes = zeros( ( 4, 3 ), dtype=float32 )
+        vertexes[ 0 ] = array( [ a_StartPosition.GetX(), self.m_Altitude, a_StartPosition.GetZ() ], dtype=float32 ) 
+        vertexes[ 1 ] = array( [ a_EndPosition.GetX(), self.m_Altitude, a_StartPosition.GetZ() ], dtype=float32 ) 
+        vertexes[ 2 ] = array( [ a_EndPosition.GetX(), self.m_Altitude, a_EndPosition.GetZ() ], dtype=float32 ) 
+        vertexes[ 3 ] = array( [ a_StartPosition.GetX(), self.m_Altitude, a_EndPosition.GetZ() ], dtype=float32 ) 
+        
+        return vertexes
+    
+    def UpdateEnd( self, a_EndPosition ):
+        vertexes = self.CreateVertexes( self.m_Start, a_EndPosition )
+        self.m_VA.vertexes = vertexes
+        
+    def SetBegin( self, a_StartPosition, a_EndPosition ):
+        self.m_Start = a_StartPosition
+        vertexes = self.CreateVertexes( a_StartPosition, a_EndPosition )
+        self.m_VA.vertexes = vertexes
+        
+        
+    def Draw( self ):
+        if self.m_Enabled:
+            glDisable( GL_DEPTH_TEST )
+            self.m_VA.Draw()
+            glEnable( GL_DEPTH_TEST )
+            
+        
+    
