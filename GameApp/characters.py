@@ -31,12 +31,12 @@ AVATAR_VELOCITY = 2.0
 class Avatar( Object3d ):
     def __init__( self, a_DataPath, a_Type ):
         if a_Type == DUDE:
-            Object3d.__init__( self, "%s/avatar/tris.md2" % a_DataPath, 
-                               "%s/avatar/REI.PCX" % a_DataPath, 
+            Object3d.__init__( self, "%s/avatars/dudette/tris.md2" % a_DataPath, 
+                               "%s/avatars/dudette/REI.PCX" % a_DataPath, 
                                object_type=OBJECT_3D_ANIMATED_MESH )
         elif a_Type == DUDETTE:
-            Object3d.__init__( self, "%s/avatar/tris.md2" % a_DataPath, 
-                               "%s/avatar/REI.PCX" % a_DataPath, 
+            Object3d.__init__( self, "%s/avatars/dudette/tris.md2" % a_DataPath, 
+                               "%s/avatars/dudette/REI.PCX" % a_DataPath, 
                                object_type=OBJECT_3D_ANIMATED_MESH )
 
         self.m_XRot.SetAngle( -90 )

@@ -55,7 +55,7 @@ class GameApp3d:
         self.m_Camera.SetPosition(0, -4, 3.0)
         self.m_Camera.m_XRot += 31
         self.m_Camera.m_YRot += 157
-
+        
         if a_Fullscreen:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
             modes = self.m_Camera.GetModesList()
@@ -88,9 +88,6 @@ class GameApp3d:
 
         self.m_SelectedObject = None
 
-        self.m_Ticks = 0
-        self.m_OldTicks = 0
-        self.m_CurrentTicks = 0
         self.m_EditTerrain = False
 
         self.SetupLighting()
@@ -120,14 +117,32 @@ class GameApp3d:
         self.UpdateSplash( "Loading ..." )
         
         self.SetupUI()
-
-        self.UpdateSplash( "Done!" )
         
+        self.SetupTiming()
+        
+        self.SetupExecutionCycles()
+        
+    def SetupExecutionCycles( self ):
+        self.m_ProcessCycles = { "Behaviours": 2, "Events": 3 }
+                
     def SetupUI( self ):
         self.m_SelectedArea = SelectedRegion( 0.5, 0.0, Vector3d(), Vector3d(), pygame.time.get_ticks() )
         self.m_SelectedStart = 0
         self.m_SelectStartTicks = 0
-
+        self.m_GroundLevel.append( self.m_SelectedArea )
+        
+    def SetupTiming( self ):
+        self.m_Ticks = 0
+        self.m_oldTicks = 0
+        self.m_currentTicks = 0
+        self.m_FrameTicks = 0
+        # FPS Limiting
+        self.m_FPSTicks = 0
+        self.m_FPSLimit = int( 1000 / 20 ) # 30 FPS
+        # set up process execution tracking counter
+        self.m_ProcessCounter = 1
+        self.m_ProcessCounterThreshhold = 3
+        
     def StartMusicTrack( self, a_Filename ):
         try:
             if os.path.exists( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) ):
@@ -179,24 +194,24 @@ class GameApp3d:
         
         #self.UpdateSplash( "Loading Skybox..." )
         #self.m_SkyBox = SkyBox("%s/enviroment/nature/skies/open fields" % self.DATA_PATH )
-
+        self.m_GroundLevel = []; gadd = self.m_GroundLevel.append
         self.m_Objects = []; oadd = self.m_Objects.append
 ##        self.UpdateSplash( "Loading lighting sphere..." )
 ##        self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
 ##        self.m_Light.SetPosition( 10.0, 50.0, 30 )
 ##        oadd( self.m_Light )
 ##
-##        self.UpdateSplash( "Loading character model..." )
-##        Model = Avatar( self.DATA_PATH, DUDETTE )
-##        Model.SetPosition( 10, 0.5, 10 )
-##        self.m_Model = Model
-##        oadd( Model )
+        self.UpdateSplash( "Loading character model..." )
+        Model = Avatar( self.DATA_PATH, DUDETTE )
+        Model.SetPosition( 10, 0.5, 10 )
+        self.m_Model = Model
+        oadd( Model )
 
         self.UpdateSplash( "Loading Terrain..." )
         Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 0.5 )
 
         self.m_Ground = Ground
-        oadd( Ground )
+        gadd( Ground )
 
         self.UpdateSplash( "Loading Furniture..." )
         chair = Object3d( "%s/enviroment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
@@ -238,8 +253,8 @@ class GameApp3d:
 ##        oadd( house )
 ##        self.house = house
 
-        self._currentTicks = self._oldTicks = pygame.time.get_ticks()
-        self._ticks = 0    
+        self.m_currentTicks = self.m_oldTicks = pygame.time.get_ticks()
+        self.m_Ticks = 0    
 
     def UpdateSplash( self, a_Message ):
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT )
@@ -257,17 +272,19 @@ class GameApp3d:
         glEnable( GL_LIGHTING )
 
     def TimerUpdate(self):
-        self._oldTicks = self._currentTicks
-        self._currentTicks = pygame.time.get_ticks()
-        self._ticks = self._currentTicks - self._oldTicks
+        self.m_oldTicks = self.m_currentTicks
+        self.m_currentTicks = pygame.time.get_ticks()
+        self.m_Ticks = self.m_currentTicks - self.m_oldTicks
+        self.m_FPSTicks += self.m_Ticks
 
     def ProcessEvents(self):
         self.TimerUpdate()
-        self.m_Clock.tick()
+        
+        self.m_ProcessCounter += 1
+        if self.m_ProcessCounter > self.m_ProcessCounterThreshhold: self.m_ProcessCounter = 1
+        
         events = pygame.event.get()
-        self.m_OldTicks = self.m_CurrentTicks
-        self.m_CurrentTicks = pygame.time.get_ticks()
-        self.m_Ticks = self.m_CurrentTicks - self.m_OldTicks
+        
         l_X, l_Y = pygame.mouse.get_pos()
         
         for event in events:
@@ -308,6 +325,8 @@ class GameApp3d:
     def ProcessBehaviours( self ):
         for game_object in self.m_Objects:
             if game_object.__module__ == "GameApp.characters":
+                if game_object.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
+                    game_object.Animate(self.m_Ticks)
                 game_object.UpdateTicks( self.m_Ticks )
                 game_object.DoBehaviours()
                 # self.AddMessage( "Avatar : %s,%s,%s" % ( game_object.GetX(), game_object.GetY(), game_object.GetZ() ) )
@@ -326,6 +345,8 @@ class GameApp3d:
         glLoadIdentity()
 
     def ProccessKeys( self ):
+        if self.m_FPSTicks < self.m_FPSLimit: return True
+        
         if self.m_KeyBuffer[ K_ESCAPE ]:
             return False
         elif self.m_KeyBuffer[ K_UP ]:
@@ -401,18 +422,26 @@ class GameApp3d:
         self.font.glPrint( 10 , self.m_Camera.m_ViewportHeight - ( 17 * a_LineNumber ), a_Message )
 
     def Draw(self):
+        if self.m_FPSTicks < self.m_FPSLimit: 
+            self.m_FrameTicks += self.m_Ticks
+            return
+        else: self.m_FPSTicks = 0
+        self.m_Clock.tick()
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
         glLoadIdentity()
         # self.m_Camera.LookAt( self.m_Sphere )
         # self.m_SkyBox.Draw( self.m_Camera )
         self.m_Camera.BeginDrawing()
         if self.m_UseShader: self.m_Shader.StartShader()
-        for Object in self.m_Objects:
-            if Object.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
-                Object.Animate(self._ticks)
+        
+        # Draw ground level stuff
+        for Object in self.m_GroundLevel:
             Object.Draw()
             
-        self.m_SelectedArea.Draw()
+        for Object in self.m_Objects:
+            Object.Draw()
+            
+        
 
         self.m_Camera.EndDrawing()
 
