@@ -88,15 +88,16 @@ class RegionQuad( BoundingBox3d ):
     
     
 class Region( Vector3d ):
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5, a_Colour=0.5 ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=0.5 ):
         Vector3d.__init__( self, a_X, a_Y, a_Z )
         self.quads = []; qadd = self.quads.append
         self.quadIDS = []; iadd = self.quadIDS.append
         
         self.m_Width = a_Width
+        self.m_Height = a_Height
         self.m_Size = a_Size
         
-        for z in xrange( a_Width ):
+        for z in xrange( a_Height ):
             for x in xrange( a_Width ):
                 rq = RegionQuad( a_X + ( float( x ) * a_Size ), 
                                   a_Y, 
@@ -114,14 +115,14 @@ class Region( Vector3d ):
         normals = []; nadd = normals.append
         indexes = []; ixadd = indexes.append
         
-        for z in xrange( a_Width + 1 ):
+        for z in xrange( a_Height + 1 ):
             for x in xrange( a_Width + 1):
                 extra_light = random.uniform( 0.25, 0.4 )
                 vadd( Vector3d( float( x ) * a_Size, a_Y, float( z ) * a_Size ) )
                 nadd( Vector3d( 0.0, .737, 0.0 ) )
                 cadd( [ a_Colour - extra_light, a_Colour, a_Colour - extra_light ] )
                 
-                if x < a_Width and z < a_Width:
+                if x < a_Width and z < a_Height:
                     ixadd( int( ( z * ( a_Width + 1 ) ) + x ) )
                     ixadd( int( ( z * ( a_Width + 1 ) ) + ( x + 1 ) ) )
                     ixadd( int( ( ( z + 1 ) * ( a_Width + 1 ) ) + ( x + 1 ) ) )
@@ -260,7 +261,7 @@ class Region( Vector3d ):
         va_vertexes = self.va.GetVertexArray()
         
         if ix > 0 and ix < self.m_Width:
-            if iz > 0 and iz < self.m_Width:
+            if iz > 0 and iz < self.m_Height:
                 quad = self.quads[ ( iz * self.m_Width ) + ix ]
                 xco, yco, zco, wco = quad.GetPosition() 
                 yco += float( self.m_Size ) / 2.0 
@@ -373,8 +374,8 @@ class Region( Vector3d ):
         
         
 class TerrainRegion( Region ):
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5 ):
-        Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Size )
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5 ):
+        Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size )
         
     def Draw( self ):
         glEnable( GL_FOG )
@@ -383,25 +384,22 @@ class TerrainRegion( Region ):
         
     
         
-class TerrainGridedRegion( TerrainRegion ):
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Size=0.5 ):
-        TerrainRegion.__init__( self, a_X, a_Y, a_Z, a_Width, a_Size )
-        self.m_Grid = Region( a_X, a_Y, a_Z, a_Width, a_Size, a_Colour=0.8 )
+class TerrainGridedRegion( Region ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5 ):
+        Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size, a_Colour=0.8 )
         self.m_ShowGrid = False
         
     def ToggleGrid( self, a_Value=True ):
         self.m_ShowGrid = a_Value
         
     def Draw( self ):
-        glEnable( GL_FOG )
-        self._draw()
-        glDisable( GL_FOG ) 
+
         if self.m_ShowGrid:
             glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
             glLineWidth( 2 )
             glEnable( GL_LINE_SMOOTH )
             glDisable( GL_DEPTH_TEST )
-            self.m_Grid._draw()
+            self._draw()
             glEnable( GL_DEPTH_TEST )
             glDisable( GL_LINE_SMOOTH )
             glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )

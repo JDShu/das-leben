@@ -129,7 +129,7 @@ class GameApp3d:
         self.m_SelectedArea = SelectedRegion( 0.5, 0.0, Vector3d(), Vector3d(), pygame.time.get_ticks() )
         self.m_SelectedStart = 0
         self.m_SelectStartTicks = 0
-        self.m_GroundLevel.append( self.m_SelectedArea )
+        self.m_GroundLevel.insert( 1, self.m_SelectedArea )
         
     def SetupTiming( self ):
         self.m_Ticks = 0
@@ -195,26 +195,36 @@ class GameApp3d:
         #self.UpdateSplash( "Loading Skybox..." )
         #self.m_SkyBox = SkyBox("%s/enviroment/nature/skies/open fields" % self.DATA_PATH )
         self.m_GroundLevel = []; gadd = self.m_GroundLevel.append
-        self.m_Objects = []; oadd = self.m_Objects.append
-##        self.UpdateSplash( "Loading lighting sphere..." )
-##        self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
-##        self.m_Light.SetPosition( 10.0, 50.0, 30 )
-##        oadd( self.m_Light )
-##
-        self.UpdateSplash( "Loading character model..." )
-        Model = Avatar( self.DATA_PATH, DUDETTE )
-        Model.SetPosition( 4.0,
-                           Model.GetAltitude( 0.0 ),
-                           4.5 )
+        self.m_Grids = []; gradd = self.m_Grids.append
+        self.m_Objects = []; obadd = self.m_Objects.append
         
-        self.m_Model = Model
-        oadd( Model )
-
         self.UpdateSplash( "Loading Terrain..." )
-        Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 0.5 )
+        Ground = TerrainRegion( 0.0, 0.0, 0.0, 50, 50, 0.5 )
 
-        self.m_Ground = Ground
         gadd( Ground )
+        
+        Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 50, 0.5 )
+
+        self.m_GroundGrid = Ground
+        gradd( Ground )
+        gadd( Ground )
+        
+        self.m_GroundFloorObjects = []; oadd = self.m_GroundFloorObjects.append
+        
+        self.UpdateSplash( "Loading lighting sphere..." )
+        self.m_Light = Object3d(None, None, 20, OBJECT_3D_SPHERE )
+        self.m_Light.SetPosition( 10.0, 50.0, 30 )
+        oadd( self.m_Light )
+        obadd( self.m_Light )
+
+        ##        self.UpdateSplash( "Loading character model..." )
+##        Model = Avatar( self.DATA_PATH, DUDETTE )
+##        Model.SetPosition( 4.0,
+##                           Model.GetAltitude( 0.0 ),
+##                           4.5 )
+##        
+##        self.m_Model = Model
+##        oadd( Model )
 
         self.UpdateSplash( "Loading Furniture..." )
         chair = Object3d( "%s/enviroment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
@@ -227,6 +237,7 @@ class GameApp3d:
                            * chair._model.GetScale() * 0.5, 
                            4.0 )
         oadd( chair )
+        obadd( chair )
         
         self.UpdateSplash( "Loading Wall..." )
         wall = Object3d( "%s/enviroment/manmade/walls/wall.obj" % self.DATA_PATH, 
@@ -235,7 +246,9 @@ class GameApp3d:
         
         wall.SetScale( 0.25 )
         wall.SetPosition( 2.75, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
+        self.m_FloorHeight = wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5
         oadd( wall )
+        obadd( wall )
         
         self.UpdateSplash( "Loading Wall with window..." )
         wall = Object3d( "%s/enviroment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
@@ -245,7 +258,15 @@ class GameApp3d:
         wall.SetScale( 0.25 )
         wall.SetPosition( 2.25, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
         oadd( wall )
-        print str( wall._model.__repr__() )
+        obadd( wall )
+        
+        self.m_FirstFloorLevel = []; fadd = self.m_FirstFloorLevel.append
+        
+        Ground = TerrainGridedRegion( 0.0, self.m_FloorHeight, 0.0, 50, 50, 0.5 )
+
+        self.m_FirstFloorGrid = Ground
+        gradd( Ground )
+        fadd( Ground )
 ##
 ##        self.UpdateSplash( "Loading House..." )
 ##        house = Object3d( "%s/home/House010.obj" % self.DATA_PATH, 
@@ -307,9 +328,16 @@ class GameApp3d:
                 if event.button == LEFT_MOUSE:
                     self.m_SelectedArea.m_Enabled = True
                     #self.AddMessage( "Started at %s" % l_Position )
+                    l_Start = Vector3d()
+                    l_Start = l_Position
+                    x, y, z, w = l_Start.GetPosition()
+                    new_x = int( x / 0.5 ) * 0.5
+                    new_z = int( z / 0.5 ) * 0.5
+                    l_Start.SetPosition( new_x, y, new_z )
+                    
                     addVec = Vector3d( 0.5, 0, 0.5 )
                     self.m_SelectedArea.BeginEditing()
-                    self.m_SelectedArea.SetBegin( l_Position, l_Position + addVec )
+                    self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
                
                     
             elif event.type == MOUSEBUTTONUP:
@@ -324,7 +352,13 @@ class GameApp3d:
             self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
             l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
             #self.AddMessage( "Ending at %s" % l_Position )
-            self.m_SelectedArea.UpdateEnd( l_Position )
+            l_End = Vector3d()
+            l_End = l_Position
+            x, y, z, w = l_End.GetPosition()
+            new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
+            new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
+            l_End.SetPosition( new_x, y, new_z )
+            self.m_SelectedArea.UpdateEnd( l_End )
                     
         return self.ProccessKeys()
 
@@ -420,8 +454,12 @@ class GameApp3d:
             
         elif self.m_KeyBuffer[ K_e ]:
             self.m_EditTerrain = not self.m_EditTerrain
-            self.m_Ground.ToggleGrid( self.m_EditTerrain  )
-
+            self.m_Grids[ 0 ].ToggleGrid( self.m_EditTerrain  )
+            
+        elif self.m_KeyBuffer[ K_q ]:
+            self.m_EditTerrain = not self.m_EditTerrain
+            self.m_Grids[ 1 ].ToggleGrid( self.m_EditTerrain  )
+            
         return True
 
     def PrintToConsole(self, a_Message, a_LineNumber ):
@@ -444,10 +482,11 @@ class GameApp3d:
         for Object in self.m_GroundLevel:
             Object.Draw()
             
-        for Object in self.m_Objects:
+        for Object in self.m_GroundFloorObjects:
             Object.Draw()
             
-        
+        for Object in self.m_FirstFloorLevel:
+            Object.Draw()
 
         self.m_Camera.EndDrawing()
 
