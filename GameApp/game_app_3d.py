@@ -41,6 +41,9 @@ from misc_ui import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
+NORMAL_MODE = 1
+EDIT_MODE = 2
+
 class GameApp3d:
     """A 3d GameApp"""
     def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_DataPath=None):
@@ -103,12 +106,12 @@ class GameApp3d:
                                        self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
 
         self.m_SplashLogo = TexturedRect( "%s/gui/graphics/logo_la_vida.png" % self.DATA_PATH, Vector3d( 200, 311, 1.0 ), 676, 200 )
-        pos_x = self.m_Camera.m_ViewportWidth - 110
+        pos_x = self.m_Camera.m_ViewportWidth - 130
         pos_y = -15 - ( self.m_Camera.m_ViewportHeight / 2 )
         self.m_WingIDELogo = TexturedRect( "%s/gui/graphics/logo_wing_ide.png" % 
                                            self.DATA_PATH, 
                                            Vector3d( pos_x, pos_y, 1.0 ),
-                                           197, 80 )
+                                           217, 80 )
         
         self.UpdateSplash( "Loading ..." )
 
@@ -130,6 +133,7 @@ class GameApp3d:
         self.m_SelectedStart = 0
         self.m_SelectStartTicks = 0
         self.m_GroundLevel.insert( 1, self.m_SelectedArea )
+        self.m_Mode = EDIT_MODE
         
     def SetupTiming( self ):
         self.m_Ticks = 0
@@ -138,7 +142,7 @@ class GameApp3d:
         self.m_FrameTicks = 0
         # FPS Limiting
         self.m_FPSTicks = 0
-        self.m_FPSLimit = int( 1000 / 20 ) # 30 FPS
+        self.m_FPSLimit = int( 1000 / 30 ) # 30 FPS
         # set up process execution tracking counter
         self.m_ProcessCounter = 1
         self.m_ProcessCounterThreshhold = 3
@@ -291,6 +295,7 @@ class GameApp3d:
         self.m_SplashBg.Draw()
         self.m_SplashLogo.Draw()
         self.m_WingIDELogo.Draw()
+        
         self.m_Camera.EndDrawing2d()
         
         self.font.glPrint( 10, 10, a_Message, [ 0.0, 0.0, 0.0 ] )
@@ -453,12 +458,10 @@ class GameApp3d:
             self.m_Camera.SetPosition( x, y, z, w )
             
         elif self.m_KeyBuffer[ K_e ]:
-            self.m_EditTerrain = not self.m_EditTerrain
-            self.m_Grids[ 0 ].ToggleGrid( self.m_EditTerrain  )
+            self.m_Mode = EDIT_MODE
             
         elif self.m_KeyBuffer[ K_q ]:
-            self.m_EditTerrain = not self.m_EditTerrain
-            self.m_Grids[ 1 ].ToggleGrid( self.m_EditTerrain  )
+            self.m_Mode = NORMAL_MODE
             
         return True
 
