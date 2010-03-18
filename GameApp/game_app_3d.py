@@ -203,7 +203,10 @@ class GameApp3d:
 ##
         self.UpdateSplash( "Loading character model..." )
         Model = Avatar( self.DATA_PATH, DUDETTE )
-        Model.SetPosition( 10, 0.5, 10 )
+        Model.SetPosition( 4.0,
+                           Model.GetAltitude( 0.0 ),
+                           4.5 )
+        
         self.m_Model = Model
         oadd( Model )
 
@@ -219,7 +222,10 @@ class GameApp3d:
                           object_type=OBJECT_3D_MESH)
         
         chair.SetScale( 0.1 )
-        chair.SetPosition( 4.0, chair._model.va.GetDimensions()[ 1 ] * chair._model.GetScale() * 0.5, 4.0 )
+        chair.SetPosition( 4.0, 
+                           chair._model.va.GetDimensions()[ 1 ] 
+                           * chair._model.GetScale() * 0.5, 
+                           4.0 )
         oadd( chair )
         
         self.UpdateSplash( "Loading Wall..." )

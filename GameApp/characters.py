@@ -42,7 +42,7 @@ class Avatar( Object3d ):
         self.m_XRot.SetAngle( -90 )
         self.m_ZRot.SetAngle( -90 )
         self.SetAnimation( IDLE1 )
-        self.SetScale( 2 )
+        self.SetScale( 1 )
 
         self.m_Speed = 2.0 # units per second
         self.m_Behavior = AVATAR_IDLE
@@ -52,6 +52,10 @@ class Avatar( Object3d ):
         self.m_ModelHeight = 0.5
 
 
+    def GetAltitude( self, a_Altitude=0.0 ):
+        l_Altitude = self._model.m_VAS[ IDLE1_START ].GetDimensions()[ 1 ] * self._model.GetScale()
+        return l_Altitude
+    
     def MoveToDestination( self ):
         l_Destination = self.m_Destination
         l_Position = self.GetPositionVector()
