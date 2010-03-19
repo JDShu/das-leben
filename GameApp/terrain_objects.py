@@ -53,6 +53,8 @@ class RegionQuad( BoundingBox3d ):
         self.oldListID = 0
         self.listID = 0     
         
+        self.obj = None
+        
         self.colour_adjust = random.random()
         
     def __repr__( self ):
@@ -70,14 +72,12 @@ class RegionQuad( BoundingBox3d ):
         return [ self.ll, self.lr, self.ur, self.ul ]
         
     def compile_list( self ):
-        if not self.compiled:
-            self.listID = glGenLists( 1 )
-            glNewList( self.listID, GL_COMPILE )
-            
-            
-            self.Draw()
-            glEndList()
-            
+        pass
+
+    def Draw( self ):
+        if self.obj:
+            self.obj.Draw()
+        
     def recompile_list( self ):
         self.oldListID = self.listID
         glDeleteLists( self.listID, 1 )
@@ -244,7 +244,7 @@ class Region( Vector3d ):
             self.va.Draw()
         
         glPopMatrix()      
-    Draw = _draw
+    
         
     def GetGLNames( self ):
         quads = []; qadd = quads.append
@@ -311,60 +311,10 @@ class Region( Vector3d ):
                     cur_x -= 3
                     cur_z -= 1
                         
-        
-       
-##        self.recompile_list()
-        
+      
     def lowerQuads( self, a_Begin, a_End ):
         pass
-##        for x in xrange( self.m_Width ):
-##            for z in xrange( self.m_Width ):
-##                quad = self.quads[ ( x * self.m_Width ) + z ]
-##                if quad.PointInsideXZPlane( a_Location ):
-##                    
-##                    quad.colour_adjust = 0.01
-##                    xco, yco, zco, wco = quad.GetPosition() 
-##                    yco -= float( self.m_Size ) / 5.0 
-##                    quad.SetPosition( xco, yco, zco )
-##                    
-##                    cur_x = x - 1
-##                    cur_z = z - 1
-##                    
-##                    for u in xrange( 3 ):
-##                        for v in xrange( 3 ):
-##                            try:
-##                                adjusted_quad = self.quads[ ( cur_x * self.m_Width ) + cur_z ]
-##                                line = adjusted_quad.__repr__()
-##                                parts = line.split(",")
-##                                heights = {}
-##                                adjustment = quad_adjustments[ ( u * 3 ) + v ]
-##                                if adjustment[ 'name' ] == "middle middle": 
-##                                    adjusted_quad = quad
-##                                for part in parts:
-##                                    key, value = part.split(":")
-##                                    heights[ key ] = float( value ) - ( float( adjustment[ key ] ) * float( self.m_Size / 5.0 ) )
-##                                adjusted_quad.SetHeights( heights )
-##                                
-##                                    
-##                                #adjusted_quad.recompile_list()
-##                                self.quadIDS[ self.quadIDS.index( adjusted_quad.oldListID ) ] = adjusted_quad.listID
-##                            except:
-##                                pass
-##                            
-##                            cur_x += 1
-##                            
-##                        cur_x -= 3
-##                        cur_z += 1
-##                        
-##                    
-##                    #quad.recompile_list()
-##                    self.quadIDS[ self.quadIDS.index( quad.oldListID ) ] = quad.listID
-##                    
-##        
-##    
-##            
-##        
-##        self.recompile_list()
+
         
     def getQuad( self, a_X, a_Z ):
         try:
@@ -384,7 +334,6 @@ class TerrainRegion( Region ):
         glDisable( GL_FOG ) 
         
     
-        
 class TerrainGridedRegion( Region ):
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5 ):
         Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size, a_Colour=0.8 )
@@ -404,4 +353,23 @@ class TerrainGridedRegion( Region ):
             glEnable( GL_DEPTH_TEST )
             glDisable( GL_LINE_SMOOTH )
             glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )
+        
+class FloorRegion( Region ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=0.8, a_Wall=None ):
+        Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size, a_Colour )
+        
+        top_row = ( a_Height - 1 ) * a_Width 
+        for x in xrange( a_Width ):
+            self.quads[ x ].obj = a_Wall.Clone()
+            self.quads[ x ].obj.SetPosition( x * a_Size, a_Y, a_Z )
+            self.quads[ top_row + x  ].obj = a_Wall.Clone()
+            self.quads[ x ].obj.SetPosition( x * a_Size, a_Y, top_row * a_Size )
+            
+        
+    def Draw( self ):
+        glDisable( GL_DEPTH_TEST )
+        self._draw()
+        glEnable( GL_DEPTH_TEST )
+        for quad in self.quads:
+            quad.Draw()
         

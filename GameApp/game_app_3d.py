@@ -253,6 +253,7 @@ class GameApp3d:
         self.m_FloorHeight = wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5
         oadd( wall )
         obadd( wall )
+        self.m_Wall = wall
         
         self.UpdateSplash( "Loading Wall with window..." )
         wall = Object3d( "%s/enviroment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
@@ -351,15 +352,16 @@ class GameApp3d:
                     self.m_SelectedArea.m_Enabled = False
                     
                     l_Dimensions = self.m_SelectedArea.GetGranularDimensions( self.m_Grids[ 0 ].m_Size )
-                    l_Floor = Region( self.m_SelectedArea.m_Position.GetX(), 
+                    l_Floor = FloorRegion( self.m_SelectedArea.m_Position.GetX(), 
                                       0.0, 
                                       self.m_SelectedArea.m_Position.GetZ(), 
                                       l_Dimensions.width, 
                                       l_Dimensions.height, 
                                       0.5, 
-                                      0.9 )
+                                      0.9,
+                                      self.m_Wall )
                     
-                    self.m_GroundFloorObjects.append( l_Floor )
+                    self.m_GroundFloorObjects.insert( 2, l_Floor )
 
             elif event.type == QUIT:
                 return False

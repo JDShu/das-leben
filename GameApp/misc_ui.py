@@ -140,14 +140,23 @@ class SelectedRegion:
         self.m_VA.vertexes = vertexes
         
     def GetGranularDimensions( self, a_Granularity ):
+        '''
+        calculate the width and height of the selected area
+        based on how wide the squares are that the area needs 
+        chopping into.
+        '''
         l_Dimentions = AreaDimensions()
         l_Dimentions.width = abs( int( ( self.m_Start.GetX() - self.m_End.GetX() ) / a_Granularity ) )
         l_Dimentions.height = abs( int( ( self.m_Start.GetZ() - self.m_End.GetZ() ) / a_Granularity ) )
-        if self.m_Start > self.m_End: 
-            self.m_Position = self.m_End
-        else:
-            self.m_Position = self.m_Start
-            
+        
+        # work out which it the best place to set as the position
+        x1, y1, z1, w = self.m_Start.GetPosition()
+        x2, y2, z2, w = self.m_End.GetPosition()
+        new_x = x1 < x2 and x1 or x2
+        new_z = z1 < z2 and z1 or z2
+        # now set the best position for a region to be placed
+        self.m_Position.SetPosition( new_x, y1, new_z )
+        
         return l_Dimentions
         
     def Draw( self ):
