@@ -336,8 +336,8 @@ class GameApp3d:
                     l_Start = Vector3d()
                     l_Start = l_Position
                     x, y, z, w = l_Start.GetPosition()
-                    new_x = int( x / 0.5 ) * 0.5
-                    new_z = int( z / 0.5 ) * 0.5
+                    new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
+                    new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
                     l_Start.SetPosition( new_x, y, new_z )
                     
                     addVec = Vector3d( 0.5, 0, 0.5 )
@@ -348,6 +348,18 @@ class GameApp3d:
             elif event.type == MOUSEBUTTONUP:
                 if event.button == LEFT_MOUSE:
                     self.m_SelectedArea.EndEditing()
+                    self.m_SelectedArea.m_Enabled = False
+                    
+                    l_Dimensions = self.m_SelectedArea.GetGranularDimensions( self.m_Grids[ 0 ].m_Size )
+                    l_Floor = Region( self.m_SelectedArea.m_Position.GetX(), 
+                                      0.0, 
+                                      self.m_SelectedArea.m_Position.GetZ(), 
+                                      l_Dimensions.width, 
+                                      l_Dimensions.height, 
+                                      0.5, 
+                                      0.9 )
+                    
+                    self.m_GroundFloorObjects.append( l_Floor )
 
             elif event.type == QUIT:
                 return False

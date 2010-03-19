@@ -82,6 +82,7 @@ class SelectedRegion:
         self.m_StepWidth = a_StepWidth
         self.m_Altitude = a_Altitude
         self.m_Editing = False
+        self.m_Position = a_StartPosition
         vertexes = self.CreateVertexes( a_StartPosition, a_EndPosition )
         
         normals = []; nadd = normals.append
@@ -129,6 +130,7 @@ class SelectedRegion:
         return vertexes
     
     def UpdateEnd( self, a_EndPosition ):
+        self.m_End = a_EndPosition
         vertexes = self.CreateVertexes( self.m_Start, a_EndPosition )
         self.m_VA.vertexes = vertexes
         
@@ -137,6 +139,16 @@ class SelectedRegion:
         vertexes = self.CreateVertexes( a_StartPosition, a_EndPosition )
         self.m_VA.vertexes = vertexes
         
+    def GetGranularDimensions( self, a_Granularity ):
+        l_Dimentions = AreaDimensions()
+        l_Dimentions.width = abs( int( ( self.m_Start.GetX() - self.m_End.GetX() ) / a_Granularity ) )
+        l_Dimentions.height = abs( int( ( self.m_Start.GetZ() - self.m_End.GetZ() ) / a_Granularity ) )
+        if self.m_Start > self.m_End: 
+            self.m_Position = self.m_End
+        else:
+            self.m_Position = self.m_Start
+            
+        return l_Dimentions
         
     def Draw( self ):
         if self.m_Enabled:
@@ -144,5 +156,7 @@ class SelectedRegion:
             self.m_VA.Draw()
             glEnable( GL_DEPTH_TEST )
             
-        
+class AreaDimensions:
+            width = 0
+            height = 0
     

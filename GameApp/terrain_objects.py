@@ -244,7 +244,8 @@ class Region( Vector3d ):
             self.va.Draw()
         
         glPopMatrix()      
-                
+    Draw = _draw
+        
     def GetGLNames( self ):
         quads = []; qadd = quads.append
         for quad in self.quads:
