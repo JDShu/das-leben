@@ -93,7 +93,7 @@ class Object3d( Vector3d ):
       cloned_object3d.m_Colour = self.m_Colour
       cloned_object3d.m_ObjectType = self.m_ObjectType
       cloned_object3d.SetPosition( self.GetX(), self.GetY(), self.GetZ() )
-      cloned_object3d._model = self._model.Clone()
+      cloned_object3d._model = self._model
       
       return cloned_object3d
       
