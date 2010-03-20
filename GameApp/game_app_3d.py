@@ -32,9 +32,12 @@ from environment import *
 from buildings import *
 from OGLExt import *
 from terrain_objects import *
+from object_3d import *
+from vector_3d import *
 import ogl_shader 
 import glFreeType
 import os
+from copy import deepcopy
 from os import getcwd, path
 from constants import *
 from misc_ui import *
@@ -76,7 +79,9 @@ class GameApp3d:
             print "Help!  No GL_ARB_vertex_buffer_object"
             sys.exit(1)
             return False
-
+        
+        glEnable(GL_CULL_FACE)
+        glCullFace( GL_BACK )
         glShadeModel(GL_SMOOTH)
         glClearColor( 0.5, 0.5, 1.0, 1.0 )
         glEnable(GL_COLOR_MATERIAL)
@@ -254,6 +259,12 @@ class GameApp3d:
         oadd( wall )
         obadd( wall )
         self.m_Wall = wall
+        
+        new_wall = wall.Clone()
+        new_wall.SetScale( 0.25 )
+        new_wall.SetPosition( 4, self.m_FloorHeight, 4 )
+        ObjectMultiplier( 6, Vector3d( 1, 0, 0), new_wall )
+        oadd( new_wall )
         
         self.UpdateSplash( "Loading Wall with window..." )
         wall = Object3d( "%s/enviroment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 

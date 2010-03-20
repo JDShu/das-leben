@@ -147,6 +147,9 @@ class OBJ( Vector3d ):
         
         self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours, False )
 
+    def Clone( self ):
+        pass
+    
     def __repr__(self):
         x, y, z = self.va.GetDimensions()
         return '<OBJ %r> %s, %s, %s' % ( self.filename, x, y, z )

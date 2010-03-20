@@ -54,6 +54,7 @@ class RegionQuad( BoundingBox3d ):
         self.listID = 0     
         
         self.obj = None
+        self.extra = [];
         
         self.colour_adjust = random.random()
         
@@ -77,6 +78,9 @@ class RegionQuad( BoundingBox3d ):
     def Draw( self ):
         if self.obj:
             self.obj.Draw()
+        if len( self.extra ) > 0:
+            for obj in self.extra:
+                obj.Draw()
         
     def recompile_list( self ):
         self.oldListID = self.listID
@@ -244,6 +248,7 @@ class Region( Vector3d ):
                 
     def _draw( self ):
         glPushMatrix()
+        glCullFace( GL_FRONT )
         glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
         
         if not self.useVBO:
@@ -251,6 +256,7 @@ class Region( Vector3d ):
         else:
             self.va.Draw()
         
+        glCullFace( GL_BACK )
         glPopMatrix()      
     
         
@@ -373,14 +379,29 @@ class FloorRegion( Region ):
         self.textureID = 0
         top_row = ( a_Height - 1 ) * a_Width 
         # make the top and bottom rows
+        
         for x in xrange( a_Width ):
             quad = self.quads[ x ]
             quad.obj = a_Wall.Clone()
-            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), wall_height, a_Z )
+            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), 
+                                  wall_height, a_Z )
             
             quad = self.quads[ top_row + x ]
             quad.obj = a_Wall.Clone()
-            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), wall_height, a_Z + ( a_Height * a_Size ) )
+            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), 
+                                  wall_height, a_Z + ( a_Height * a_Size ) )
+            
+        #for z in xrange( a_Height ):
+            #quad = self.quads[ z * a_Width ]
+            #wall = a_Wall.Clone()
+            #wall.SetPosition( a_X, 
+                                  #wall_height, 
+                                  #a_Z + ( z * a_Size ) + ( a_Size / 2 ) )
+            #wall.m_YRot.SetAngle( 90.0 )
+            #if quad.obj:
+                #quad.extra.append( wall )
+            #else:
+                #quad.obj = wall
             
     def ShowFloor( self, a_Value ):
         self.m_ShowFloor = a_Value
@@ -402,6 +423,7 @@ class FloorRegion( Region ):
                     obj.textureID = a_TextureID
         
     def Draw( self ):
+                
         if self.m_ShowFloor:
             if not self.textureID == 0:
                 glEnable( GL_TEXTURE_2D )

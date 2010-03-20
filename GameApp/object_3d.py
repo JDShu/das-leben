@@ -93,7 +93,7 @@ class Object3d( Vector3d ):
       cloned_object3d.m_Colour = self.m_Colour
       cloned_object3d.m_ObjectType = self.m_ObjectType
       cloned_object3d.SetPosition( self.GetX(), self.GetY(), self.GetZ() )
-      cloned_object3d._model = self._model
+      cloned_object3d._model = self._model.Clone()
       
       return cloned_object3d
       
@@ -294,3 +294,47 @@ class Platform( Wall ):
          glBufferDataARB( GL_ARRAY_BUFFER_ARB, l_Normals, GL_STATIC_DRAW_ARB )
          
          
+class ObjectMultiplier:
+   def __init__( self, a_Multiple, a_Direction, a_Object ):
+      l_Direction = Vector3d()
+      l_Direction = a_Direction
+      
+      va_vertexes = a_Object._model.va.vertexes
+      vertexes = zeros( [ len( va_vertexes ) * a_Multiple, 3 ], dtype=float32 )
+      
+      if hasattr( a_Object._model.va, "normals" ):
+         va_normals = a_Object._model.va.normals
+         
+         normals = zeros( [ len( va_normals ) * a_Multiple, 3 ], dtype=float32 )
+      if hasattr( a_Object._model.va, "texCoords" ):
+         va_texCoords = a_Object._model.va.texCoords
+         texcoords = zeros( [ len( va_texCoords ) * a_Multiple, 2 ], dtype=float32 )
+         
+      if hasattr( a_Object._model.va, "coloursCoords" ):
+         va_coloursCoords = a_Object._model.va.coloursCoords
+         colours = zeros( [ len( va_coloursCoords ) * a_Multiple, 3 ], dtype=float32 )
+      
+      size = len( va_vertexes )
+      
+      for i in xrange( a_Multiple ):
+         for j, values in enumerate( va_vertexes ):
+            vertexes[ ( i * size ) + j ][ 0 ] = values[ 0 ] + ( i * l_Direction.GetX() )
+            vertexes[ ( i * size ) + j ][ 1 ] = values[ 1 ] + ( i * l_Direction.GetY() )
+            vertexes[ ( i * size ) + j ][ 2 ] = values[ 2 ] + ( i * l_Direction.GetZ() )
+            
+            if hasattr( a_Object._model.va, "normals" ):
+               normals[ ( i * size ) + j ] = va_normals[ j ]
+            if hasattr( a_Object._model.va, "texCoords" ):
+               texcoords[ ( i * size ) + j ] = va_texCoords[ j ]
+            if hasattr( a_Object._model.va, "coloursCoords" ):
+               colours[ ( i * size ) + j ] = va_coloursCoords[ i ]
+            
+      a_Object._model.va.vertexes = vertexes
+      if hasattr( a_Object._model.va, "normals" ):
+         a_Object._model.va.normals = normals
+      if hasattr( a_Object._model.va, "texCoords" ):
+         a_Object._model.va.texCoords = texcoords
+      if hasattr( a_Object._model.va, "coloursCoords" ):
+         a_Object._model.va.coloursCoords = colours
+      
+      a_Object._model.va.vertxCount = len( vertexes )
