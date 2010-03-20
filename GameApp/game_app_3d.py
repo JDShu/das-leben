@@ -358,10 +358,10 @@ class GameApp3d:
                                       l_Dimensions.width, 
                                       l_Dimensions.height, 
                                       0.5, 
-                                      0.9,
+                                      1.0,
                                       self.m_Wall )
                     
-                    self.m_GroundFloorObjects.insert( 2, l_Floor )
+                    self.m_GroundFloorObjects.insert( 1, l_Floor )
 
             elif event.type == QUIT:
                 return False

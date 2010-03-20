@@ -120,8 +120,10 @@ class Region( Vector3d ):
                 extra_light = random.uniform( 0.25, 0.4 )
                 vadd( Vector3d( float( x ) * a_Size, a_Y, float( z ) * a_Size ) )
                 nadd( Vector3d( 0.0, .737, 0.0 ) )
-                cadd( [ a_Colour - extra_light, a_Colour, a_Colour - extra_light ] )
-                
+                if a_Colour < 1.0:
+                    cadd( [ a_Colour - extra_light, a_Colour, a_Colour - extra_light ] )
+                else:
+                    cadd( [ a_Colour, a_Colour, a_Colour ] )
                 if x < a_Width and z < a_Height:
                     ixadd( int( ( z * ( a_Width + 1 ) ) + x ) )
                     ixadd( int( ( z * ( a_Width + 1 ) ) + ( x + 1 ) ) )
@@ -139,6 +141,7 @@ class Region( Vector3d ):
         va_vertexes = []; vadd = va_vertexes.append
         va_colours = []; cadd = va_colours.append
         va_normals = []; nadd = va_normals.append
+        va_texcoords = []; tadd = va_texcoords.append
         f = open( "debug.log", "w" )
         for i, rq in enumerate( self.quads ):
             rq.va_index = i * 4 # index to first vertex of the quad
@@ -153,6 +156,11 @@ class Region( Vector3d ):
             nadd( normals[ rq.lr ] )
             nadd( normals[ rq.ur ] )
             nadd( normals[ rq.ul ] )
+            #texcoords
+            tadd( [ 0, 0] )
+            tadd( [ 1, 0] )
+            tadd( [ 1, 1] )
+            tadd( [ 0, 1] )
             #colours
             cadd( colours[ rq.ll ] )
             cadd( colours[ rq.lr ] )
@@ -161,7 +169,7 @@ class Region( Vector3d ):
             
         f.close()
         
-        self.va = VA( va_vertexes, va_normals, None, None, va_colours )
+        self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours )
         self.useVBO = True
         self.mode = REGION_NORMAL
         
@@ -355,21 +363,56 @@ class TerrainGridedRegion( Region ):
             glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )
         
 class FloorRegion( Region ):
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=0.8, a_Wall=None ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=1.0, a_Wall=None ):
         Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size, a_Colour )
         
+        self.m_ShowFloor = True
+        self.m_ShowWalls = True
+        
+        wall_height = ( a_Wall._model.va.GetDimensions()[ 1 ] * a_Wall._model.GetScale() * 0.5 ) + a_Y
+        self.textureID = 0
         top_row = ( a_Height - 1 ) * a_Width 
+        # make the top and bottom rows
         for x in xrange( a_Width ):
-            self.quads[ x ].obj = a_Wall.Clone()
-            self.quads[ x ].obj.SetPosition( x * a_Size, a_Y, a_Z )
-            self.quads[ top_row + x  ].obj = a_Wall.Clone()
-            self.quads[ x ].obj.SetPosition( x * a_Size, a_Y, top_row * a_Size )
+            quad = self.quads[ x ]
+            quad.obj = a_Wall.Clone()
+            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), wall_height, a_Z )
             
+            quad = self.quads[ top_row + x ]
+            quad.obj = a_Wall.Clone()
+            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), wall_height, a_Z + ( a_Height * a_Size ) )
+            
+    def ShowFloor( self, a_Value ):
+        self.m_ShowFloor = a_Value
+        
+    def ShowWalls( self, a_Value ):
+        self.m_ShowWalls = a_Value
+        
+    def SetFloorTexture( self, a_TextureID ):
+        self.textureID = a_TextureID
+        
+    def SetWallTexture( self, a_TextureID, a_QuadIndex, a_ObjID ):
+        for obj in self.quads[ a_QuadIndex ].objs:
+            if obj.GetGLName() == a_ObjID:
+                if hasattr( obj, "_texture" ): 
+                    glDeleteTextures( 1, obj._texture )
+                    obj._texture = a_TextureID
+                else:
+                    glDeleteTextures( 1, obj.textureID )
+                    obj.textureID = a_TextureID
         
     def Draw( self ):
-        glDisable( GL_DEPTH_TEST )
-        self._draw()
-        glEnable( GL_DEPTH_TEST )
-        for quad in self.quads:
-            quad.Draw()
+        if self.m_ShowFloor:
+            if not self.textureID == 0:
+                glEnable( GL_TEXTURE_2D )
+            glDisable( GL_DEPTH_TEST )
+            self._draw()
+            glEnable( GL_DEPTH_TEST )
+            
+            if not self.textureID == 0:
+                glDisable( GL_TEXTURE_2D )
+                
+        if self.m_ShowWalls:
+            for quad in self.quads:
+                quad.Draw()
         

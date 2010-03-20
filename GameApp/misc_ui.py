@@ -98,10 +98,10 @@ class SelectedRegion:
         tadd( array( [ 0.0, 1.0 ], dtype=float32 ) )
         
         colours = []; cadd = colours.append
-        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
-        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
-        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
-        cadd( array( [ 0.0, 1.0, 0.0 ], dtype=float32 ) )
+        cadd( array( [ 0.0, 1.0, 1.0 ], dtype=float32 ) )
+        cadd( array( [ 0.0, 1.0, 1.0 ], dtype=float32 ) )
+        cadd( array( [ 0.0, 1.0, 1.0 ], dtype=float32 ) )
+        cadd( array( [ 0.0, 1.0, 1.0 ], dtype=float32 ) )
         
         self.m_VA = VA( vertexes, normals, None, texcoords, colours )
         
