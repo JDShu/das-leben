@@ -52,7 +52,7 @@ def MTL( path, filename ):
     return contents
 
 class OBJ( Vector3d ):
-    def __init__(self, filename, swapyz=False, outline=False):
+    def __init__(self, filename=None, swapyz=False, outline=False, clone=False):
         """Loads a Wavefront OBJ file. """
         self.filename = filename
         self.vertices = []
@@ -62,93 +62,100 @@ class OBJ( Vector3d ):
         self.mtl = None
         self.scale = 1.0
         material = None
-        path = os.path.split(filename)[0]
+        
         use_texture = False
-        for line in open(filename, "r"):
-            if line.startswith('#'): continue
-            values = line.split()
-            if not values: continue
-            if values[0] == 'v':
-                v = array( map(float, values[1:4]), dtype=float32 )
-                if swapyz:
-                    v = array( [ v[0], v[2], v[1] ], dtype=float32 )
-                self.vertices.append(v)
-            elif values[0] == 'vn':
-                v = array( map(float, values[1:4]), dtype=float32 )
-                if swapyz:
-                    v = v[0], v[2], v[1]
-                self.normals.append(v)
-            elif values[0] == 'vt':
-                self.texcoords.append( array( map(float, values[1:3]), dtype=float32 ) )
-            elif values[0] in ('usemtl', 'usemat'):
-                material = values[1]
-            elif values[0] == 'mtllib':
-                self.mtl = MTL( path, values[1]  )
-                for name in self.mtl:
-                    if 'texture_Kd' in self.mtl[ name ]:
-                        use_texture = True
-            elif values[0] == 'f':
-                face = []
-                texcoords = []
-                norms = []
-                for v in values[1:]:
-                    w = v.split('/')
-                    vert = int(w[0])
-                    if vert < 0:
-                        # refers to -ve indexed verts defined up to this
-                        # point
-                        vert += len(self.vertices)
-                    face.append(vert)
-                    if len(w) >= 2 and len(w[1]) > 0:
-                        texcoords.append(int(w[1]))
-                    else:
-                        texcoords.append(0)
-                    if len(w) >= 3 and len(w[2]) > 0:
-                        norms.append(int(w[2]))
-                    else:
-                        norms.append(0)
-                self.faces.append((face, norms, texcoords, material))
-            else:
-                #print 'UNHANDLED', values
-                continue
-    
-        self.textureID = 0
-        va_vertexes = []; vadd = va_vertexes.append
-        va_normals = []; nadd = va_normals.append
-        va_texcoords = []; tadd = va_texcoords.append
-        va_colours = []; cadd = va_colours.append
-        
-        for face in self.faces:
-            vertices, normals, texture_coords, material = face
-    
-            if material:
-                mtl = self.mtl[material]
-                if 'texture_Kd' in mtl:
-                    # use diffuse texmap
-                    self.textureID = mtl['texture_Kd']
+        if not clone:
+            path = os.path.split(filename)[0]
+            for line in open(filename, "r"):
+                if line.startswith('#'): continue
+                values = line.split()
+                if not values: continue
+                if values[0] == 'v':
+                    v = array( map(float, values[1:4]), dtype=float32 )
+                    if swapyz:
+                        v = array( [ v[0], v[2], v[1] ], dtype=float32 )
+                    self.vertices.append(v)
+                elif values[0] == 'vn':
+                    v = array( map(float, values[1:4]), dtype=float32 )
+                    if swapyz:
+                        v = v[0], v[2], v[1]
+                    self.normals.append(v)
+                elif values[0] == 'vt':
+                    self.texcoords.append( array( map(float, values[1:3]), dtype=float32 ) )
+                elif values[0] in ('usemtl', 'usemat'):
+                    material = values[1]
+                elif values[0] == 'mtllib':
+                    self.mtl = MTL( path, values[1]  )
+                    for name in self.mtl:
+                        if 'texture_Kd' in self.mtl[ name ]:
+                            use_texture = True
+                elif values[0] == 'f':
+                    face = []
+                    texcoords = []
+                    norms = []
+                    for v in values[1:]:
+                        w = v.split('/')
+                        vert = int(w[0])
+                        if vert < 0:
+                            # refers to -ve indexed verts defined up to this
+                            # point
+                            vert += len(self.vertices)
+                        face.append(vert)
+                        if len(w) >= 2 and len(w[1]) > 0:
+                            texcoords.append(int(w[1]))
+                        else:
+                            texcoords.append(0)
+                        if len(w) >= 3 and len(w[2]) > 0:
+                            norms.append(int(w[2]))
+                        else:
+                            norms.append(0)
+                    self.faces.append((face, norms, texcoords, material))
                 else:
-                    # just use diffuse colour
-                    if len( mtl[ 'Kd' ] ):
-                        cadd( mtl['Kd'] )
-                    else:
-                        cadd( array( [1.0,1.0,1.0], dtype=float32) )
-            else:
-                cadd( array( [1.0,1.0,1.0], dtype=float32) )
-    
+                    #print 'UNHANDLED', values
+                    continue
+        
+            self.textureID = 0
+            self.va_vertexes = []; vadd = self.va_vertexes.append
+            self.va_normals = []; nadd = self.va_normals.append
+            self.va_texcoords = []; tadd = self.va_texcoords.append
+            self.va_colours = []; cadd = self.va_colours.append
             
-            for i in range(0, len(vertices)):
-                if normals[i]:
-                    nadd( self.normals[normals[i] - 1] )
-                if texture_coords[i]:
-                    tadd( self.texcoords[texture_coords[i] - 1] )
-                vadd( self.vertices[vertices[i] - 1] )
+            for face in self.faces:
+                vertices, normals, texture_coords, material = face
         
-        if va_colours == []: va_colours = None
+                if material:
+                    mtl = self.mtl[material]
+                    if 'texture_Kd' in mtl:
+                        # use diffuse texmap
+                        self.textureID = mtl['texture_Kd']
+                    else:
+                        # just use diffuse colour
+                        if len( mtl[ 'Kd' ] ):
+                            cadd( mtl['Kd'] )
+                        else:
+                            cadd( array( [1.0,1.0,1.0], dtype=float32) )
+                else:
+                    cadd( array( [1.0,1.0,1.0], dtype=float32) )
         
-        self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours, False )
+                
+                for i in range(0, len(vertices)):
+                    if normals[i]:
+                        nadd( self.normals[normals[i] - 1] )
+                    if texture_coords[i]:
+                        tadd( self.texcoords[texture_coords[i] - 1] )
+                    vadd( self.vertices[vertices[i] - 1] )
+            
+            if self.va_colours == []: self.va_colours = None
+            
+            self.va = VA( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+        else:
+            self.va = None
 
     def Clone( self ):
-        pass
+        clone = OBJ( None, False, False, True )
+        clone.textureID = self.textureID
+        clone.va = VA( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+        return clone
     
     def __repr__(self):
         x, y, z = self.va.GetDimensions()
