@@ -202,7 +202,7 @@ class GameApp3d:
         '''load all 3d objects and models'''
         
         #self.UpdateSplash( "Loading Skybox..." )
-        #self.m_SkyBox = SkyBox("%s/enviroment/nature/skies/open fields" % self.DATA_PATH )
+        #self.m_SkyBox = SkyBox("%s/environment/nature/skies/open fields" % self.DATA_PATH )
         self.m_GroundLevel = []; gadd = self.m_GroundLevel.append
         self.m_Grids = []; gradd = self.m_Grids.append
         self.m_Objects = []; obadd = self.m_Objects.append
@@ -236,7 +236,7 @@ class GameApp3d:
 ##        oadd( Model )
 
         self.UpdateSplash( "Loading Furniture..." )
-        chair = Object3d( "%s/enviroment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
+        chair = Object3d( "%s/environment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
                           None, 
                           object_type=OBJECT_3D_MESH)
         
@@ -249,7 +249,7 @@ class GameApp3d:
         obadd( chair )
         
         self.UpdateSplash( "Loading Wall..." )
-        wall = Object3d( "%s/enviroment/manmade/walls/wall.obj" % self.DATA_PATH, 
+        wall = Object3d( "%s/environment/manmade/walls/wall.obj" % self.DATA_PATH, 
                           None, 
                           object_type=OBJECT_3D_MESH)
         
@@ -267,7 +267,7 @@ class GameApp3d:
         oadd( new_wall )
         
         self.UpdateSplash( "Loading Wall with window..." )
-        wall = Object3d( "%s/enviroment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
+        wall = Object3d( "%s/environment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
                           None, 
                           object_type=OBJECT_3D_MESH)
         
