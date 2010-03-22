@@ -244,9 +244,21 @@ class GameApp3d:
         chair.SetPosition( 4.0, 
                            chair._model.va.GetDimensions()[ 1 ] 
                            * chair._model.GetScale() * 0.5, 
-                           4.0 )
+                           2.0 )
         oadd( chair )
         obadd( chair )
+        
+        oven = Object3d( "%s/environment/manmade/furniture/oven.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        oven.SetScale( 0.15 )
+        oven.SetPosition( 3.0, 
+                           oven._model.va.GetDimensions()[ 1 ] 
+                           * oven._model.GetScale() * 0.5, 
+                           3.0 )
+        oadd( oven )
+        obadd( oven )
         
         self.UpdateSplash( "Loading Wall..." )
         wall = Object3d( "%s/environment/manmade/walls/wall.obj" % self.DATA_PATH, 
@@ -275,6 +287,18 @@ class GameApp3d:
         wall.SetPosition( 2.25, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
         oadd( wall )
         obadd( wall )
+        
+        door = Object3d( "%s/environment/manmade/doors/door.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        door.SetScale( 0.22 )
+        door.SetPosition( 6.0, 
+                           door._model.va.GetDimensions()[ 1 ] 
+                           * door._model.GetScale() * 0.5, 
+                           3.0 )
+        oadd( door )
+        obadd( door )
         
         self.m_FirstFloorLevel = []; fadd = self.m_FirstFloorLevel.append
         
