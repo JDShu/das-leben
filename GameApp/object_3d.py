@@ -94,7 +94,7 @@ class Object3d( Vector3d ):
       cloned_object3d.m_ObjectType = self.m_ObjectType
       cloned_object3d.SetPosition( self.GetX(), self.GetY(), self.GetZ() )
       cloned_object3d._model = self._model.Clone()
-      
+      cloned_object3d.SetScale( self._model.GetScale() )
       return cloned_object3d
       
    def GetExtensionType( self, filename ):

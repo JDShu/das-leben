@@ -20,6 +20,7 @@ from math3D import *
 import pygame
 from numpy import *
 from ogl_va import *
+from ogl_vbo import *
 from vector_3d import Vector3d
 
 def MTL( path, filename ):
@@ -147,7 +148,8 @@ class OBJ( Vector3d ):
             
             if self.va_colours == []: self.va_colours = None
             
-            self.va = NEW_VBO( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+            self.va = VA( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+            #self.va = VBO( self.va_vertexes, self.va_normals, self.va_texcoords, self.va_colours, False )
         else:
             self.va = None
 

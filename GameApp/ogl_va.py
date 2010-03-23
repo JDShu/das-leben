@@ -18,7 +18,6 @@ import OpenGL
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-from OpenGL.arrays.vbo import VBO
 from ctypes import *
 
 import sys
@@ -168,9 +167,9 @@ class NEW_VBO:
             if self.vertexes[ i ][2] < min_z: min_z = self.vertexes[ i ][ 2 ]
             if self.vertexes[ i ][2] > max_z: max_z = self.vertexes[ i ][ 2 ]
             
-        self.vertexVBO = VBO( self.vertexes )
-##        self.vertexVBO.create_buffers()
-##        self.vertexVBO.copy_data()
+        self.vertexVBO = glGenBuffers( 1 )
+        glBindBuffer( GL_ARRAY_BUFFER, self.vertexVBO )
+        glBufferData( GL_ARRAY_BUFFER, self.vertexes, GL_STATIC_DRAW )
         
             
         self.m_Dimensions = array( [ max_x - min_y, max_y - min_y, max_z - min_z ], dtype=float32 )
@@ -185,9 +184,10 @@ class NEW_VBO:
                     self.normals[ i ][ 2 ] = vert.GetZ()
                 else:
                     self.normals[ i ] = vert
-            self.normalsVBO = VBO( self.normals )
-##            self.normalsVBO.create_buffers()
-##            self.normalsVBO.copy_data()
+                    
+            self.normalsVBO = glGenBuffers( 1 )
+            glBindBuffer( GL_ARRAY_BUFFER, self.normalsVBO )
+            glBufferData( GL_ARRAY_BUFFER, self.normals, GL_STATIC_DRAW )
         
                     
         self.useIndices = a_Indices != None and True or False
@@ -203,10 +203,10 @@ class NEW_VBO:
                     self.texCoords[ i ][ 1 ] = vert.GetY()
                 else: 
                     self.texCoords[ i ] = coord
-            self.texcoordsVBO = VBO( self.texCoords )
-##            self.texcoordsVBO.create_buffers()
-##            self.texcoordsVBO.copy_data()
-        
+                    
+            self.texcoordsVBO = glGenBuffers( 1 )
+            glBindBuffer( GL_ARRAY_BUFFER, self.texcoordsVBO )
+            glBufferData( GL_ARRAY_BUFFER, self.texCoords, GL_STATIC_DRAW )
                             
         self.useColoursCoords = a_Colours != None and True or False
         if self.useColoursCoords:
@@ -215,9 +215,10 @@ class NEW_VBO:
                 self.coloursCoords[ i ][ 0 ] = vert[ 0 ]
                 self.coloursCoords[ i ][ 1 ] = vert[ 1 ]
                 self.coloursCoords[ i ][ 2 ] = vert[ 2 ]
-            self.coloursVBO = VBO( self.coloursCoords )
-##            self.coloursVBO.create_buffers()
-##            self.coloursVBO.copy_data()
+                
+            self.coloursVBO = glGenBuffers( 1 )
+            glBindBuffer( GL_ARRAY_BUFFER, self.coloursVBO )
+            glBufferData( GL_ARRAY_BUFFER, self.coloursCoords, GL_STATIC_DRAW )
             
         self.Facetype = a_Quads == True and GL_QUADS or GL_TRIANGLES
         
@@ -226,45 +227,37 @@ class NEW_VBO:
             
     def Draw( self ):
         
-        
-        self.vertexVBO.bind()
         glEnableClientState( GL_VERTEX_ARRAY )
+        glBindBuffer( GL_ARRAY_BUFFER, self.vertexVBO )
         if self.useNormals:
-            self.normalsVBO.bind()
             glEnableClientState( GL_NORMAL_ARRAY )
+            glBindBuffer( GL_ARRAY_BUFFER, self.normalsVBO )
         if self.useTexCoords: 
-            self.texcoordsVBO.bind()
             glEnableClientState( GL_TEXTURE_COORD_ARRAY )
+            glBindBuffer( GL_ARRAY_BUFFER, self.texcoordsVBO )
             
         if self.useColoursCoords: 
-            self.coloursVBO.bind()
             glEnableClientState( GL_COLOR_ARRAY )
+            glBindBuffer( GL_ARRAY_BUFFER, self.coloursVBO )
             
         
-        if self.useNormals: glNormalPointerf( self.normalsVBO )
-        if self.useTexCoords: glTexCoordPointerf( self.texcoordsVBO )
-        if self.useColoursCoords:glColorPointerf( self.coloursVBO )
-        glVertexPointerf( self.vertexVBO )
+        if self.useNormals: glNormalPointer( GL_FLOAT, 0, None )
+        if self.useTexCoords: glTexCoordPointer( 2, GL_FLOAT, 0, None )
+        if self.useColoursCoords: glColorPointer( 3, GL_FLOAT, 0, None)
+        glVertexPointer( 3, GL_FLOAT, 0, None )
         
         if not self.useIndices:
             glDrawArrays( self.Facetype, 0, self.vertxCount )
         else:
             glDrawElements( self.Facetype, len( self.indices ), GL_UNSIGNED_SHORT, self.indices )
 
-        self.vertexVBO.unbind()
         glDisableClientState( GL_VERTEX_ARRAY )
         
-        if self.useNormals: 
-            self.normalsVBO.unbind()
-            glDisableClientState( GL_NORMAL_ARRAY )
+        if self.useNormals: glDisableClientState( GL_NORMAL_ARRAY )
             
-        if self.useTexCoords: 
-            self.texcoordsVBO.unbind()
-            glDisableClientState( GL_TEXTURE_COORD_ARRAY )
+        if self.useTexCoords: glDisableClientState( GL_TEXTURE_COORD_ARRAY )
         
-        if self.useColoursCoords: 
-            self.coloursVBO.unbind()
-            glDisableClientState( GL_COLOR_ARRAY )
+        if self.useColoursCoords: glDisableClientState( GL_COLOR_ARRAY )
         
     Render = Draw
     

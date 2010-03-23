@@ -272,11 +272,11 @@ class GameApp3d:
         obadd( wall )
         self.m_Wall = wall
         
-##        new_wall = wall.Clone()
-##        new_wall.SetScale( 0.25 )
-##        new_wall.SetPosition( 4, self.m_FloorHeight, 4 )
-##        ObjectMultiplier( 6, Vector3d( 1, 0, 0), new_wall )
-##        oadd( new_wall )
+        new_wall = wall.Clone()
+        new_wall.SetScale( 0.25 )
+        new_wall.SetPosition( 4, self.m_FloorHeight, 4 )
+        ObjectMultiplier( 6, Vector3d( 1, 0, 0), new_wall )
+        oadd( new_wall )
         
         self.UpdateSplash( "Loading Wall with window..." )
         wall = Object3d( "%s/environment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 

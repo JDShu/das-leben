@@ -174,6 +174,7 @@ class Region( Vector3d ):
         f.close()
         
         self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours )
+        #self.va = VBO( va_vertexes, va_normals, va_texcoords, va_colours )
         self.useVBO = True
         self.mode = REGION_NORMAL
         
@@ -380,28 +381,31 @@ class FloorRegion( Region ):
         top_row = ( a_Height - 1 ) * a_Width 
         # make the top and bottom rows
         
-        for x in xrange( a_Width ):
-            quad = self.quads[ x ]
-            quad.obj = a_Wall.Clone()
-            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), 
-                                  wall_height, a_Z )
-            
-            quad = self.quads[ top_row + x ]
-            quad.obj = a_Wall.Clone()
-            quad.obj.SetPosition( a_X + ( x * a_Size ) + ( a_Size / 2 ), 
-                                  wall_height, a_Z + ( a_Height * a_Size ) )
-            
-        #for z in xrange( a_Height ):
-            #quad = self.quads[ z * a_Width ]
-            #wall = a_Wall.Clone()
-            #wall.SetPosition( a_X, 
-                                  #wall_height, 
-                                  #a_Z + ( z * a_Size ) + ( a_Size / 2 ) )
-            #wall.m_YRot.SetAngle( 90.0 )
-            #if quad.obj:
-                #quad.extra.append( wall )
-            #else:
-                #quad.obj = wall
+        quad = self.quads[ 0 ]
+        x, y, z, w = quad.GetPosition()
+        wall = a_Wall.Clone()
+        ObjectMultiplier( a_Width, Vector3d( 1, 0, 0), wall )
+        wall.SetPosition( x, wall_height, z )
+        quad.obj = wall
+        
+        wall = a_Wall.Clone()
+        ObjectMultiplier( a_Height, Vector3d( 1, 0, 0), wall )
+        wall.m_YRot.SetAngle( -90.0 )
+        wall.SetPosition( x - ( a_Size / 2 ), wall_height, z )
+        quad.extra.append( wall ) 
+        
+        quad = self.quads[ ( a_Height - 1 ) * a_Width ]
+        x, y, z, w = quad.GetPosition()
+        wall = a_Wall.Clone()
+        ObjectMultiplier( a_Width, Vector3d( 1, 0, 0), wall )
+        wall.SetPosition( x, wall_height, z )
+        quad.obj = wall
+        
+        wall = a_Wall.Clone()
+        ObjectMultiplier( a_Height, Vector3d( 1, 0, 0), wall )
+        wall.m_YRot.SetAngle( 90.0 )
+        wall.SetPosition( x, wall_height, z )
+        quad.extra.append( wall ) 
             
     def ShowFloor( self, a_Value ):
         self.m_ShowFloor = a_Value
