@@ -18,6 +18,7 @@ import OpenGL
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from OpenGL.arrays import vbo
 from ctypes import *
 import numpy
 
@@ -45,9 +46,12 @@ class VBO:
             vertexes[ i ][ 1 ] = vert.GetY()
             vertexes[ i ][ 2 ] = vert.GetZ()
             
-        self.vboVertArray = glGenBuffersARB( 1 )
-        glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
-        glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexes, a_BufferType )
+        self.vboVertArray = vbo.VBO( vertexes, a_BufferType )
+        self.vboVertArray.copy_data()
+##        self.vboVertArray.
+##        self.vboVertArray = glGenBuffersARB( 1 )
+##        glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
+##        glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexes, a_BufferType )
         
         self.useNormals = a_Normals != None and True or False
         if self.useNormals:
@@ -89,7 +93,8 @@ class VBO:
             
     def Draw( self ):
         glEnableClientState( GL_VERTEX_ARRAY )
-        glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
+        self.vboVertArray.bind()
+##        glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
         glVertexPointer( 3, GL_FLOAT, 0, None )
         
         if self.useNormals: 

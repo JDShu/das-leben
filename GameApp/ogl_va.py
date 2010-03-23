@@ -18,6 +18,7 @@ import OpenGL
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+from OpenGL.arrays.vbo import VBO
 from ctypes import *
 
 import sys
@@ -137,4 +138,143 @@ class VA:
     def SetVertex( self, start_offset, vertex ):
         self.vertexes[ start_offset ] = vertex
         
+class NEW_VBO:
+    '''A vertex array handling class'''
+    def __init__( self, a_Vertexes, a_Normals=None, a_Indices=None, a_TexCoords=None, a_Colours=None, a_Quads=True ):
+        '''
+        create a vbo from a list of face points, normals, texture coords and colours
+        '''
+        self.vertxCount = len( a_Vertexes )
+        self.vertexes = zeros( ( len( a_Vertexes ), 3 ), dtype=float32 ) 
+        
+        min_x = 1000000.0
+        max_x = -1000000.0
+        min_y = 1000000.0
+        max_y = -1000000.0
+        min_z = 1000000.0
+        max_z = -1000000.0
+        for i, vert in enumerate( a_Vertexes ):
+            if hasattr( vert, "GetX" ):
+                self.vertexes[ i ][ 0 ] = vert.GetX()
+                self.vertexes[ i ][ 1 ] = vert.GetY()
+                self.vertexes[ i ][ 2 ] = vert.GetZ()
+            else:
+                self.vertexes[ i ] = vert
+                
+            if self.vertexes[ i ][0] < min_x: min_x = self.vertexes[ i ][ 0 ]
+            if self.vertexes[ i ][0] > max_x: max_x = self.vertexes[ i ][ 0 ]
+            if self.vertexes[ i ][1] < min_y: min_y = self.vertexes[ i ][ 1 ]
+            if self.vertexes[ i ][1] > max_y: max_y = self.vertexes[ i ][ 1 ]
+            if self.vertexes[ i ][2] < min_z: min_z = self.vertexes[ i ][ 2 ]
+            if self.vertexes[ i ][2] > max_z: max_z = self.vertexes[ i ][ 2 ]
+            
+        self.vertexVBO = VBO( self.vertexes )
+##        self.vertexVBO.create_buffers()
+##        self.vertexVBO.copy_data()
+        
+            
+        self.m_Dimensions = array( [ max_x - min_y, max_y - min_y, max_z - min_z ], dtype=float32 )
+                
+        self.useNormals = a_Normals != None and True or False
+        if self.useNormals:
+            self.normals = zeros( ( len( a_Normals ), 3 ), dtype=float32 ) 
+            for i, vert in enumerate( a_Normals ):
+                if hasattr( vert, "GetX" ):
+                    self.normals[ i ][ 0 ] = vert.GetX()
+                    self.normals[ i ][ 1 ] = vert.GetY()
+                    self.normals[ i ][ 2 ] = vert.GetZ()
+                else:
+                    self.normals[ i ] = vert
+            self.normalsVBO = VBO( self.normals )
+##            self.normalsVBO.create_buffers()
+##            self.normalsVBO.copy_data()
+        
+                    
+        self.useIndices = a_Indices != None and True or False
+        if self.useIndices:
+            self.indices = a_Indices
+            
+        self.useTexCoords = a_TexCoords != None and True or False
+        if self.useTexCoords:
+            self.texCoords = zeros( ( len( a_TexCoords ), 2 ), dtype=float32 ) 
+            for i, coord in enumerate( a_TexCoords ):
+                if hasattr( coord, "GetX" ):
+                    self.texCoords[ i ][ 0 ] = vert.GetX()
+                    self.texCoords[ i ][ 1 ] = vert.GetY()
+                else: 
+                    self.texCoords[ i ] = coord
+            self.texcoordsVBO = VBO( self.texCoords )
+##            self.texcoordsVBO.create_buffers()
+##            self.texcoordsVBO.copy_data()
+        
+                            
+        self.useColoursCoords = a_Colours != None and True or False
+        if self.useColoursCoords:
+            self.coloursCoords = zeros( ( len( a_Colours ), 3 ), dtype=float32 ) 
+            for i, vert in enumerate( a_Colours ):
+                self.coloursCoords[ i ][ 0 ] = vert[ 0 ]
+                self.coloursCoords[ i ][ 1 ] = vert[ 1 ]
+                self.coloursCoords[ i ][ 2 ] = vert[ 2 ]
+            self.coloursVBO = VBO( self.coloursCoords )
+##            self.coloursVBO.create_buffers()
+##            self.coloursVBO.copy_data()
+            
+        self.Facetype = a_Quads == True and GL_QUADS or GL_TRIANGLES
+        
+    def GetDimensions( self ):
+        return self.m_Dimensions
+            
+    def Draw( self ):
+        
+        
+        self.vertexVBO.bind()
+        glEnableClientState( GL_VERTEX_ARRAY )
+        if self.useNormals:
+            self.normalsVBO.bind()
+            glEnableClientState( GL_NORMAL_ARRAY )
+        if self.useTexCoords: 
+            self.texcoordsVBO.bind()
+            glEnableClientState( GL_TEXTURE_COORD_ARRAY )
+            
+        if self.useColoursCoords: 
+            self.coloursVBO.bind()
+            glEnableClientState( GL_COLOR_ARRAY )
+            
+        
+        if self.useNormals: glNormalPointerf( self.normalsVBO )
+        if self.useTexCoords: glTexCoordPointerf( self.texcoordsVBO )
+        if self.useColoursCoords:glColorPointerf( self.coloursVBO )
+        glVertexPointerf( self.vertexVBO )
+        
+        if not self.useIndices:
+            glDrawArrays( self.Facetype, 0, self.vertxCount )
+        else:
+            glDrawElements( self.Facetype, len( self.indices ), GL_UNSIGNED_SHORT, self.indices )
+
+        self.vertexVBO.unbind()
+        glDisableClientState( GL_VERTEX_ARRAY )
+        
+        if self.useNormals: 
+            self.normalsVBO.unbind()
+            glDisableClientState( GL_NORMAL_ARRAY )
+            
+        if self.useTexCoords: 
+            self.texcoordsVBO.unbind()
+            glDisableClientState( GL_TEXTURE_COORD_ARRAY )
+        
+        if self.useColoursCoords: 
+            self.coloursVBO.unbind()
+            glDisableClientState( GL_COLOR_ARRAY )
+        
+    Render = Draw
+    
+    def GetVertexArray( self ):
+        return self.vertexes
+    
+    def GetVertexPoint( self, offset ):
+        return self.vertexes[ offset ]
+    
+    def SetVertex( self, start_offset, vertex ):
+        self.vertexes[ start_offset ] = vertex
+
         

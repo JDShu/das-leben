@@ -147,7 +147,7 @@ class OBJ( Vector3d ):
             
             if self.va_colours == []: self.va_colours = None
             
-            self.va = VA( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+            self.va = NEW_VBO( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
         else:
             self.va = None
 
