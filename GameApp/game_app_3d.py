@@ -275,7 +275,8 @@ class GameApp3d:
         new_wall = wall.Clone()
         new_wall.SetScale( 0.25 )
         new_wall.SetPosition( 4, self.m_FloorHeight, 4 )
-        ObjectMultiplier( 6, Vector3d( 1, 0, 0), new_wall )
+        ConcatenatorObject( Vector3d( 1, 0, 0), new_wall, wall )
+        ConcatenatorObject( Vector3d( 2, 0, 0), new_wall, wall )
         oadd( new_wall )
         
         self.UpdateSplash( "Loading Wall with window..." )

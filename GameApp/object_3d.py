@@ -338,3 +338,68 @@ class ObjectMultiplier:
          a_Object._model.va.coloursCoords = colours
       
       a_Object._model.va.vertxCount = len( vertexes )
+      
+
+def ConcatenatorObject( a_Direction, a_Object, a_ObjectToAdd ):
+   l_Direction = Vector3d()
+   l_Direction = a_Direction
+   
+   va_vertexes = a_Object._model.va.vertexes
+   src_vertexes = a_ObjectToAdd._model.va.vertexes
+   vertexes = zeros( [ len( va_vertexes ) + len( src_vertexes ), 3 ], dtype=float32 )
+   
+   if hasattr( a_Object._model.va, "normals" ):
+      va_normals = a_Object._model.va.normals
+      src_normals = a_ObjectToAdd._model.va.normals
+      normals = zeros( [ len( va_normals ) + len( src_normals ), 3 ], dtype=float32 )
+      
+   if hasattr( a_Object._model.va, "texCoords" ):
+      va_texCoords = a_Object._model.va.texCoords
+      src_texCoords = a_ObjectToAdd._model.va.texCoords
+      texcoords = zeros( [ len( va_texCoords ) + len( src_texCoords ), 2 ], dtype=float32 )
+      
+   if hasattr( a_Object._model.va, "coloursCoords" ):
+      va_coloursCoords = a_Object._model.va.coloursCoords
+      src_coloursCoords = a_ObjectToAdd._model.va.coloursCoords
+      colours = zeros( [ len( va_coloursCoords ) + len( src_coloursCoords ), 3 ], dtype=float32 )
+   
+   size = len( va_vertexes )
+   
+   # first object
+   for j, values in enumerate( va_vertexes ):
+      vertexes[ j ][ 0 ] = values[ 0 ]
+      vertexes[ j ][ 1 ] = values[ 1 ]
+      vertexes[ j ][ 2 ] = values[ 2 ]
+      
+      if hasattr( a_Object._model.va, "normals" ):
+         normals[ j ] = va_normals[ j ]
+      if hasattr( a_Object._model.va, "texCoords" ):
+         texcoords[ j ] = va_texCoords[ j ]
+      if hasattr( a_Object._model.va, "coloursCoords" ):
+         colours[ j ] = va_coloursCoords[ j ]
+    
+   # concatenate the next object
+   obj_end = len( src_vertexes )
+   for j, values in enumerate( va_vertexes ):
+      vertexes[ obj_end + j ][ 0 ] = values[ 0 ] + l_Direction.GetX() 
+      vertexes[ obj_end + j ][ 1 ] = values[ 1 ] + l_Direction.GetY() 
+      vertexes[ obj_end + j ][ 2 ] = values[ 2 ] + l_Direction.GetZ() 
+      
+      if hasattr( a_Object._model.va, "normals" ):
+         normals[ obj_end + j ] = va_normals[ j ]
+      if hasattr( a_Object._model.va, "texCoords" ):
+         texcoords[ obj_end + j ] = va_texCoords[ j ]
+      if hasattr( a_Object._model.va, "coloursCoords" ):
+         colours[ obj_end + j ] = va_coloursCoords[ j ]
+      
+         
+   a_Object._model.va.vertexes = vertexes
+   if hasattr( a_Object._model.va, "normals" ):
+      a_Object._model.va.normals = normals
+   if hasattr( a_Object._model.va, "texCoords" ):
+      a_Object._model.va.texCoords = texcoords
+   if hasattr( a_Object._model.va, "coloursCoords" ):
+      a_Object._model.va.coloursCoords = colours
+   
+   a_Object._model.va.vertxCount = len( vertexes )
+   
