@@ -213,7 +213,7 @@ class GameApp3d:
         gadd( Ground )
         
         Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 50, 0.5 )
-
+        Ground.ToggleGrid()
         self.m_GroundGrid = Ground
         gradd( Ground )
         gadd( Ground )
@@ -266,17 +266,28 @@ class GameApp3d:
                           object_type=OBJECT_3D_MESH)
         
         wall.SetScale( 0.25 )
-        wall.SetPosition( 2.75, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
+        wall.SetPosition( 2.75, wall._model.va.GetDimensions()[ 1 ] 
+                          * wall._model.GetScale() * 0.5 , 2.0 )
         self.m_FloorHeight = wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5
         oadd( wall )
         obadd( wall )
         self.m_Wall = wall
         
+        wall90d = Object3d( "%s/environment/manmade/walls/wall_plus_90degrees.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        wall90d.SetScale( 0.25 )
+        wall90d.SetPosition( 2.75,wall90d.GetHeight(), 3.0 )
+        oadd( wall90d )
+        obadd( wall90d )
+        
         new_wall = wall.Clone()
         new_wall.SetScale( 0.25 )
-        new_wall.SetPosition( 4, self.m_FloorHeight, 4 )
-        ConcatenatorObject( Vector3d( 1, 0, 0), new_wall, wall )
-        ConcatenatorObject( Vector3d( 2, 0, 0), new_wall, wall )
+        new_wall.SetPosition( 4.25, self.m_FloorHeight, 4 )
+        ConcatenateObject( Vector3d( 1, 0, 0), new_wall, wall )
+        ConcatenateObject( Vector3d( 2, 0, 0), new_wall, wall )
+        ConcatenateObject( Vector3d( 3 - wall90d.GetWidth() , 0, 1), new_wall, wall90d )
         oadd( new_wall )
         
         self.UpdateSplash( "Loading Wall with window..." )
@@ -322,7 +333,20 @@ class GameApp3d:
 ##        self.house = house
 
         self.m_currentTicks = self.m_oldTicks = pygame.time.get_ticks()
-        self.m_Ticks = 0    
+        self.m_Ticks = 0   
+        
+        build_tool = Object3d( "%s/gui/tools/building_tool.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        build_tool.SetScale( 0.11 )
+        build_tool.SetPosition( 6.0, 
+                           build_tool.GetHeight(), 
+                           3.0 )
+        oadd( build_tool )
+        obadd( build_tool )
+        
+        self.m_BuildTool = build_tool
 
     def UpdateSplash( self, a_Message ):
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT )
@@ -355,6 +379,7 @@ class GameApp3d:
         events = pygame.event.get()
         
         l_X, l_Y = pygame.mouse.get_pos()
+                
         
         for event in events:
             if event.type == KEYDOWN:
@@ -380,7 +405,7 @@ class GameApp3d:
                     addVec = Vector3d( 0.5, 0, 0.5 )
                     self.m_SelectedArea.BeginEditing()
                     self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
-               
+                    self.m_BuildTool.SetPosition( new_x, y, new_z )
                     
             elif event.type == MOUSEBUTTONUP:
                 if event.button == LEFT_MOUSE:
@@ -414,6 +439,7 @@ class GameApp3d:
             new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
             l_End.SetPosition( new_x, y, new_z )
             self.m_SelectedArea.UpdateEnd( l_End )
+            self.m_BuildTool.SetPosition( new_x, y, new_z )
                     
         return self.ProccessKeys()
 

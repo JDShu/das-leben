@@ -376,7 +376,7 @@ class FloorRegion( Region ):
         self.m_ShowFloor = True
         self.m_ShowWalls = True
         
-        wall_height = ( a_Wall._model.va.GetDimensions()[ 1 ] * a_Wall._model.GetScale() * 0.5 ) + a_Y
+        wall_height = a_Wall.GetHeight() + a_Y
         self.textureID = 0
         top_row = ( a_Height - 1 ) * a_Width 
         # make the top and bottom rows
@@ -384,12 +384,12 @@ class FloorRegion( Region ):
         quad = self.quads[ 0 ]
         x, y, z, w = quad.GetPosition()
         wall = a_Wall.Clone()
-        ObjectMultiplier( a_Width, Vector3d( 2, 0, 0), wall )
+        MultiplyObject( a_Width, Vector3d( 2, 0, 0), wall )
         wall.SetPosition( x, wall_height, z - ( a_Size / 2 ) )
         quad.obj = wall
         
         wall = a_Wall.Clone()
-        ObjectMultiplier( a_Height, Vector3d( 2, 0, 0), wall )
+        MultiplyObject( a_Height, Vector3d( 2, 0, 0), wall )
         wall.m_YRot.SetAngle( -90.0 )
         wall.SetPosition( x - ( a_Size / 2 ), wall_height, z )
         quad.extra.append( wall ) 
@@ -397,12 +397,12 @@ class FloorRegion( Region ):
         quad = self.quads[ ( a_Height - 1 ) * a_Width ]
         x, y, z, w = quad.GetPosition()
         wall = a_Wall.Clone()
-        ObjectMultiplier( a_Width, Vector3d( 2, 0, 0), wall )
+        MultiplyObject( a_Width, Vector3d( 2, 0, 0), wall )
         wall.SetPosition( x , wall_height, z + ( a_Size / 2 ) )
         quad.obj = wall
         
         wall = a_Wall.Clone()
-        ObjectMultiplier( a_Height, Vector3d( 2, 0, 0), wall )
+        MultiplyObject( a_Height, Vector3d( 2, 0, 0), wall )
         wall.m_YRot.SetAngle( 90.0 )
         wall.SetPosition( x - ( a_Size / 2 ) + ( a_Width * a_Size ) , wall_height, z  )
         quad.extra.append( wall ) 

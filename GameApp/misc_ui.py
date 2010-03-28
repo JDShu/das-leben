@@ -129,7 +129,7 @@ class SelectedRegion:
         
         return vertexes
     
-    def UpdateEnd( self, a_EndPosition ):
+    def UpdateEnd( self, a_EndPosition ):            
         self.m_End = a_EndPosition
         vertexes = self.CreateVertexes( self.m_Start, a_EndPosition )
         self.m_VA.vertexes = vertexes

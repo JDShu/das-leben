@@ -88,6 +88,15 @@ class Object3d( Vector3d ):
       
       self.drawmode = OBJECT_3D_DRAW_SOLID
       
+   def GetWidth( self ):
+      return self._model.va.GetDimensions()[ 0 ] * self._model.GetScale() * 0.25
+      
+   def GetHeight( self ):
+      return self._model.va.GetDimensions()[ 1 ] * self._model.GetScale() * 0.5
+   
+   def GetDepth( self ):
+      return self._model.va.GetDimensions()[ 2 ] * self._model.GetScale() * 0.25
+   
    def Clone( self ):
       cloned_object3d = Object3d()
       cloned_object3d.m_Colour = self.m_Colour
@@ -141,206 +150,55 @@ class Object3d( Vector3d ):
    def GetGLName( self ):
       return self.m_GLName
       
-class Wall:
-   def __init__(self, useVBO=True):
-      self.num_faces = 6
-           
-      self.m_UseVBO = useVBO
-      
-      self.vertices = array([ [-2.0, 0.0, 0.2],
-                        [2.0, 0.0, 0.2],
-                        [2.0, 5.0, 0.2],
-                        [-2.0, 5.0, 0.2],
-                        [-2.0, 0.0, 0.0],
-                        [2.0, 0.0, 0.0],
-                        [2.0, 5.0, 0.0],
-                        [-2.0, 5.0, 0.0] ], dtype=float32)
-          
-      self.normals = array([ [0.0, 0.0, +1.0],  # front
-                       [0.0, 0.0, -1.0],  # back
-                       [+1.0, 0.0, 0.0],  # right
-                       [-1.0, 0.0, 0.0],  # left 
-                       [0.0, +1.0, 0.0],  # top
-                       [0.0, -1.0, 0.0] ], dtype=float32) # bottom
-      
-      self.vertex_indices = array([ [0, 1, 2, 3],  # front
-                              [4, 5, 6, 7],  # back
-                              [1, 5, 6, 2],  # right
-                              [0, 4, 7, 3],  # left
-                              [3, 2, 6, 7],  # top
-                              [0, 1, 5, 4] ], dtype=int32) # bottom  
-      
-      if self.m_UseVBO:  
-         l_Verts = zeros( ( ( self.num_faces * 4 ), 3 ), dtype=float32 )
-         l_Normals = zeros( ( ( self.num_faces * 4 ), 3 ), dtype=float32 )
-         for face_no in xrange(self.num_faces):
-                                   
-            v1, v2, v3, v4 = self.vertex_indices[face_no]
-            
-            l_Normals[ ( face_no * 4 ) + 0 ] = self.normals[face_no]
-            l_Normals[ ( face_no * 4 ) + 1 ] = self.normals[face_no]
-            l_Normals[ ( face_no * 4 ) + 2 ] = self.normals[face_no]
-            l_Normals[ ( face_no * 4 ) + 3 ] = self.normals[face_no]
-            
-            l_Verts[ ( face_no * 4 ) + 0 ] = self.vertices[v1]
-            l_Verts[ ( face_no * 4 ) + 1 ] = self.vertices[v2]
-            l_Verts[ ( face_no * 4 ) + 2 ] = self.vertices[v3]
-            l_Verts[ ( face_no * 4 ) + 3 ] = self.vertices[v4]
-            
-         self.m_VBOVertices = glGenBuffersARB( 1 )      
-         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOVertices );
-         glBufferDataARB( GL_ARRAY_BUFFER_ARB, l_Verts, GL_STATIC_DRAW_ARB );
+     
          
-         self.m_VBONormals = glGenBuffersARB( 1 )
-         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBONormals );
-         glBufferDataARB( GL_ARRAY_BUFFER_ARB, l_Normals, GL_STATIC_DRAW_ARB );
-         
+
+def MultiplyObject( a_Multiple, a_Direction, a_Object ):
+   l_Direction = Vector3d()
+   l_Direction = a_Direction
    
-   def render(self, scale):                
-      glColor3f( 1.0, 1.0, 1.0 )
-      glDisable( GL_TEXTURE_2D )
-      # Draw all 6 faces of the cube
-      if not self.m_UseVBO:
-         glBegin(GL_QUADS)
-         
-         for face_no in xrange(self.num_faces):
-                         
-            glNormal3dv( self.normals[face_no] )
-            
-            v1, v2, v3, v4 = self.vertex_indices[face_no]
-            
-            x, y, z = self.vertices[v1]
-            glVertex3f( x * scale, y * scale, z * scale)
-            x, y, z = self.vertices[v2]
-            glVertex3f( x * scale, y * scale, z * scale)
-            x, y, z = self.vertices[v3]
-            glVertex3f( x * scale, y * scale, z * scale)
-            x, y, z = self.vertices[v4]
-            glVertex3f( x * scale, y * scale, z * scale)
-        
-         glEnd()
-      else:
-         glScalef( scale, scale, scale )
-         glEnableClientState( GL_VERTEX_ARRAY )
-         glEnableClientState( GL_NORMAL_ARRAY )
-                  
-         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOVertices )
-         glVertexPointer( 3, GL_FLOAT, 0, None )
-         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBONormals )
-         glNormalPointer( GL_FLOAT, 0, None )
-         
-         glDrawArrays( GL_QUADS, 0, 24 )
+   va_vertexes = a_Object._model.va.vertexes
+   vertexes = zeros( [ len( va_vertexes ) * a_Multiple, 3 ], dtype=float32 )
+   
+   if hasattr( a_Object._model.va, "normals" ):
+      va_normals = a_Object._model.va.normals
       
-         glDisableClientState( GL_VERTEX_ARRAY )
-         glDisableClientState( GL_NORMAL_ARRAY )
-         
-      def __del__(self):
-         glDeleteBuffers( 1, GL.GLuint( self.m_VBOVertices ) )
-         glDeleteBuffers( 1, GL.GLuint( self.m_VBONormals ) )
-         
-         
-class Platform( Wall ):
-   def __init__( self, useVBO=True):
-      self.num_faces = 6
-           
-      self.m_UseVBO = useVBO
+      normals = zeros( [ len( va_normals ) * a_Multiple, 3 ], dtype=float32 )
+   if hasattr( a_Object._model.va, "texCoords" ):
+      va_texCoords = a_Object._model.va.texCoords
+      texcoords = zeros( [ len( va_texCoords ) * a_Multiple, 2 ], dtype=float32 )
       
-      self.vertices = array([ [-2.0, 0.0, 0.5],
-                              [2.0, 0.0, 0.5],
-                              [2.0, 5.0, 0.5],
-                              [-2.0, 5.0, 0.5],
-                              [-2.0, 0.0, 0.0],
-                              [2.0, 0.0, 0.0],
-                              [2.0, 5.0, 0.0],
-                              [-2.0, 5.0, 0.0] ], dtype=float32)
-          
-      self.normals = array([ [0.0, 0.0, +1.0],  # front
-                             [0.0, 0.0, -1.0],  # back
-                             [+1.0, 0.0, 0.0],  # right
-                             [-1.0, 0.0, 0.0],  # left 
-                             [0.0, +1.0, 0.0],  # top
-                             [0.0, -1.0, 0.0] ], dtype=float32) # bottom
-      
-      self.vertex_indices = array([ [0, 1, 2, 3],  # front
-                                    [4, 5, 6, 7],  # back
-                                    [1, 5, 6, 2],  # right
-                                    [0, 4, 7, 3],  # left
-                                    [3, 2, 6, 7],  # top
-                                    [0, 1, 5, 4] ], dtype=int32) # bottom  
-      
-      if self.m_UseVBO:  
-         l_Verts = zeros( ( ( self.num_faces * 4 ), 3 ), dtype=float32 )
-         l_Normals = zeros( ( ( self.num_faces * 4 ), 3 ), dtype=float32 )
-         for face_no in xrange(self.num_faces):
-                                   
-            v1, v2, v3, v4 = self.vertex_indices[face_no]
-            
-            l_Normals[ ( face_no * 4 ) + 0 ] = self.normals[face_no]
-            l_Normals[ ( face_no * 4 ) + 1 ] = self.normals[face_no]
-            l_Normals[ ( face_no * 4 ) + 2 ] = self.normals[face_no]
-            l_Normals[ ( face_no * 4 ) + 3 ] = self.normals[face_no]
-            
-            l_Verts[ ( face_no * 4 ) + 0 ] = self.vertices[v1]
-            l_Verts[ ( face_no * 4 ) + 1 ] = self.vertices[v2]
-            l_Verts[ ( face_no * 4 ) + 2 ] = self.vertices[v3]
-            l_Verts[ ( face_no * 4 ) + 3 ] = self.vertices[v4]
-            
-         self.m_VBOVertices = glGenBuffersARB( 1 )      
-         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBOVertices )
-         glBufferDataARB( GL_ARRAY_BUFFER_ARB, l_Verts, GL_STATIC_DRAW_ARB )
+   if hasattr( a_Object._model.va, "coloursCoords" ):
+      va_coloursCoords = a_Object._model.va.coloursCoords
+      colours = zeros( [ len( va_coloursCoords ) * a_Multiple, 3 ], dtype=float32 )
+   
+   size = len( va_vertexes )
+   
+   for i in xrange( a_Multiple ):
+      for j, values in enumerate( va_vertexes ):
+         vertexes[ ( i * size ) + j ][ 0 ] = values[ 0 ] + ( i * l_Direction.GetX() )
+         vertexes[ ( i * size ) + j ][ 1 ] = values[ 1 ] + ( i * l_Direction.GetY() )
+         vertexes[ ( i * size ) + j ][ 2 ] = values[ 2 ] + ( i * l_Direction.GetZ() )
          
-         self.m_VBONormals = glGenBuffersARB( 1 )
-         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.m_VBONormals )
-         glBufferDataARB( GL_ARRAY_BUFFER_ARB, l_Normals, GL_STATIC_DRAW_ARB )
+         if hasattr( a_Object._model.va, "normals" ):
+            normals[ ( i * size ) + j ] = va_normals[ j ]
+         if hasattr( a_Object._model.va, "texCoords" ):
+            texcoords[ ( i * size ) + j ] = va_texCoords[ j ]
+         if hasattr( a_Object._model.va, "coloursCoords" ):
+            colours[ ( i * size ) + j ] = va_coloursCoords[ i ]
          
-         
-class ObjectMultiplier:
-   def __init__( self, a_Multiple, a_Direction, a_Object ):
-      l_Direction = Vector3d()
-      l_Direction = a_Direction
-      
-      va_vertexes = a_Object._model.va.vertexes
-      vertexes = zeros( [ len( va_vertexes ) * a_Multiple, 3 ], dtype=float32 )
-      
-      if hasattr( a_Object._model.va, "normals" ):
-         va_normals = a_Object._model.va.normals
-         
-         normals = zeros( [ len( va_normals ) * a_Multiple, 3 ], dtype=float32 )
-      if hasattr( a_Object._model.va, "texCoords" ):
-         va_texCoords = a_Object._model.va.texCoords
-         texcoords = zeros( [ len( va_texCoords ) * a_Multiple, 2 ], dtype=float32 )
-         
-      if hasattr( a_Object._model.va, "coloursCoords" ):
-         va_coloursCoords = a_Object._model.va.coloursCoords
-         colours = zeros( [ len( va_coloursCoords ) * a_Multiple, 3 ], dtype=float32 )
-      
-      size = len( va_vertexes )
-      
-      for i in xrange( a_Multiple ):
-         for j, values in enumerate( va_vertexes ):
-            vertexes[ ( i * size ) + j ][ 0 ] = values[ 0 ] + ( i * l_Direction.GetX() )
-            vertexes[ ( i * size ) + j ][ 1 ] = values[ 1 ] + ( i * l_Direction.GetY() )
-            vertexes[ ( i * size ) + j ][ 2 ] = values[ 2 ] + ( i * l_Direction.GetZ() )
-            
-            if hasattr( a_Object._model.va, "normals" ):
-               normals[ ( i * size ) + j ] = va_normals[ j ]
-            if hasattr( a_Object._model.va, "texCoords" ):
-               texcoords[ ( i * size ) + j ] = va_texCoords[ j ]
-            if hasattr( a_Object._model.va, "coloursCoords" ):
-               colours[ ( i * size ) + j ] = va_coloursCoords[ i ]
-            
-      a_Object._model.va.vertexes = vertexes
-      if hasattr( a_Object._model.va, "normals" ):
-         a_Object._model.va.normals = normals
-      if hasattr( a_Object._model.va, "texCoords" ):
-         a_Object._model.va.texCoords = texcoords
-      if hasattr( a_Object._model.va, "coloursCoords" ):
-         a_Object._model.va.coloursCoords = colours
-      
-      a_Object._model.va.vertxCount = len( vertexes )
+   a_Object._model.va.vertexes = vertexes
+   if hasattr( a_Object._model.va, "normals" ):
+      a_Object._model.va.normals = normals
+   if hasattr( a_Object._model.va, "texCoords" ):
+      a_Object._model.va.texCoords = texcoords
+   if hasattr( a_Object._model.va, "coloursCoords" ):
+      a_Object._model.va.coloursCoords = colours
+   
+   a_Object._model.va.vertxCount = len( vertexes )
       
 
-def ConcatenatorObject( a_Direction, a_Object, a_ObjectToAdd ):
+def ConcatenateObject( a_Direction, a_Object, a_ObjectToAdd ):
    l_Direction = Vector3d()
    l_Direction = a_Direction
    
@@ -379,8 +237,8 @@ def ConcatenatorObject( a_Direction, a_Object, a_ObjectToAdd ):
          colours[ j ] = va_coloursCoords[ j ]
     
    # concatenate the next object
-   obj_end = len( src_vertexes )
-   for j, values in enumerate( va_vertexes ):
+   obj_end = len( va_vertexes )
+   for j, values in enumerate( src_vertexes ):
       vertexes[ obj_end + j ][ 0 ] = values[ 0 ] + l_Direction.GetX() 
       vertexes[ obj_end + j ][ 1 ] = values[ 1 ] + l_Direction.GetY() 
       vertexes[ obj_end + j ][ 2 ] = values[ 2 ] + l_Direction.GetZ() 
