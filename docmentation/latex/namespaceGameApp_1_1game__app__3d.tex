@@ -1,0 +1,74 @@
+\hypertarget{namespaceGameApp_1_1game__app__3d}{
+\section{GameApp::game\_\-app\_\-3d Namespace Reference}
+\label{namespaceGameApp_1_1game__app__3d}\index{GameApp::game\_\-app\_\-3d@{GameApp::game\_\-app\_\-3d}}
+}
+
+
+\subsection*{Classes}
+\begin{CompactItemize}
+\item 
+class \hyperlink{classGameApp_1_1game__app__3d_1_1GameApp3d}{GameApp3d}
+\end{CompactItemize}
+\subsection*{Functions}
+\begin{CompactItemize}
+\item 
+def \hyperlink{namespaceGameApp_1_1game__app__3d_a3085aa95bfb5219ad8cd68da221b8c1}{UpdateSplash}
+\begin{CompactList}\small\item\em self.UpdateSplash( \char`\"{}Loading House...\char`\"{} ) house = Object3d( \char`\"{}\%s/home/House010.obj\char`\"{} \% self.DATA\_\-PATH, None, object\_\-type=OBJECT\_\-3D\_\-MESH, a\_\-Colour=\mbox{[}1.0, 1.0, 0.0\mbox{]}) \item\end{CompactList}\end{CompactItemize}
+\subsection*{Variables}
+\begin{CompactItemize}
+\item 
+tuple \hyperlink{namespaceGameApp_1_1game__app__3d_29293ccb6c6bb28b0f15c70b628df5eb}{chair}
+\begin{CompactList}\small\item\em Model = Avatar( self.DATA\_\-PATH, DUDETTE ) Model.SetPosition( 4.0, Model.GetAltitude( 0.0 ), 4.5 ). \item\end{CompactList}\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+
+
+\footnotesize\begin{verbatim}
+ * This file is part of La Vida
+ * Copyright (C) 2009 Mike Hibbert
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+\end{verbatim}
+\normalsize
+ 
+
+\subsection{Function Documentation}
+\hypertarget{namespaceGameApp_1_1game__app__3d_a3085aa95bfb5219ad8cd68da221b8c1}{
+\index{GameApp::game\_\-app\_\-3d@{GameApp::game\_\-app\_\-3d}!UpdateSplash@{UpdateSplash}}
+\index{UpdateSplash@{UpdateSplash}!GameApp::game_app_3d@{GameApp::game\_\-app\_\-3d}}
+\subsubsection[UpdateSplash]{\setlength{\rightskip}{0pt plus 5cm}def GameApp::game\_\-app\_\-3d::UpdateSplash ( {\em self}, \/   {\em a\_\-Message})}}
+\label{namespaceGameApp_1_1game__app__3d_a3085aa95bfb5219ad8cd68da221b8c1}
+
+
+self.UpdateSplash( \char`\"{}Loading House...\char`\"{} ) house = Object3d( \char`\"{}\%s/home/House010.obj\char`\"{} \% self.DATA\_\-PATH, None, object\_\-type=OBJECT\_\-3D\_\-MESH, a\_\-Colour=\mbox{[}1.0, 1.0, 0.0\mbox{]}) 
+
+house.SetScale( 200 ) house.m\_\-XRot.SetAngle( -90 ) house.SetPosition( 0, 0, -4 ) oadd( house ) self.house = house 
+
+\subsection{Variable Documentation}
+\hypertarget{namespaceGameApp_1_1game__app__3d_29293ccb6c6bb28b0f15c70b628df5eb}{
+\index{GameApp::game\_\-app\_\-3d@{GameApp::game\_\-app\_\-3d}!chair@{chair}}
+\index{chair@{chair}!GameApp::game_app_3d@{GameApp::game\_\-app\_\-3d}}
+\subsubsection[chair]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf GameApp::game\_\-app\_\-3d::chair}}}
+\label{namespaceGameApp_1_1game__app__3d_29293ccb6c6bb28b0f15c70b628df5eb}
+
+
+\textbf{Initial value:}
+
+\begin{Code}\begin{verbatim}Object3d( "%s/environment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+\end{verbatim}
+\end{Code}
+Model = Avatar( self.DATA\_\-PATH, DUDETTE ) Model.SetPosition( 4.0, Model.GetAltitude( 0.0 ), 4.5 ). 
+
+self.m\_\-Model = Model oadd( Model ) 

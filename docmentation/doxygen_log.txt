@@ -1,0 +1,595 @@
+Searching for include files...
+Searching for example files...
+Searching for images...
+Searching for dot files...
+Searching for files to exclude
+Searching for files to process...
+Searching for files in directory /home/mike/Documents/la-vida/trunk
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dude/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/avatars/dudette/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/doors/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/floors/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/furniture/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/manmade/walls/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/grounds/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/miscellaneous/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/plants/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/lost_valley/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/night/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/environment/nature/skies/open_fields_day/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/fonts/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/graphics/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/gui/icons/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/music/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/data/wingide
+Searching for files in directory /home/mike/Documents/la-vida/trunk/docmentation
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/GameApp/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/.svn/tmp/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn/text-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn/tmp
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn/tmp/prop-base
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn/tmp/props
+Searching for files in directory /home/mike/Documents/la-vida/trunk/modules/md2/.svn/tmp/text-base
+Reading and parsing tag files
+Reading /home/mike/Documents/la-vida/trunk/GameApp/__init__.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/__init__.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/angle.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/angle.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/buildings.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/buildings.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/characters.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/characters.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/collisions.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/collisions.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/constants.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/constants.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/environment.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/environment.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/game_app_3d.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/game_app_3d.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/glFreeType.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/glFreeType.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/lavida_gui.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/lavida_gui.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/math3D.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/math3D.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/md2.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/md2.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/misc_ui.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/misc_ui.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/obj.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/obj.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/object_3d.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/object_3d.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/ogl_camera.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/ogl_camera.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/ogl_shader.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/ogl_shader.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/ogl_va.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/ogl_va.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/ogl_vbo.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/ogl_vbo.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/OGLExt.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/OGLExt.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/terrain_objects.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/terrain_objects.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/vector_3d.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/vector_3d.py...
+Reading /home/mike/Documents/la-vida/trunk/GameApp/wavefront.py...
+Parsing file /home/mike/Documents/la-vida/trunk/GameApp/wavefront.py...
+Reading /home/mike/Documents/la-vida/trunk/la-vida.py...
+Parsing file /home/mike/Documents/la-vida/trunk/la-vida.py...
+Reading /home/mike/Documents/la-vida/trunk/lavida_config.py...
+Parsing file /home/mike/Documents/la-vida/trunk/lavida_config.py...
+Reading /home/mike/Documents/la-vida/trunk/modules/md2/md2.py...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2.py...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/md2_wrap.cxx...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2_wrap.cxx...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/md2Animation.cpp...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2Animation.cpp...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/md2Animation.h...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2Animation.h...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/md2Model.h...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2Model.h...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/md2Object.cpp...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2Object.cpp...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/md2Object.h...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/md2Object.h...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/oglTexture.cpp...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/oglTexture.cpp...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/oglTexture.h...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/oglTexture.h...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp...
+Preprocessing /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h...
+Parsing file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h...
+Reading /home/mike/Documents/la-vida/trunk/setup.py...
+Parsing file /home/mike/Documents/la-vida/trunk/setup.py...
+Building group list...
+Building directory list...
+Building namespace list...
+Building file list...
+Searching for included using directives...
+Building class list...
+Associating documentation with classes...
+Computing nesting relations for classes...
+Searching for members imported via using declarations...
+Building example list...
+Searching for enumerations...
+Searching for documented variables...
+Building member list...
+Searching for friends...
+Searching for documented defines...
+Computing class inheritance relations...
+Computing class usage relations...
+Flushing cached template relations that have become invalid...
+Creating members for template instances...
+Computing class relations...
+Add enum values to enums...
+Searching for member function documentation...
+/home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp:192: Warning: no uniquely matching class member found for
+  bool md2Model::LoadTexture(string a_Filename)
+Possible candidates:
+  
+def 
+md2::md2Model::LoadTexture
+ at line 314 of file /home/mike/Documents/la-vida/trunk/modules/md2/md2.py
+
+/home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp:207: Warning: no matching class member found for
+  void md2Model::SetTexture(string a_Filename)
+Possible candidates:
+  def md2::md2Model::SetTexture
+/home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp:221: Warning: no matching class member found for
+  void md2Model::SetFromExistingTexture(string a_Filename, oglTexture *a_Texture)
+Possible candidates:
+  def md2::md2Model::SetFromExistingTexture
+/home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp:281: Warning: documented function `void md2Model::MakeVBOFrame' was not declared or defined.
+/home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp:349: Warning: no matching class member found for
+  void md2Model::DrawImmediateWithInterpolation(int a_FromFrame, int a_ToFrame, GLfloat a_Interpolation)
+Possible candidates:
+  def md2::md2Model::DrawImmediateWithInterpolation
+/home/mike/Documents/la-vida/trunk/modules/md2/md2Model.cpp:408: Warning: no matching class member found for
+  void md2Model::DrawGLCommandsWithInterpolation(int a_FromFrame, int a_ToFrame, GLfloat a_Interpolation)
+Possible candidates:
+  def md2::md2Model::DrawGLCommandsWithInterpolation
+/home/mike/Documents/la-vida/trunk/modules/md2/md2Object.cpp:66: Warning: no uniquely matching class member found for
+  void md2Object::Animate(int a_StartFrame, int a_EndFrame, int a_Ticks)
+Possible candidates:
+  def md2::md2Object::Animate at line 349 of file /home/mike/Documents/la-vida/trunk/modules/md2/md2.py
+  void md2Object::Animate(int a_StartFrame, int a_EndFrame, GLfloat a_Percentage) at line 50 of file /home/mike/Documents/la-vida/trunk/modules/md2/md2Object.h
+  void md2Object::Animate(GLfloat a_Percentage) at line 51 of file /home/mike/Documents/la-vida/trunk/modules/md2/md2Object.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:30: Warning: no uniquely matching class member found for
+  Vector3d::Vector3d()
+Possible candidates:
+  Vector3d::Vector3d() at line 31 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d::Vector3d(float x, float y, float z) at line 32 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d::Vector3d(float x, float y, float z, float w) at line 33 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:42: Warning: no uniquely matching class member found for
+  Vector3d::Vector3d(float x, float y, float z)
+Possible candidates:
+  Vector3d::Vector3d() at line 31 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d::Vector3d(float x, float y, float z) at line 32 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d::Vector3d(float x, float y, float z, float w) at line 33 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:55: Warning: no uniquely matching class member found for
+  Vector3d::Vector3d(float x, float y, float z, float w)
+Possible candidates:
+  Vector3d::Vector3d() at line 31 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d::Vector3d(float x, float y, float z) at line 32 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d::Vector3d(float x, float y, float z, float w) at line 33 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:63: Warning: no uniquely matching class member found for
+  Vector3d & Vector3d::operator=(const Vector3d &rhs)
+Possible candidates:
+  Vector3d & Vector3d::operator=(const Vector3d &rhs) at line 35 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:79: Warning: no matching class member found for
+  void Vector3d::SetVectorFromAngles(Angle *a_AngleY, Angle *a_AngleX, float a_Length)
+Possible candidates:
+  void Vector3d::SetVectorFromAngles(Angle *a_AngleY, Angle *a_AngleX, float a_Length)
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:92: Warning: no matching class member found for
+  float & Vector3d::operator[](const int a_Index)
+Possible candidates:
+  float & Vector3d::operator[](const int a_Index)
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:97: Warning: no matching class member found for
+  float * Vector3d::Access()
+Possible candidates:
+  float * Vector3d::Access()
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:102: Warning: no uniquely matching class member found for
+  Vector3d & Vector3d::operator+=(const Vector3d &rhs)
+Possible candidates:
+  Vector3d & Vector3d::operator+=(const Vector3d &rhs) at line 36 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:113: Warning: no uniquely matching class member found for
+  const Vector3d Vector3d::operator+(const Vector3d &rhs) const
+Possible candidates:
+  const Vector3d Vector3d::operator+(const Vector3d &rhs) const  at line 37 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:121: Warning: no uniquely matching class member found for
+  Vector3d & Vector3d::operator-=(const Vector3d &rhs)
+Possible candidates:
+  Vector3d & Vector3d::operator-=(const Vector3d &rhs) at line 38 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:132: Warning: no uniquely matching class member found for
+  const Vector3d Vector3d::operator-(const Vector3d &rhs) const
+Possible candidates:
+  const Vector3d Vector3d::operator-(const Vector3d &rhs) const  at line 39 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:140: Warning: no uniquely matching class member found for
+  Vector3d & Vector3d::operator/=(const Vector3d &rhs)
+Possible candidates:
+  Vector3d & Vector3d::operator/=(const Vector3d &rhs) at line 40 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d & Vector3d::operator/=(const float rhs) at line 42 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:151: Warning: no uniquely matching class member found for
+  Vector3d & Vector3d::operator/=(const float rhs)
+Possible candidates:
+  Vector3d & Vector3d::operator/=(const Vector3d &rhs) at line 40 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  Vector3d & Vector3d::operator/=(const float rhs) at line 42 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:162: Warning: no uniquely matching class member found for
+  const Vector3d Vector3d::operator/(const Vector3d &rhs) const
+Possible candidates:
+  const Vector3d Vector3d::operator/(const Vector3d &rhs) const  at line 41 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  const Vector3d Vector3d::operator/(const float rhs) const  at line 43 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:170: Warning: no uniquely matching class member found for
+  const Vector3d Vector3d::operator/(const float rhs) const
+Possible candidates:
+  const Vector3d Vector3d::operator/(const Vector3d &rhs) const  at line 41 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+  const Vector3d Vector3d::operator/(const float rhs) const  at line 43 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:178: Warning: no matching class member found for
+  void Vector3d::PrintMe()
+Possible candidates:
+  void Vector3d::PrintMe()
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:190: Warning: no uniquely matching class member found for
+  const float Vector3d::Length()
+Possible candidates:
+  def GameApp::vector_3d::Vector3d::Length at line 109 of file /home/mike/Documents/la-vida/trunk/GameApp/vector_3d.py
+  const float Vector3d::Length() at line 45 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:200: Warning: no matching class member found for
+  const float Vector3d::LengthSquared()
+Possible candidates:
+  const float Vector3d::LengthSquared()
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:210: Warning: no uniquely matching class member found for
+  Vector3d Vector3d::CrossProduct(Vector3d &rhs)
+Possible candidates:
+  def GameApp::vector_3d::Vector3d::CrossProduct at line 131 of file /home/mike/Documents/la-vida/trunk/GameApp/vector_3d.py
+  Vector3d Vector3d::CrossProduct(Vector3d &rhs) at line 48 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:226: Warning: no uniquely matching class member found for
+  float Vector3d::Dot(Vector3d &rhs)
+Possible candidates:
+  def GameApp::vector_3d::Vector3d::Dot at line 126 of file /home/mike/Documents/la-vida/trunk/GameApp/vector_3d.py
+  float Vector3d::Dot(Vector3d &rhs) at line 49 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:237: Warning: no matching class member found for
+  Angle Vector3d::AngleTo(Vector3d &a_Vector)
+Possible candidates:
+  Angle Vector3d::AngleTo(Vector3d &a_Vector)
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:249: Warning: no matching class member found for
+  float Vector3d::AngleToVectorInDegrees(Vector3d &a_Vector)
+Possible candidates:
+  float Vector3d::AngleToVectorInDegrees(Vector3d &a_Vector)
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:255: Warning: no uniquely matching class member found for
+  void Vector3d::Normalise()
+Possible candidates:
+  def GameApp::vector_3d::Vector3d::Normalise at line 114 of file /home/mike/Documents/la-vida/trunk/GameApp/vector_3d.py
+  void Vector3d::Normalise() at line 47 of file /home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.h
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:266: Warning: no matching class member found for
+  void Vector3d::RotateToAngle(Angle *a_AngleXY, Angle *a_AngleXZ)
+Possible candidates:
+  void Vector3d::RotateToAngle(Angle *a_AngleXY, Angle *a_AngleXZ)
+/home/mike/Documents/la-vida/trunk/modules/md2/Vector3d.cpp:275: Warning: no matching class member found for
+  void Vector3d::Negate()
+Possible candidates:
+  void Vector3d::Negate()
+Building page list...
+Search for main page...
+Computing page relations...
+Determining the scope of groups...
+Sorting lists...
+Freeing entry tree
+Determining which enums are documented
+Computing member relations...
+Building full member lists recursively...
+Adding members to member groups.
+Computing member references...
+Inheriting documentation...
+Generating disk names...
+Adding source references...
+Adding todo/test/bug list items...
+Counting data structures...
+Resolving user defined references...
+Finding anchors and sections in the documentation...
+Combining using relations...
+Generating style sheet...
+Generating index page...
+Generating page index...
+Generating example documentation...
+Generating file sources...
+Generating file documentation...
+Generating page documentation...
+Generating group documentation...
+Generating group index...
+Generating class documentation...
+Generating annotated compound index...
+Generating hierarchical class index...
+Generating member index...
+Generating graphical class hierarchy...
+Generating namespace index...
+Generating docs for namespace GameApp
+Generating docs for namespace GameApp::angle
+Generating docs for compound GameApp::angle::Angle...
+Generating docs for namespace GameApp::buildings
+Generating docs for compound GameApp::buildings::Floor...
+Generating docs for namespace GameApp::characters
+Generating docs for namespace GameApp::collisions
+Generating docs for compound GameApp::collisions::BoundingBox3d...
+sh: epstopdf: not found
+Error: Problems running epstopdf. Check your TeX installation!
+sh: 
+epstopdf: not found
+
+Error: Problems running epstopdf. Check your TeX installation!
+Generating docs for namespace GameApp::constants
+Generating docs for namespace GameApp::environment
+Generating docs for namespace GameApp::game_app_3d
+Generating docs for compound GameApp::game_app_3d::GameApp3d...
+Generating docs for namespace GameApp::lavida_gui
+Generating docs for compound GameApp::lavida_gui::LoadingScreen...
+Generating docs for namespace GameApp::md2
+Generating docs for compound GameApp::md2::MD2Vertex...
+Generating docs for compound GameApp::md2::MD2Frame...
+Generating docs for compound GameApp::md2::MD2Mesh...
+Generating docs for compound GameApp::md2::MD2Header...
+Generating docs for compound GameApp::md2::MD2Model...
+Generating docs for namespace GameApp::misc_ui
+Generating docs for compound GameApp::misc_ui::TexturedRect...
+sh: 
+epstopdf: not found
+
+Error: Problems running epstopdf. Check your TeX installation!
+sh: 
+epstopdf: not found
+
+Error: Problems running epstopdf. Check your TeX installation!
+Generating docs for namespace GameApp::object_3d
+Generating docs for compound GameApp::object_3d::Object3d...
+sh: epstopdf: not found
+Error: Problems running epstopdf. Check your TeX installation!
+sh: 
+epstopdf: not found
+
+Error: Problems running epstopdf. Check your TeX installation!
+Generating docs for namespace GameApp::ogl_camera
+Generating docs for namespace GameApp::ogl_shader
+Generating docs for compound GameApp::ogl_shader::oglShader...
+Generating docs for namespace GameApp::ogl_va
+Generating docs for compound GameApp::ogl_va::VA...
+Generating docs for namespace GameApp::ogl_vbo
+Generating docs for namespace GameApp::terrain_objects
+Generating docs for namespace GameApp::vector_3d
+Generating docs for compound GameApp::vector_3d::Vector3d...
+sh: 
+epstopdf: not found
+
+Error: Problems running epstopdf. Check your TeX installation!
+Generating docs for namespace GameApp::wavefront
+Generating docs for namespace la
+Generating docs for namespace lavida_config
+Generating namespace member index...
+Generating graph info page...
+Generating file index...
+Generating example index...
+Generating file member index...
+*** Doxygen has finished
