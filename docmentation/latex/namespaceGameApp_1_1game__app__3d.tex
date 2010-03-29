@@ -1,6 +1,6 @@
 \hypertarget{namespaceGameApp_1_1game__app__3d}{
-\section{GameApp::game\_\-app\_\-3d Namespace Reference}
-\label{namespaceGameApp_1_1game__app__3d}\index{GameApp::game\_\-app\_\-3d@{GameApp::game\_\-app\_\-3d}}
+\section{Package GameApp.game\_\-app\_\-3d}
+\label{namespaceGameApp_1_1game__app__3d}\index{GameApp.game\_\-app\_\-3d@{GameApp.game\_\-app\_\-3d}}
 }
 
 
@@ -12,12 +12,12 @@ class \hyperlink{classGameApp_1_1game__app__3d_1_1GameApp3d}{GameApp3d}
 \subsection*{Functions}
 \begin{CompactItemize}
 \item 
-def \hyperlink{namespaceGameApp_1_1game__app__3d_a3085aa95bfb5219ad8cd68da221b8c1}{UpdateSplash}
+def \hyperlink{namespaceGameApp_1_1game__app__3d_4312b2008af9e7cc0986ea4ce9ad18c6}{UpdateSplash}
 \begin{CompactList}\small\item\em self.UpdateSplash( \char`\"{}Loading House...\char`\"{} ) house = Object3d( \char`\"{}\%s/home/House010.obj\char`\"{} \% self.DATA\_\-PATH, None, object\_\-type=OBJECT\_\-3D\_\-MESH, a\_\-Colour=\mbox{[}1.0, 1.0, 0.0\mbox{]}) \item\end{CompactList}\end{CompactItemize}
 \subsection*{Variables}
 \begin{CompactItemize}
 \item 
-tuple \hyperlink{namespaceGameApp_1_1game__app__3d_29293ccb6c6bb28b0f15c70b628df5eb}{chair}
+tuple \hyperlink{namespaceGameApp_1_1game__app__3d_e874969777b925453b3bfc5ba3b0bd59}{chair}
 \begin{CompactList}\small\item\em Model = Avatar( self.DATA\_\-PATH, DUDETTE ) Model.SetPosition( 4.0, Model.GetAltitude( 0.0 ), 4.5 ). \item\end{CompactList}\end{CompactItemize}
 
 
@@ -43,23 +43,46 @@ tuple \hyperlink{namespaceGameApp_1_1game__app__3d_29293ccb6c6bb28b0f15c70b628df
  
 
 \subsection{Function Documentation}
-\hypertarget{namespaceGameApp_1_1game__app__3d_a3085aa95bfb5219ad8cd68da221b8c1}{
+\hypertarget{namespaceGameApp_1_1game__app__3d_4312b2008af9e7cc0986ea4ce9ad18c6}{
 \index{GameApp::game\_\-app\_\-3d@{GameApp::game\_\-app\_\-3d}!UpdateSplash@{UpdateSplash}}
 \index{UpdateSplash@{UpdateSplash}!GameApp::game_app_3d@{GameApp::game\_\-app\_\-3d}}
-\subsubsection[UpdateSplash]{\setlength{\rightskip}{0pt plus 5cm}def GameApp::game\_\-app\_\-3d::UpdateSplash ( {\em self}, \/   {\em a\_\-Message})}}
-\label{namespaceGameApp_1_1game__app__3d_a3085aa95bfb5219ad8cd68da221b8c1}
+\subsubsection[UpdateSplash]{\setlength{\rightskip}{0pt plus 5cm}def GameApp.game\_\-app\_\-3d.UpdateSplash ( {\em self}, \/   {\em a\_\-Message})}}
+\label{namespaceGameApp_1_1game__app__3d_4312b2008af9e7cc0986ea4ce9ad18c6}
 
 
 self.UpdateSplash( \char`\"{}Loading House...\char`\"{} ) house = Object3d( \char`\"{}\%s/home/House010.obj\char`\"{} \% self.DATA\_\-PATH, None, object\_\-type=OBJECT\_\-3D\_\-MESH, a\_\-Colour=\mbox{[}1.0, 1.0, 0.0\mbox{]}) 
 
 house.SetScale( 200 ) house.m\_\-XRot.SetAngle( -90 ) house.SetPosition( 0, 0, -4 ) oadd( house ) self.house = house 
 
+\begin{Code}\begin{verbatim}350                                        :
+351         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT )
+352         glDisable( GL_LIGHTING )
+353         self.m_Camera.BeginDrawing2d()
+354         
+355         self.m_SplashBg.Draw()
+356         self.m_SplashLogo.Draw()
+357         self.m_WingIDELogo.Draw()
+358         
+359         self.m_Camera.EndDrawing2d()
+360         
+361         self.font.glPrint( 10, 10, a_Message, [ 0.0, 0.0, 0.0 ] )
+362         pygame.display.flip()
+363         
+364         glEnable( GL_LIGHTING )
+365 
+    def TimerUpdate(self):
+\end{verbatim}
+\end{Code}
+
+
+
+
 \subsection{Variable Documentation}
-\hypertarget{namespaceGameApp_1_1game__app__3d_29293ccb6c6bb28b0f15c70b628df5eb}{
+\hypertarget{namespaceGameApp_1_1game__app__3d_e874969777b925453b3bfc5ba3b0bd59}{
 \index{GameApp::game\_\-app\_\-3d@{GameApp::game\_\-app\_\-3d}!chair@{chair}}
 \index{chair@{chair}!GameApp::game_app_3d@{GameApp::game\_\-app\_\-3d}}
-\subsubsection[chair]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf GameApp::game\_\-app\_\-3d::chair}}}
-\label{namespaceGameApp_1_1game__app__3d_29293ccb6c6bb28b0f15c70b628df5eb}
+\subsubsection[chair]{\setlength{\rightskip}{0pt plus 5cm}tuple {\bf GameApp::game\_\-app\_\-3d.chair}}}
+\label{namespaceGameApp_1_1game__app__3d_e874969777b925453b3bfc5ba3b0bd59}
 
 
 \textbf{Initial value:}

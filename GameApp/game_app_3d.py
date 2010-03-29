@@ -48,20 +48,37 @@ NORMAL_MODE = 1
 EDIT_MODE = 2
 
 class GameApp3d:
-    """A 3d GameApp"""
+    """
+    The main game class which manages all other processes
+    @breif A 3d GameApp
+    """
     def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_DataPath=None):
-
+        '''
+        Construct the Game app object and load game assets for startup
+        @param a_ViewPortWidth Int: the width of the viewport
+        @param a_ViewPortHeight Int: the height of the viewport
+        @param a_Fullscreen Boolean: Display full screen True or False
+        @param a_AppName String: The title to show on the window in windowed mode
+        @param a_DataPath String: The path to the data directory
+        @return returns a GameApp3d instance
+        '''
+        # start pygame
         pygame.init()
         self.m_Clock = pygame.time.Clock()
+
+        # start glut
+        # @warning may be removed later as glut isnt really needed now
         glutInit()
 
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
+        # create the camera
         self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
         self.m_Camera.SetPosition(0, -4, 3.0)
         self.m_Camera.m_XRot += 31
         self.m_Camera.m_YRot += 157
         
+        # set the display mode
         if a_Fullscreen:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
             modes = self.m_Camera.GetModesList()
@@ -80,6 +97,7 @@ class GameApp3d:
             sys.exit(1)
             return False
         
+        # set some OpenGL options
         glEnable(GL_CULL_FACE)
         glCullFace( GL_BACK )
         glShadeModel(GL_SMOOTH)
@@ -102,10 +120,13 @@ class GameApp3d:
 
         self.SetupFog()
 
+        # init the keyboard input processing
         self.SetupKeyBuffer()
 
+        # init the messaging system console
         self.LoadConsole()
 
+        # start loading basic assets
         self.StartMusicTrack( "01_every_thought_has_been_thought.ogg" )
         self.m_SplashBg = TexturedRect( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
                                        self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
@@ -126,8 +147,11 @@ class GameApp3d:
         
         self.SetupUI()
         
+        # setup the game timers
         self.SetupTiming()
         
+        # setup the process pipelining
+        # @warning Not yet implemented
         self.SetupExecutionCycles()
         
     def SetupExecutionCycles( self ):
