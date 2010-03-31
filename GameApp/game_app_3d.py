@@ -48,9 +48,20 @@ NORMAL_MODE = 1
 EDIT_MODE = 2
 
 class GameApp3d:
-    """A 3d GameApp"""
+    """
+    The main game class which manages all other processes
+    @breif A 3d GameApp
+    """
     def __init__(self, a_ViewPortWidth=1024, a_ViewPortHeight=768, a_Fullscreen=False, a_AppName="GameApp3d", a_DataPath=None):
-
+        '''
+        Construct the Game app object and load game assets for startup
+        @param a_ViewPortWidth Int: the width of the viewport
+        @param a_ViewPortHeight Int: the height of the viewport
+        @param a_Fullscreen Boolean: Display full screen True or False
+        @param a_AppName String: The title to show on the window in windowed mode
+        @param a_DataPath String: The path to the data directory
+        @return returns a GameApp3d instance
+        '''
         pygame.init()
         self.m_Clock = pygame.time.Clock()
         glutInit()
@@ -131,9 +142,15 @@ class GameApp3d:
         self.SetupExecutionCycles()
         
     def SetupExecutionCycles( self ):
+        '''
+        Setup on which game loop iteration the various processes should be executed
+        '''
         self.m_ProcessCycles = { "Behaviours": 2, "Events": 3 }
                 
     def SetupUI( self ):
+        '''
+        Setup the different parts of the GUI interface
+        '''
         self.m_SelectedArea = SelectedRegion( 0.5, 0.0, Vector3d(), Vector3d(), pygame.time.get_ticks() )
         self.m_SelectedStart = 0
         self.m_SelectStartTicks = 0
@@ -141,6 +158,9 @@ class GameApp3d:
         self.m_Mode = EDIT_MODE
         
     def SetupTiming( self ):
+        '''
+        Setup the game timer and initialise all timing variables
+        '''
         self.m_Ticks = 0
         self.m_oldTicks = 0
         self.m_currentTicks = 0
@@ -153,6 +173,11 @@ class GameApp3d:
         self.m_ProcessCounterThreshhold = 3
         
     def StartMusicTrack( self, a_Filename ):
+        '''
+        Play a background music track
+        
+        @param a_Filename String : A path to the folder inside data/
+        '''
         try:
             if os.path.exists( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) ):
                 pygame.mixer.music.load( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) )
@@ -162,6 +187,9 @@ class GameApp3d:
             raise Exception, "Unable to load %s: %s" ( a_Filename, e )
 
     def SetupLighting( self ):
+        '''
+        Setup OpenGL and some variable relating to lighting
+        '''
         LightAmbient  = [ 0.2, 0.2, 0.2, 1.0 ]
         LightDiffuse  = [ 0.8, 0.8, 0.8, 1.0 ]
         self.LightPosition = [ 10.0, 50.0, 30, 1.0 ]
@@ -178,6 +206,9 @@ class GameApp3d:
 
 
     def SetupFog( self ):
+        '''
+        Setup OpenGL fog
+        '''
         density = 0.05
         fogColor = [0.5, 0.5, 1.0, 1.0] 
         glEnable(GL_FOG)
@@ -189,11 +220,17 @@ class GameApp3d:
     
 
     def SetupKeyBuffer( self ):
+        '''
+        Setup the keyboard buffer
+        '''
         self.m_KeyBuffer = []
         for i in range(320):
             self.m_KeyBuffer.append( False )
 
     def LoadConsole( self ):
+        '''
+        Setup the console display
+        '''
         self.font = glFreeType.font_data( "%s/gui/fonts/body.ttf" % self.DATA_PATH, 16 )
         self.Titlefont = glFreeType.font_data( "%s/gui/fonts/head.ttf" % self.DATA_PATH, 72 )
         self.m_Messages = []
@@ -349,6 +386,10 @@ class GameApp3d:
         self.m_BuildTool = build_tool
 
     def UpdateSplash( self, a_Message ):
+        '''
+        Draw the Splash page and a current message
+        @param a_Message String : a message to be displayed
+        '''
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT )
         glDisable( GL_LIGHTING )
         self.m_Camera.BeginDrawing2d()
@@ -365,12 +406,18 @@ class GameApp3d:
         glEnable( GL_LIGHTING )
 
     def TimerUpdate(self):
+        '''
+        Update all timer variables
+        '''
         self.m_oldTicks = self.m_currentTicks
         self.m_currentTicks = pygame.time.get_ticks()
         self.m_Ticks = self.m_currentTicks - self.m_oldTicks
         self.m_FPSTicks += self.m_Ticks
 
     def ProcessEvents(self):
+        '''
+        Process all game events
+        '''
         self.TimerUpdate()
         
         self.m_ProcessCounter += 1
@@ -444,6 +491,9 @@ class GameApp3d:
         return self.ProccessKeys()
 
     def ProcessBehaviours( self ):
+        '''
+        Process all game object behaviours
+        '''
         for game_object in self.m_Objects:
             if game_object.__module__ == "GameApp.characters":
                 if game_object.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
@@ -453,9 +503,19 @@ class GameApp3d:
                 # self.AddMessage( "Avatar : %s,%s,%s" % ( game_object.GetX(), game_object.GetY(), game_object.GetZ() ) )
 
     def GetSelectedObject( self, a_X, a_Y ):
+        '''
+        Get the object that is slected under the current mouse coords
+        @param a_X Integer : the current mouse x coord
+        @param a_Y Integer : the current mouse y coord
+        @return String : a string containg the OpenGL ID for the selected object
+        '''
         return "The Selected Object ID is %s" % self.m_Camera.GetObjectSelected( a_X, a_Y, self.m_Objects )
 
     def Resize(self, (width, height)):
+        '''
+        Handle resizing of the OpenGL viewport
+        @param (width, height) list : width & height of the new viewport
+        '''
         if height==0:
             height=1
         glViewport(0, 0, width, height)
@@ -466,6 +526,9 @@ class GameApp3d:
         glLoadIdentity()
 
     def ProccessKeys( self ):
+        '''
+        Process the assigned keys and trigger behaviours
+        '''
         if self.m_FPSTicks < self.m_FPSLimit: return True
         
         if self.m_KeyBuffer[ K_ESCAPE ]:
@@ -542,9 +605,17 @@ class GameApp3d:
         return True
 
     def PrintToConsole(self, a_Message, a_LineNumber ):
+        '''
+        Print a message to the console on a specific line
+        @param a_Message String : a message to display
+        @param a_LineNumber Integer: the line to pront your message
+        '''
         self.font.glPrint( 10 , self.m_Camera.m_ViewportHeight - ( 17 * a_LineNumber ), a_Message )
 
     def Draw(self):
+        '''
+        Render the current scene
+        '''
         if self.m_FPSTicks < self.m_FPSLimit: 
             self.m_FrameTicks += self.m_Ticks
             return
@@ -577,18 +648,21 @@ class GameApp3d:
         self.m_Camera.Flip()
 
     def AddMessage( self, a_Message ):
+        '''
+        Add a message to the console message queue
+        @param a_Message String : a message to display
+        '''
         self.m_Messages.append( a_Message )
         if len( self.m_Messages ) > 40:
             self.m_Messages = []
 
 
     def Exit(self):
+        '''
+        Perform system shutdown
+        '''
         pygame.mixer.music.stop()
         pygame.quit()
         sys.exit()
 
-
-if __name__ == "__main__": 
-    game_app = GameApp3d()
-    game_app.Exit()
 
