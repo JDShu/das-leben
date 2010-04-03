@@ -223,6 +223,6 @@ class AreaDimensions:
     '''
     A area definition class with width and height
     '''
-            width = 0
-            height = 0
+    width = 0
+    height = 0
     

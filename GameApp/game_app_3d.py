@@ -41,6 +41,7 @@ from copy import deepcopy
 from os import getcwd, path
 from constants import *
 from misc_ui import *
+from game_assets import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 

@@ -199,6 +199,12 @@ def MultiplyObject( a_Multiple, a_Direction, a_Object ):
       
 
 def ConcatenateObject( a_Direction, a_Object, a_ObjectToAdd ):
+   '''
+   Concatenate an objects geometry onto another object
+   @param a_Direction Vector3d : the direction to add the objects geometry
+   @param a_Object Object3d : an object to concatenate the geometry to
+   @param a_ObjectToAdd Object3d : the object your concatenating
+   '''
    l_Direction = Vector3d()
    l_Direction = a_Direction
    

@@ -31,8 +31,38 @@ from numpy import array
 REGION_NORMAL = 1
 REGION_EDITING = 2
 
+# ====================================================================
+# RegionQuad Constants
+# ====================================================================
+WALL_BOTTOM_LEFT = 1
+WALL_BOTTOM_RIGHT = 2
+WALL_BOTTOM = 3
+WALL_TOP_LEFT = 4
+WALL_TOP_RIGHT = 5
+WALL_TOP = 6
+WALL_BOTTOM_LEFT_ANGLED = 7
+WALL_BOTTOM_RIGHT_ANGLED = 8
+WALL_TOP_LEFT_ANGLED = 9
+WALL_TOP_RIGHT_ANGLED = 10
+WALL_RIGHT = 11
+WALL_LEFT = 12
+
+QUAD_FLOOR_SQUARE = 50
+QUAD_FLOOR_NONE = 51
+
+# --------------------------------------------------------------------
+
 class RegionQuad( BoundingBox3d ):
+    '''
+    A class to define what is contained inside a chopped up regions squares
+    '''
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=0.5 ):
+        '''
+        Create a RegionQuad instance
+        @param a_X Float : the x coord of the quad
+        @param a_Y Float : the y coord of the quad
+        @param a_Z Float : the z coord of the quad
+        '''
         BoundingBox3d.__init__( self, a_X + (a_Size / 2.0), a_Y, a_Z + (a_Size / 2.0), a_Size )
         
         # y values for quad
@@ -63,36 +93,46 @@ class RegionQuad( BoundingBox3d ):
         
        
     def SetAsObject( self, a_Object3d ):
+        '''
+        make this quad a 3d object 
+        @param a_Object3d Object3d : instance of Object3d
+        '''
         self.ObjectToRender = a_Object3d
         self.ObjectToRender.SetPosition( self.GetX(), self.GetY(), self.GetY() )
         
     def GetGLName( self ):
+        '''
+        Return the GLName of this object
+        @return GLName Integer : a OpenGL ID to assist in picking objects
+        '''
         return self.ObjectToRender.GetGLName()
         
-    def makeList( self ):
-        return [ self.ll, self.lr, self.ur, self.ul ]
-        
-    def compile_list( self ):
-        pass
-
     def Draw( self ):
+        '''
+        render the contents of this quad
+        '''
         if self.obj:
             self.obj.Draw()
         if len( self.extra ) > 0:
             for obj in self.extra:
                 obj.Draw()
-        
-    def recompile_list( self ):
-        self.oldListID = self.listID
-        glDeleteLists( self.listID, 1 )
-        self.compile_list()
-        
-    def __del__( self ):
-        glDeleteLists( self.listID, 1 )
     
     
 class Region( Vector3d ):
+    '''
+    A region of terrain
+    '''
     def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=0.5 ):
+        '''
+        Create a Region
+        @param a_X Float : the bottom left x coord of the region
+        @param a_Y Float : the bottom left y coord of the region
+        @param a_Z Float : the bottom left z coord of the region
+        @param a_Width Integer : the width in squares
+        @param a_Height Integer : the height in squares
+        @param a_Size Float : the width and height of each square, ( RegionQuad )
+        @param a_Colour Float : the overall colour of the rendered RegionQuads
+        '''
         Vector3d.__init__( self, a_X, a_Y, a_Z )
         self.quads = []; qadd = self.quads.append
         self.quadIDS = []; iadd = self.quadIDS.append
@@ -146,7 +186,7 @@ class Region( Vector3d ):
         va_colours = []; cadd = va_colours.append
         va_normals = []; nadd = va_normals.append
         va_texcoords = []; tadd = va_texcoords.append
-        f = open( "debug.log", "w" )
+        
         for i, rq in enumerate( self.quads ):
             rq.va_index = i * 4 # index to first vertex of the quad
             rq.i = i
@@ -154,7 +194,7 @@ class Region( Vector3d ):
             vadd( self.vertexes[ rq.lr ] )
             vadd( self.vertexes[ rq.ur ] )
             vadd( self.vertexes[ rq.ul ] )
-            f.write( "quad %s: %s, %s, %s, %s\n" % ( i, rq.ll, rq.lr, rq.ur, rq.ul ) )
+            
             #normals
             nadd( normals[ rq.ll ] )
             nadd( normals[ rq.lr ] )
@@ -170,9 +210,7 @@ class Region( Vector3d ):
             cadd( colours[ rq.lr ] )
             cadd( colours[ rq.ur ] )
             cadd( colours[ rq.ul ] )
-            
-        f.close()
-        
+                      
         self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours )
         #self.va = VBO( va_vertexes, va_normals, va_texcoords, va_colours )
         self.useVBO = True
@@ -370,43 +408,50 @@ class TerrainGridedRegion( Region ):
             glPolygonMode( GL_FRONT_AND_BACK, GL_FILL )
         
 class FloorRegion( Region ):
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=1.0, a_Wall=None ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=1.0, a_AssetManager=None ):
         Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size, a_Colour )
-        
+       
+        if a_AssetManager: 
+            self.m_AssetManager = a_AssetManager
+        else:
+            raise Exception, "No asset manager instance supplied; create on and fill it with Object3d instances"
+            
         self.m_ShowFloor = True
         self.m_ShowWalls = True
         
-        wall_height = a_Wall.GetHeight() + a_Y
         self.textureID = 0
         top_row = ( a_Height - 1 ) * a_Width 
         # make the top and bottom rows
         
-        quad = self.quads[ 0 ]
-        x, y, z, w = quad.GetPosition()
-        wall = a_Wall.Clone()
-        MultiplyObject( a_Width, Vector3d( 2, 0, 0), wall )
-        wall.SetPosition( x, wall_height, z - ( a_Size / 2 ) )
-        quad.obj = wall
-        
-        wall = a_Wall.Clone()
-        MultiplyObject( a_Height, Vector3d( 2, 0, 0), wall )
-        wall.m_YRot.SetAngle( -90.0 )
-        wall.SetPosition( x - ( a_Size / 2 ), wall_height, z )
-        quad.extra.append( wall ) 
-        
-        quad = self.quads[ ( a_Height - 1 ) * a_Width ]
-        x, y, z, w = quad.GetPosition()
-        wall = a_Wall.Clone()
-        MultiplyObject( a_Width, Vector3d( 2, 0, 0), wall )
-        wall.SetPosition( x , wall_height, z + ( a_Size / 2 ) )
-        quad.obj = wall
-        
-        wall = a_Wall.Clone()
-        MultiplyObject( a_Height, Vector3d( 2, 0, 0), wall )
-        wall.m_YRot.SetAngle( 90.0 )
-        wall.SetPosition( x - ( a_Size / 2 ) + ( a_Width * a_Size ) , wall_height, z  )
-        quad.extra.append( wall ) 
+        for x in xrange( a_Width ):
+            quad = self.quads[ x ]
+            if x == 0:
+                quad.m_WallType = WALL_BOTTOM_LEFT
+            elif x == ( a_Width - 1 ):
+                quad.m_WallType = WALL_BOTTOM_RIGHT
+            else:
+                quad.m_WallType = WALL_BOTTOM
+                
+            quad = self.quads[ top_row + x ]
+            if x == 0:
+                quad.m_WallType = WALL_TOP_LEFT
+            elif x == ( a_Width - 1 ):
+                quad.m_WallType = WALL_TOP_RIGHT
+            else:
+                quad.m_WallType = WALL_TOP
+                
+        for z in xrange( 1, a_Height - 2 ):
+            quad = self.quads[ z * a_Width ]
+            quad.m_WallType = WALL_LEFT
+                
+            quad = self.quads[ ( z * a_Width ) + a_Width ]
+            quad.m_WallType = WALL_RIGHT
             
+        self.CreateWalls()
+        
+    def CreateWalls( self ):
+        pass
+                            
     def ShowFloor( self, a_Value ):
         self.m_ShowFloor = a_Value
         
