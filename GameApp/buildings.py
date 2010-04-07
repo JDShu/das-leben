@@ -21,6 +21,7 @@ import pygame
 from pygame.locals import *
 from vector_3d import *
 from object_3d import *
+from game_assets import *
 
 class House:
     '''
@@ -99,13 +100,21 @@ class Floor:
        walls + floor + objects NOT the actual floor
     """
     
-    def __init__(self, objects=None):
+    def __init__(self, a_Filename=None):
         '''
         Create a Floor instance
         @param objects List : a list of game objects on this floor
         '''
+        
+        if a_Filename:
+            f = open( a_Filename, "r" )
+            lines = f.readlines()
+            
+            
         self.m_Objects = []
         self.m_Visible = True
+        
+        self.asset_manager = AssetManager()
         
         if objects:
             self.m_Objects.extend( objects )
@@ -113,6 +122,9 @@ class Floor:
             self.MakeDefaultFloor()
         
         self.m_GLName = random.randint( 1, 1000 )
+        
+    def Save( self, a_Filename ):
+        pass
         
     def GetGLName( self ):
         '''

@@ -20,6 +20,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
 import random
+import os
 
 try:
    from OpenGL.GL.ARB.vertex_buffer_object import *
@@ -51,11 +52,15 @@ OBJECT_3D_DRAW_HIGHLIGHTED = 3
 
 class Object3d( Vector3d ):
    """A 3d object"""   
-   def __init__(self, filename=None, texture=None, scale=100.0, object_type=2, a_Colour=[1.0,1.0,1.0]):
+   def __init__(self, filename=None, texture=None, a_Name=None, scale=100.0, object_type=2, a_Colour=[1.0,1.0,1.0]):
       Vector3d.__init__(self)
       
       self.m_ObjectType = object_type
       self.m_Colour = a_Colour
+      self.model_file = ''
+      self.texture_file = ''
+      self.name = a_Name
+      self.extentions = {}
 
       if filename == None:
          if object_type == OBJECT_3D_BOX or object_type == OBJECT_3D_SPHERE:
@@ -73,12 +78,15 @@ class Object3d( Vector3d ):
          self.m_ObjectType = OBJECT_3D_ANIMATED_MESH
          self._model.SetScale( scale )
          self._model.load( filename, texture, True )
+         self.model_file = filename
+         self.texture_file = texture 
          
       elif self.GetExtensionType( filename ) == "OBJ":
          self._model = OBJ( filename )
          self.m_ObjectType = OBJECT_3D_MESH
          self._model.SetScale( scale )
-         
+         self.model_file = filename
+         self.texture_file = texture 
          
       self.m_XRot = Angle()
       self.m_YRot = Angle()
@@ -87,6 +95,33 @@ class Object3d( Vector3d ):
       self.m_GLName = random.randint( 1, 1000 )
       
       self.drawmode = OBJECT_3D_DRAW_SOLID
+      
+   def Save( self, a_Filename ):
+      '''
+      Save the object properties
+      @param a_Filename String : the location to save the file
+      '''
+      try:
+         if os.path.isfile( a_Filename ): os.remove( a_Filename )
+         f = open( a_Filename, "w" )
+         lines = []
+         lines.append( self.model_file )
+         lines.append( self.texture_file )
+         lines.append( self.name )
+         if len( self.extentions ) > 0:
+            lines.append( "[EXTENDED OBJECTS]" )
+            for extention in self.extentions:
+               lines.append( "EXT:%s, POS:%s, ANGLES:%s %s %s" % ( extention[ 0 ], 
+                                                                   str( extention[ 1 ].GetPosition() ),
+                                                                   str( extention[ 1 ].m_XRot.GetAngle() ),
+                                                                   str( extention[ 1 ].m_YRot.GetAngle() ),
+                                                                   str( extention[ 1 ].m_ZRot.GetAngle() ) ) )
+                                                                   
+         f.writelines( lines )
+         f.close()
+         
+      except IOError:
+         raise Exception, "Unable to save object file %s : %s" % ( a_Filename, e )
       
    def GetWidth( self ):
       return self._model.va.GetDimensions()[ 0 ] * self._model.GetScale() * 0.25
@@ -266,4 +301,6 @@ def ConcatenateObject( a_Direction, a_Object, a_ObjectToAdd ):
       a_Object._model.va.coloursCoords = colours
    
    a_Object._model.va.vertxCount = len( vertexes )
+   
+   a_Object.extentions[ a_ObjectToAdd.name ] = a_ObjectToAdd
    
