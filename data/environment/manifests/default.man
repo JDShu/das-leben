@@ -1,0 +1,16 @@
+#======================================================================
+# Default manifest for La Vida
+#
+# USAGE:
+# To add objects or floors add a line in the following form:
+#
+#	<thing to load>:<path with the data folder>:<object specific>
+#
+# ---------------------------------------------------------------------
+
+OBJECT:environment/manmade/furniture/chair_70th.obj:CHAIR
+OBJECT:environment/manmade/furniture/oven.obj:DEFAULT_OVEN
+OBJECT:environment/manmade/walls/wall.obj:WALL0
+OBJECT:environment/manmade/walls/wall_plus_90degrees.obj:WALL90
+FLOOR:environment/floors/first.flr:10.0,0.0,10.0
+

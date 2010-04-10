@@ -14,17 +14,71 @@
  *
 '''
 
+from object_3d import *
+from os import path
+
+class Manifest:
+    '''
+    A list of assets and how to load them
+    '''
+    def __init__( self, a_Filename ):
+        '''
+        create a Manifest instance
+        @param a_Filename String : the location of the manifest file
+        '''
+        try:
+            f = open( a_Filename, "r" )
+            
+            self.items = f.readlines()
+        except IOError, e:
+            print "Unable to load %s : %s" % ( a_Filename, e )
+
+    def Save( self, a_Filename ):
+        '''
+        Save the current Manifest
+        @param a_Filename String : the location of the manifest file 
+        '''
+        try:
+            f = open( a_Filename, "w" )
+            
+            f.writelines( self.items )
+
+        except IOError, e:
+            print "Unable to save %s : %s" % ( a_Filename, e )
+
+
 class AssetManager:
     '''
     A asset manager class for keeping collections of game objects
     '''
-    def __init__( self ):
+    def __init__( self, a_Filename=None, a_DataPath=None ):
         '''
         Create and instance of AssetManager
         '''
         self.assets = {}
         self.textures = {}
+
+        self.data_path = a_DataPath
+
+        if a_Filename:
+            self.Load( a_Filename )
         
+    def Load( self, a_Filename ):
+        '''
+        Load a asset manifest
+        @param a_Filename String : the location of the manifest
+        '''
+        manifest = Manifest( a_Filename )
+
+        for item in manifest.items:
+            if item.startswith( "OBJECT:" ):
+                parts = item.split( ":" )
+                obj = Object3d( path.join( self.data_path, parts[ 1 ] ) )
+
+                self.AddObject( parts[ 2 ], obj )
+            elif item.startswith( "TEXTURE:" ):
+                pass
+
     def AddTexture( self, a_Name, a_TextureID ):
         '''
         Add a texture to the asset manager

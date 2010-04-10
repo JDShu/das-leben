@@ -65,7 +65,7 @@ class GameApp3d:
         @return returns a GameApp3d instance
         '''
         
-        self.config = GameConfig( os.path.join( a_DataPath, "la_vida.cfg" ) )
+        self.config = GameConfig( os.path.join( a_DataPath.replace( '/data', '' ), "la_vida.cfg" ) )
         pygame.init()
         self.m_Clock = pygame.time.Clock()
         glutInit()
@@ -77,7 +77,7 @@ class GameApp3d:
         self.m_Camera.m_XRot += 31
         self.m_Camera.m_YRot += 157
         
-        if a_Fullscreen:
+        if self.config.fullscreen:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
             modes = self.m_Camera.GetModesList()
             for mode in modes:
@@ -121,7 +121,8 @@ class GameApp3d:
 
         self.LoadConsole()
 
-        self.StartMusicTrack( "01_every_thought_has_been_thought.ogg" )
+        if self.config.music:
+            self.StartMusicTrack( self.config.music_track )
         self.m_SplashBg = TexturedRect( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
                                        self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
 
@@ -186,7 +187,7 @@ class GameApp3d:
             if os.path.exists( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) ):
                 pygame.mixer.music.load( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) )
                 pygame.mixer.music.play( -1 )
-                pygame.mixer.music.set_volume( 0.05 )
+                pygame.mixer.music.set_volume( self.config.music_volume / 100.0 )
         except IOError, e:
             raise Exception, "Unable to load %s: %s" ( a_Filename, e )
 
