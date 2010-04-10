@@ -250,14 +250,14 @@ class GameApp3d:
         oadd( self.m_Light )
         obadd( self.m_Light )
 
-        ##        self.UpdateSplash( "Loading character model..." )
-##        Model = Avatar( self.DATA_PATH, DUDETTE )
-##        Model.SetPosition( 4.0,
-##                           Model.GetAltitude( 0.0 ),
-##                           4.5 )
-##        
-##        self.m_Model = Model
-##        oadd( Model )
+        #self.UpdateSplash( "Loading character model..." )
+        #Model = Avatar( self.DATA_PATH, DUDETTE )
+        #Model.SetPosition( 4.0,
+                           #Model.GetAltitude( 0.0 ),
+                           #4.5 )
+        
+        #self.m_Model = Model
+        #oadd( Model )
 
         self.UpdateSplash( "Loading Furniture..." )
         chair = Object3d( "%s/environment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
