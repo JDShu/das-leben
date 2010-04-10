@@ -42,6 +42,7 @@ from os import getcwd, path
 from constants import *
 from misc_ui import *
 from game_assets import *
+from game_config import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -63,6 +64,8 @@ class GameApp3d:
         @param a_DataPath String: The path to the data directory
         @return returns a GameApp3d instance
         '''
+        
+        self.config = GameConfig( os.path.join( a_DataPath, "la_vida.cfg" ) )
         pygame.init()
         self.m_Clock = pygame.time.Clock()
         glutInit()
@@ -95,7 +98,7 @@ class GameApp3d:
         glEnable(GL_CULL_FACE)
         glCullFace( GL_BACK )
         glShadeModel(GL_SMOOTH)
-        glClearColor( 0.5, 0.5, 1.0, 1.0 )
+        glClearColor( 0.7, 0.7, 1.0, 1.0 )
         glEnable(GL_COLOR_MATERIAL)
         glMaterial( GL_FRONT, GL_SHININESS, 5.0 )
         glClearDepth(1.0)
@@ -210,14 +213,15 @@ class GameApp3d:
         '''
         Setup OpenGL fog
         '''
-        density = 0.05
-        fogColor = [0.5, 0.5, 1.0, 1.0] 
+        density = 1.2
+        fogColor = [0.7, 0.7, 1.0, 1.0] 
         glEnable(GL_FOG)
-        glFogi(GL_FOG_MODE, GL_EXP2)
         glFogfv(GL_FOG_COLOR, fogColor)
         glFogf(GL_FOG_DENSITY, density)
         glHint(GL_FOG_HINT, GL_NICEST)
-        glDisable( GL_FOG )
+        glFogi(GL_FOG_MODE, GL_LINEAR)
+        glFogf(GL_FOG_START, 15.0)
+        glFogf(GL_FOG_END, 20.0)
     
 
     def SetupKeyBuffer( self ):
@@ -251,7 +255,7 @@ class GameApp3d:
         gadd( Ground )
         
         Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 50, 0.5 )
-        Ground.ToggleGrid()
+        #Ground.ToggleGrid()
         self.m_GroundGrid = Ground
         gradd( Ground )
         gadd( Ground )
@@ -264,14 +268,15 @@ class GameApp3d:
         oadd( self.m_Light )
         obadd( self.m_Light )
 
-        ##        self.UpdateSplash( "Loading character model..." )
-##        Model = Avatar( self.DATA_PATH, DUDETTE )
-##        Model.SetPosition( 4.0,
-##                           Model.GetAltitude( 0.0 ),
-##                           4.5 )
-##        
-##        self.m_Model = Model
-##        oadd( Model )
+        #self.UpdateSplash( "Loading character model..." )
+        #Model = Avatar( self.DATA_PATH, DUDETTE )
+        #Model.SetPosition( 4.0,
+                           #Model.GetAltitude( 0.0 ),
+                           #4.5 )
+        
+        #self.m_Model = Model
+        #oadd( Model )
+        
 
         self.UpdateSplash( "Loading Furniture..." )
         chair = Object3d( "%s/environment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 

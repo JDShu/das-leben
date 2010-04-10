@@ -269,5 +269,7 @@ class NEW_VBO:
     
     def SetVertex( self, start_offset, vertex ):
         self.vertexes[ start_offset ] = vertex
+        
+
 
         

@@ -382,9 +382,9 @@ class TerrainRegion( Region ):
         Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size )
         
     def Draw( self ):
-        glEnable( GL_FOG )
+        #glEnable( GL_FOG )
         self._draw()
-        glDisable( GL_FOG ) 
+        #glDisable( GL_FOG ) 
         
     
 class TerrainGridedRegion( Region ):
