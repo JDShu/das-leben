@@ -289,6 +289,7 @@ class GameApp3d:
                            chair._model.va.GetDimensions()[ 1 ] 
                            * chair._model.GetScale() * 0.5, 
                            2.0 )
+        chair.Save( "%s/environment/manmade/furniture/chair.lvd" % self.DATA_PATH )
         oadd( chair )
         obadd( chair )
         

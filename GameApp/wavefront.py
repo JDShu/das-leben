@@ -37,7 +37,8 @@ def MTL( path, filename ):
         elif values[0] == 'map_Kd':
             # load the texture referred to by this declaration
             mtl[values[0]] = values[1]
-            surf = pygame.image.load( os.path.join( path, mtl['map_Kd'] ))
+            mtl[ 'texture_path' ] = os.path.join( path, mtl['map_Kd'] )
+            surf = pygame.image.load( mtl[ 'texture_path' ] )
             image = pygame.image.tostring(surf, 'RGBA', 1)
             ix, iy = surf.get_rect().size
             texid = mtl['texture_Kd'] = glGenTextures(1)
@@ -60,6 +61,7 @@ class OBJ( Vector3d ):
         self.normals = []
         self.texcoords = []
         self.faces = []
+        self.texture_path = ""
         self.mtl = None
         self.scale = 1.0
         material = None
@@ -90,6 +92,7 @@ class OBJ( Vector3d ):
                     for name in self.mtl:
                         if 'texture_Kd' in self.mtl[ name ]:
                             use_texture = True
+                            self.texture_path = self.mtl[ name ][ 'texture_path' ]
                 elif values[0] == 'f':
                     face = []
                     texcoords = []

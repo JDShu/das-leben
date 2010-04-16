@@ -86,7 +86,7 @@ class Object3d( Vector3d ):
          self.m_ObjectType = OBJECT_3D_MESH
          self._model.SetScale( scale )
          self.model_file = filename
-         self.texture_file = texture 
+         self.texture_file = self._model.texture_path
          
       self.m_XRot = Angle()
       self.m_YRot = Angle()
@@ -105,13 +105,13 @@ class Object3d( Vector3d ):
          if os.path.isfile( a_Filename ): os.remove( a_Filename )
          f = open( a_Filename, "w" )
          lines = []
-         lines.append( self.model_file )
-         lines.append( self.texture_file )
-         lines.append( self.name )
+         lines.append( "%s\n" % str( self.model_file ) )
+         lines.append( "%s\n" % str( self.texture_file ) )
+         lines.append( "%s\n" % str( self.name ) )
          if len( self.extentions ) > 0:
             lines.append( "[EXTENDED OBJECTS]" )
             for extention in self.extentions:
-               lines.append( "EXT:%s, POS:%s, ANGLES:%s %s %s" % ( extention[ 0 ], 
+               lines.append( "EXT:%s, POS:%s, ANGLES:%s %s %s\n" % ( extention[ 0 ], 
                                                                    str( extention[ 1 ].GetPosition() ),
                                                                    str( extention[ 1 ].m_XRot.GetAngle() ),
                                                                    str( extention[ 1 ].m_YRot.GetAngle() ),
