@@ -268,97 +268,21 @@ class GameApp3d:
         self.m_Light.SetPosition( 10.0, 50.0, 30 )
         oadd( self.m_Light )
         obadd( self.m_Light )
-
-        #self.UpdateSplash( "Loading character model..." )
-        #Model = Avatar( self.DATA_PATH, DUDETTE )
-        #Model.SetPosition( 4.0,
-                           #Model.GetAltitude( 0.0 ),
-                           #4.5 )
+##
+##        self.UpdateSplash( "Loading character model..." )
+##        Model = Avatar( self.DATA_PATH, DUDETTE )
+##        Model.SetPosition( 4.0,
+##                           Model.GetAltitude( 0.0 ),
+##                           4.5 )
+##        
+##        self.m_Model = Model
+##        oadd( Model )
         
-        #self.m_Model = Model
-        #oadd( Model )
-        
-
-        self.UpdateSplash( "Loading Furniture..." )
-        chair = Object3d( "%s/environment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        chair.SetScale( 0.1 )
-        chair.SetPosition( 4.0, 
-                           chair._model.va.GetDimensions()[ 1 ] 
-                           * chair._model.GetScale() * 0.5, 
-                           2.0 )
-        chair.Save( "%s/environment/manmade/furniture/chair.lvd" % self.DATA_PATH )
-        oadd( chair )
-        obadd( chair )
-        
-        oven = Object3d( "%s/environment/manmade/furniture/oven.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        oven.SetScale( 0.15 )
-        oven.SetPosition( 3.0, 
-                           oven._model.va.GetDimensions()[ 1 ] 
-                           * oven._model.GetScale() * 0.5, 
-                           3.0 )
-        oadd( oven )
-        obadd( oven )
-        
-        self.UpdateSplash( "Loading Wall..." )
-        wall = Object3d( "%s/environment/manmade/walls/wall.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        wall.SetScale( 0.25 )
-        wall.SetPosition( 2.75, wall._model.va.GetDimensions()[ 1 ] 
-                          * wall._model.GetScale() * 0.5 , 2.0 )
-        self.m_FloorHeight = wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5
-        oadd( wall )
-        obadd( wall )
-        self.m_Wall = wall
-        
-        wall90d = Object3d( "%s/environment/manmade/walls/wall_plus_90degrees.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        wall90d.SetScale( 0.25 )
-        wall90d.SetPosition( 2.75,wall90d.GetHeight(), 3.0 )
-        oadd( wall90d )
-        obadd( wall90d )
-        
-        new_wall = wall.Clone()
-        new_wall.SetScale( 0.25 )
-        new_wall.SetPosition( 4.25, self.m_FloorHeight, 4 )
-        ConcatenateObject( Vector3d( 1, 0, 0), new_wall, wall )
-        ConcatenateObject( Vector3d( 2, 0, 0), new_wall, wall )
-        ConcatenateObject( Vector3d( 3 - wall90d.GetWidth() , 0, 1), new_wall, wall90d )
-        oadd( new_wall )
-        
-        self.UpdateSplash( "Loading Wall with window..." )
-        wall = Object3d( "%s/environment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        wall.SetScale( 0.25 )
-        wall.SetPosition( 2.25, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
-        oadd( wall )
-        obadd( wall )
-        
-        door = Object3d( "%s/environment/manmade/doors/door.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        door.SetScale( 0.22 )
-        door.SetPosition( 6.0, 
-                           door._model.va.GetDimensions()[ 1 ] 
-                           * door._model.GetScale() * 0.5, 
-                           3.0 )
-        oadd( door )
-        obadd( door )
+        self.AssetManager = AssetManager( "environment/manifests/default.man" , self.DATA_PATH ) 
         
         self.m_FirstFloorLevel = []; fadd = self.m_FirstFloorLevel.append
         
+        self.m_FloorHeight = 0.0
         Ground = TerrainGridedRegion( 0.0, self.m_FloorHeight, 0.0, 50, 50, 0.5 )
 
         self.m_FirstFloorGrid = Ground
@@ -645,6 +569,7 @@ class GameApp3d:
             
         for Object in self.m_FirstFloorLevel:
             Object.Draw()
+            
 
         self.m_Camera.EndDrawing()
 

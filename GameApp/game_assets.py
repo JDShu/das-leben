@@ -55,7 +55,7 @@ class AssetManager:
         '''
         Create and instance of AssetManager
         '''
-        self.assets = {}
+        self.assets = []
         self.textures = {}
 
         self.data_path = a_DataPath
@@ -68,14 +68,14 @@ class AssetManager:
         Load a asset manifest
         @param a_Filename String : the location of the manifest
         '''
-        manifest = Manifest( a_Filename )
+        manifest = Manifest( path.join( self.data_path, a_Filename ) )
 
         for item in manifest.items:
             if item.startswith( "OBJECT:" ):
                 parts = item.split( ":" )
                 obj = Object3d( path.join( self.data_path, parts[ 1 ] ) )
 
-                self.AddObject( parts[ 2 ], obj )
+                self.AddObject( parts[ 2 ].replace( '\n', '' ) , obj )
             elif item.startswith( "TEXTURE:" ):
                 pass
 
@@ -113,8 +113,8 @@ class AssetManager:
         @param a_Name String : the unique name of this object in the asset collection
         @param a_Object3d Object3d : an instance of a Object3d to be added
         '''
-        if a_Name not in self.assets.keys():
-            self.assets[ a_Name ] = a_Object3d
+        if { a_Name : a_Object3d } not in self.assets:
+            self.assets.append( { a_Name : a_Object3d } )
         else:
             raise Exception, "The name %s is already assigned to an object in this collection" % a_Name
         
@@ -132,10 +132,11 @@ class AssetManager:
         @param a_Name String : the name of this object in the collection
         @return Object3d instance
         '''
-        if a_Name in self.assets.keys():
-            return self.assets[ a_Name ]
-        else:
-            raise Exception, "The name %s is not in this collection" % a_Name
+        for Object in self.assets:
+            if a_Name in Object.keys():
+                return Object[ a_Name ]
+            else:
+                raise Exception, "The name %s is not in this collection" % a_Name
         
         
     

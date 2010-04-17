@@ -618,9 +618,9 @@ class MD2Model(object):
             # vertex 1
             vertex = l_Frames[ frame ].vertices[ face.p1 ].vertex
             
-            vertex1[0] = ( vertex[0] * scale[0]) + translate[0] * l_ObjectScale
-            vertex1[1] = ( vertex[1] * scale[1]) + translate[1] * l_ObjectScale
-            vertex1[2] = ( vertex[2] * scale[2]) + translate[2] * l_ObjectScale
+            vertex1[0] = ( vertex[0] * scale[0] ) + translate[0] * l_ObjectScale
+            vertex1[1] = ( vertex[1] * scale[1] ) + translate[1] * l_ObjectScale
+            vertex1[2] = ( vertex[2] * scale[2] ) + translate[2] * l_ObjectScale
 
             vertexes[ (i * 3) ][0] = vertex1[0]
             vertexes[ (i * 3) ][1] = vertex1[1]
