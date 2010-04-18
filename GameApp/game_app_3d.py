@@ -570,7 +570,9 @@ class GameApp3d:
         for Object in self.m_FirstFloorLevel:
             Object.Draw()
             
-
+        for Object in self.AssetManager.assets:
+            Object.Draw()
+            
         self.m_Camera.EndDrawing()
 
         # out put messages

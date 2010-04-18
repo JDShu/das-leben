@@ -8,9 +8,9 @@
 #
 # ---------------------------------------------------------------------
 
-OBJECT:environment/manmade/furniture/chair_70th.obj:CHAIR
-OBJECT:environment/manmade/furniture/oven.obj:DEFAULT_OVEN
-OBJECT:environment/manmade/walls/wall.obj:WALL0
-OBJECT:environment/manmade/walls/wall_plus_90degrees.obj:WALL90
+OBJECT:environment/manmade/furniture/chair_70th.obj:CHAIR:5.0,0.0,6.0:0.2 
+OBJECT:environment/manmade/furniture/oven.obj:DEFAULT_OVEN:10.0,0.0,6.0:0.2 
+OBJECT:environment/manmade/walls/wall.obj:WALL0:5.0,0.0,2.0:0.2 
+OBJECT:environment/manmade/walls/wall_plus_90degrees.obj:WALL90:5.0,0.0,10.0:0.2 
 FLOOR:environment/floors/first.flr:10.0,0.0,10.0
 

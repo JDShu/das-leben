@@ -73,9 +73,16 @@ class AssetManager:
         for item in manifest.items:
             if item.startswith( "OBJECT:" ):
                 parts = item.split( ":" )
-                obj = Object3d( path.join( self.data_path, parts[ 1 ] ) )
-
-                self.AddObject( parts[ 2 ].replace( '\n', '' ) , obj )
+                obj = Object3d( path.join( self.data_path, parts[ 1 ] ), None, parts[ 2 ].replace( '\n', '' ) )
+                pos_parts = parts[ 3 ].split( ',' )
+                x = float( pos_parts[ 0 ] )
+                y = float( pos_parts[ 1 ] )
+                z = float( pos_parts[ 2 ] )
+                scale = float( parts[ 4 ] )
+                obj.SetScale( scale )
+                obj.SetPosition( x, y, z )
+                self.AddObject( obj )
+                
             elif item.startswith( "TEXTURE:" ):
                 pass
 
@@ -107,16 +114,12 @@ class AssetManager:
         '''
         return self.textures[ a_Name ]
     
-    def AddObject( self, a_Name, a_Object3d ):
+    def AddObject( self, a_Object3d ):
         '''
         Add a Object3d to the managers dict
-        @param a_Name String : the unique name of this object in the asset collection
         @param a_Object3d Object3d : an instance of a Object3d to be added
         '''
-        if { a_Name : a_Object3d } not in self.assets:
-            self.assets.append( { a_Name : a_Object3d } )
-        else:
-            raise Exception, "The name %s is already assigned to an object in this collection" % a_Name
+        self.assets.append( a_Object3d )
         
     def ReplaceObject( self, a_Name, a_Object3d ):
         '''
@@ -133,8 +136,8 @@ class AssetManager:
         @return Object3d instance
         '''
         for Object in self.assets:
-            if a_Name in Object.keys():
-                return Object[ a_Name ]
+            if a_Name == Object.name:
+                return Object
             else:
                 raise Exception, "The name %s is not in this collection" % a_Name
         
