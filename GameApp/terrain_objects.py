@@ -56,7 +56,7 @@ class RegionQuad( BoundingBox3d ):
     '''
     A class to define what is contained inside a chopped up regions squares
     '''
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=0.5 ):
+    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Size=0.5, a_Type='#' ):
         '''
         Create a RegionQuad instance
         @param a_X Float : the x coord of the quad
@@ -70,6 +70,9 @@ class RegionQuad( BoundingBox3d ):
         self.ur = None
         self.ll = None
         self.lr = None
+        
+        # a type of quad for working with floorplanns
+        self.quadType = a_Type
         
         # vertex array index for when we are shaping the region later
         self.va_index = 0
@@ -247,28 +250,37 @@ class Region( Vector3d ):
         
         f = open( a_Filename, "r" )
         lines = f.read()
+        if "DIMENTIONS" in lines[ 0 ]:
+            dims = lines[ 0 ].split( ":" )[ 1 ].split( "x" )
+            self.m_Width = int( dims[ 0 ] )
+            self.m_Height = int( dims[ 1 ] )
+            del lines[ 0 ]
+        else:
+            raise Exception, "unable to load dimensions of floor plan %s" % a_Filename
         
+        if "POSITION" in lines[ 1 ]:
+            pos = lines[ 0 ].split( ":" )[ 1 ].split( "," )
+            x = float( pos[ 0 ] )
+            y = float( pos[ 1 ] )
+            z = float( pos[ 2 ] )
+            self.SetPosition( x, y, z )
+            del lines[ 1 ]
+        else:
+            self.SetPosition( 0.0, 0.0, 0.0 )
+            
         self.quads = []; qadd = self.quads.append
         self.quadIDS = []; iadd = self.quadIDS.append
         for x in xrange( self.m_Width ):
             for z in xrange( self.m_Width ):
-                rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
-                                  self.GetY(), 
-                                  self.GetZ() + ( float( z ) * self.m_Size ),
-                                  self.m_Size ) 
-                rq.SetAsObject( Object3d() )
-                line = lines[ ( x * self.m_Width ) + z ]
-                parts = line.split(",")
-                heights = {}
-                for part in parts:
-                    key, value = part.split(":")
-                    heights[ key ] = value
+                if lines[ ( z * self.m_Width ) + x ] != ?:
+                    rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
+                                      self.GetY(), 
+                                      self.GetZ() + ( float( z ) * self.m_Size ),
+                                      self.m_Size,
+                                      lines[ ( z * self.m_Width ) + x ] ) 
                     
-                rq.SetHeights( heights )
-                rq.compile_list()
-                
-                qadd( rq )
-                iadd( rq.listID )
+                    qadd( rq )
+                    iadd( rq.listID )
         
     def DeleteAllQuads( self ):
         for quad in self.quads:
