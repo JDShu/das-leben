@@ -505,6 +505,12 @@ class GameApp3d:
         elif self.m_KeyBuffer[ K_d ]:
             self.m_Camera.MoveRight()
 
+        elif self.m_KeyBuffer[ K_z ]:
+            self.m_Camera.ZoomIn()
+
+        elif self.m_KeyBuffer[ K_x ]:
+            self.m_Camera.ZoomOut()
+
         elif self.m_KeyBuffer[ K_c ]:
             x, y, z, w = self.m_Camera.GetPosition()
             self.AddMessage( "Camera Position: %s,%s,%s" % ( x, y, z ) )

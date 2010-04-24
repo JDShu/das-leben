@@ -37,7 +37,6 @@ class oglCamera( Vector3d ):
         glRotatef( self.m_YRot.GetAngle(),   0, 1.0,   0 )
         glTranslatef( self.m_Values[0], self.m_Values[1], self.m_Values[2] )
 
-
     def EndDrawing( self ):        
         glPopMatrix()
 
@@ -123,21 +122,30 @@ class oglCamera( Vector3d ):
         glEnable( GL_DEPTH_TEST )
         glPopMatrix()
 
-    def Fly ( self, direction_angle, speed ):
+    def Fly ( self, relative_y_angle, relative_x_angle, speed ):
         x, y, z, w = self.GetPosition()
-        angle_y = self.m_YRot.GetAngle()
-        x -= speed * sin( radians( angle_y + direction_angle ))
-        z += speed * cos( radians( angle_y + direction_angle ))
+        roh = radians(self.m_YRot.GetAngle() + relative_y_angle)
+        theta = radians(relative_x_angle)
+        x -= speed * cos(theta) * sin(roh)
+        z += speed * cos(theta) * cos(roh)
+        y += speed * sin(theta)
+
         self.SetPosition( x, y, z, w )
 
     def MoveForward( self ):
-        self.Fly(0,1)
+        self.Fly(0,0,1)
 
     def MoveBackward( self ):
-        self.Fly(180,0.25)
+        self.Fly(180,0,0.25)
 
     def MoveLeft( self ):
-        self.Fly(-90,0.25)
+        self.Fly(-90,0,0.25)
 
     def MoveRight( self ):
-        self.Fly(90,0.25)
+        self.Fly(90,0,0.25)
+
+    def ZoomIn( self ):
+        self.Fly(0,self.m_XRot.GetAngle(),0.25)
+
+    def ZoomOut( self ):
+        self.Fly(180,-self.m_XRot.GetAngle(),0.25)
