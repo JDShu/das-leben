@@ -475,10 +475,10 @@ class GameApp3d:
 
         elif self.m_KeyBuffer[ K_LEFT ]:
             self.m_Camera.m_YRot -= 1.0
-
+        
         elif self.m_KeyBuffer[ K_RIGHT ]:
             self.m_Camera.m_YRot += 1.0
-
+        
         elif self.m_KeyBuffer[ K_u ]:
             x, y, z, w = self.m_Ground.GetPosition()
             y += 0.25
@@ -495,22 +495,31 @@ class GameApp3d:
 
         elif self.m_KeyBuffer[ K_w ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            z -= 1
+            angle_y = self.m_Camera.m_YRot.GetAngle()
+            x -= sin(radians(angle_y))
+            z += cos(radians(angle_y))
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_s ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            z += 0.25
+            angle_y = self.m_Camera.m_YRot.GetAngle()
+            x += 0.25*sin(radians(angle_y))
+            z -= 0.25*cos(radians(angle_y))
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_a ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            x -= 0.25
+            angle_y = self.m_Camera.m_YRot.GetAngle()
+            x -= 0.25*sin(radians(angle_y - 90))
+            z += 0.25*cos(radians(angle_y - 90))
+            
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_d ]:
             x, y, z, w = self.m_Camera.GetPosition()
-            x += 0.25
+            angle_y = self.m_Camera.m_YRot.GetAngle()
+            x -= 0.25*sin(radians(angle_y + 90))
+            z += 0.25*cos(radians(angle_y + 90))
             self.m_Camera.SetPosition( x, y, z, w )
 
         elif self.m_KeyBuffer[ K_c ]:
