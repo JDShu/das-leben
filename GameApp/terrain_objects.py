@@ -272,7 +272,7 @@ class Region( Vector3d ):
         self.quadIDS = []; iadd = self.quadIDS.append
         for x in xrange( self.m_Width ):
             for z in xrange( self.m_Width ):
-                if lines[ ( z * self.m_Width ) + x ] != ?:
+                if lines[ ( z * self.m_Width ) + x ] != '?':
                     rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
                                       self.GetY(), 
                                       self.GetZ() + ( float( z ) * self.m_Size ),
