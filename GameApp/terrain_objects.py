@@ -249,8 +249,8 @@ class Region( Vector3d ):
         self.DeleteAllQuads()
         
         f = open( a_Filename, "r" )
-        lines = f.read()
-        if "DIMENTIONS" in lines[ 0 ]:
+        lines = f.readlines()
+        if lines[ 0 ].startswith( "DIMENSIONS" ):
             dims = lines[ 0 ].split( ":" )[ 1 ].split( "x" )
             self.m_Width = int( dims[ 0 ] )
             self.m_Height = int( dims[ 1 ] )
@@ -258,13 +258,13 @@ class Region( Vector3d ):
         else:
             raise Exception, "unable to load dimensions of floor plan %s" % a_Filename
         
-        if "POSITION" in lines[ 1 ]:
+        if lines[ 0 ].startswith( "POSITION" ):
             pos = lines[ 0 ].split( ":" )[ 1 ].split( "," )
             x = float( pos[ 0 ] )
             y = float( pos[ 1 ] )
             z = float( pos[ 2 ] )
             self.SetPosition( x, y, z )
-            del lines[ 1 ]
+            del lines[ 0 ]
         else:
             self.SetPosition( 0.0, 0.0, 0.0 )
             
@@ -272,12 +272,13 @@ class Region( Vector3d ):
         self.quadIDS = []; iadd = self.quadIDS.append
         for x in xrange( self.m_Width ):
             for z in xrange( self.m_Width ):
-                if lines[ ( z * self.m_Width ) + x ] != '?':
+                quad = lines[ z ][ x ].replace( "\n", "" )
+                if quad != '?':
                     rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
                                       self.GetY(), 
                                       self.GetZ() + ( float( z ) * self.m_Size ),
                                       self.m_Size,
-                                      lines[ ( z * self.m_Width ) + x ] ) 
+                                      quad ) 
                     
                     qadd( rq )
                     iadd( rq.listID )
@@ -426,7 +427,7 @@ class FloorRegion( Region ):
         if a_AssetManager: 
             self.m_AssetManager = a_AssetManager
         else:
-            raise Exception, "No asset manager instance supplied; create on and fill it with Object3d instances"
+            raise Exception, "No asset manager instance supplied; create one and fill it with Object3d instances"
             
         self.m_ShowFloor = True
         self.m_ShowWalls = True
@@ -498,4 +499,11 @@ class FloorRegion( Region ):
         if self.m_ShowWalls:
             for quad in self.quads:
                 quad.Draw()
+        
+class LoadableRegion( Region ):
+        def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5 ):
+            Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size )
+            
+        def Draw( self ):
+            self._draw()
         
