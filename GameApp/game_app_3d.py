@@ -494,33 +494,16 @@ class GameApp3d:
             self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
 
         elif self.m_KeyBuffer[ K_w ]:
-            x, y, z, w = self.m_Camera.GetPosition()
-            angle_y = self.m_Camera.m_YRot.GetAngle()
-            x -= sin(radians(angle_y))
-            z += cos(radians(angle_y))
-            self.m_Camera.SetPosition( x, y, z, w )
+            self.m_Camera.MoveForward()
 
         elif self.m_KeyBuffer[ K_s ]:
-            x, y, z, w = self.m_Camera.GetPosition()
-            angle_y = self.m_Camera.m_YRot.GetAngle()
-            x += 0.25*sin(radians(angle_y))
-            z -= 0.25*cos(radians(angle_y))
-            self.m_Camera.SetPosition( x, y, z, w )
+            self.m_Camera.MoveBackward()
 
         elif self.m_KeyBuffer[ K_a ]:
-            x, y, z, w = self.m_Camera.GetPosition()
-            angle_y = self.m_Camera.m_YRot.GetAngle()
-            x -= 0.25*sin(radians(angle_y - 90))
-            z += 0.25*cos(radians(angle_y - 90))
+            self.m_Camera.MoveLeft()
             
-            self.m_Camera.SetPosition( x, y, z, w )
-
         elif self.m_KeyBuffer[ K_d ]:
-            x, y, z, w = self.m_Camera.GetPosition()
-            angle_y = self.m_Camera.m_YRot.GetAngle()
-            x -= 0.25*sin(radians(angle_y + 90))
-            z += 0.25*cos(radians(angle_y + 90))
-            self.m_Camera.SetPosition( x, y, z, w )
+            self.m_Camera.MoveRight()
 
         elif self.m_KeyBuffer[ K_c ]:
             x, y, z, w = self.m_Camera.GetPosition()
@@ -540,6 +523,7 @@ class GameApp3d:
             self.m_Camera.SetPosition( x, y, z, w )
             
         elif self.m_KeyBuffer[ K_e ]:
+            self.AddMessage( "edit mode" )
             self.m_Mode = EDIT_MODE
             
         elif self.m_KeyBuffer[ K_q ]:

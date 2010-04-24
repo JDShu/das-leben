@@ -122,3 +122,22 @@ class oglCamera( Vector3d ):
     
         glEnable( GL_DEPTH_TEST )
         glPopMatrix()
+
+    def Fly ( self, direction_angle, speed ):
+        x, y, z, w = self.GetPosition()
+        angle_y = self.m_YRot.GetAngle()
+        x -= speed * sin( radians( angle_y + direction_angle ))
+        z += speed * cos( radians( angle_y + direction_angle ))
+        self.SetPosition( x, y, z, w )
+
+    def MoveForward( self ):
+        self.Fly(0,1)
+
+    def MoveBackward( self ):
+        self.Fly(180,0.25)
+
+    def MoveLeft( self ):
+        self.Fly(-90,0.25)
+
+    def MoveRight( self ):
+        self.Fly(90,0.25)
