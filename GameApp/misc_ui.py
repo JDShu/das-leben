@@ -30,8 +30,6 @@ class TexturedRect( Vector3d ):
         self.m_Values = a_Position.m_Values
         self.m_Width = a_Width
         self.m_Height = a_Height
-        
-        
 
         if a_TextureFilename.upper().endswith( '.SVG' ):
             pass
@@ -49,8 +47,6 @@ class TexturedRect( Vector3d ):
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
             glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData )
             
-    
-
     def Draw( self ):
         glEnable( GL_TEXTURE_2D )
         glBindTexture( GL_TEXTURE_2D, self.m_Texture )
@@ -168,4 +164,39 @@ class SelectedRegion:
 class AreaDimensions:
             width = 0
             height = 0
+    
+class PopupDialog( TexturedRect ):
+
+    def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height ):
+        self.m_Values = a_Position.m_Values
+        self.m_Width = a_Width
+        self.m_Height = a_Height
+        self.m_Values = (200, 311, 2)#pos.m_Values
+        self.appear = True
+
+        if a_TextureFilename.upper().endswith( '.SVG' ):
+            pass
+        else:
+            textureSurface = pygame.image.load( a_TextureFilename )
+
+            textureData = pygame.image.tostring( textureSurface, "RGBA", 1 )
+
+            width = textureSurface.get_width()
+            height = textureSurface.get_height()
+
+            self.m_Texture = glGenTextures( 1 )
+            glBindTexture( GL_TEXTURE_2D, self.m_Texture )
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR )
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData )
+
+    def Toggle(self, camera):
+        x, y = pygame.mouse.get_pos()
+        y = camera.m_ViewportHeight - y - self.m_Height
+        self.m_Values = ( x, y, 2 )
+        self.appear = not self.appear
+
+    def Appears(self):
+        return self.appear
+
     

@@ -154,6 +154,9 @@ class GameApp3d:
         # @warning Not yet implemented
         self.SetupExecutionCycles()
         
+        #popup dialog
+        self.dialog = PopupDialog( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 100, 100 )
+        
     def SetupExecutionCycles( self ):
         self.m_ProcessCycles = { "Behaviours": 2, "Events": 3 }
                 
@@ -403,8 +406,10 @@ class GameApp3d:
                     addVec = Vector3d( 0.5, 0, 0.5 )
                     self.m_SelectedArea.BeginEditing()
                     self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
-               
                     
+                elif event.button == 3: #Right Mouse Button opens and closes gui dialog
+                    self.dialog.Toggle(self.m_Camera)
+                                        
             elif event.type == MOUSEBUTTONUP:
                 if event.button == LEFT_MOUSE:
                     self.m_SelectedArea.EndEditing()
@@ -527,14 +532,14 @@ class GameApp3d:
             x, y, z, w = self.m_Camera.GetPosition()
             y += 0.25
             self.m_Camera.SetPosition( x, y, z, w )
-            
+             
         elif self.m_KeyBuffer[ K_e ]:
             self.AddMessage( "edit mode" )
             self.m_Mode = EDIT_MODE
             
         elif self.m_KeyBuffer[ K_q ]:
             self.m_Mode = NORMAL_MODE
-            
+
         return True
 
     def PrintToConsole(self, a_Message, a_LineNumber ):
@@ -562,9 +567,17 @@ class GameApp3d:
             
         for Object in self.m_FirstFloorLevel:
             Object.Draw()
-
+        
+        
         self.m_Camera.EndDrawing()
 
+        if self.dialog.Appears(): #gui dialog appears and disappears when mouse is clicked
+            glDisable( GL_LIGHTING )
+            self.m_Camera.BeginDrawing2d()
+            self.dialog.Draw()
+            self.m_Camera.EndDrawing2d()
+            glEnable( GL_LIGHTING )
+            
         # out put messages
         for i, message in enumerate( self.m_Messages ):
             self.PrintToConsole( message, i )
