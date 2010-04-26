@@ -478,7 +478,7 @@ class GameApp3d:
         elif self.m_KeyBuffer[ K_DOWN ]:
             self.m_Camera.m_XRot -= 1.0
 
-        elif self.m_KeyBuffer[ K_LEFT ]:
+        if self.m_KeyBuffer[ K_LEFT ]:
             self.m_Camera.m_YRot -= 1.0
         
         elif self.m_KeyBuffer[ K_RIGHT ]:
@@ -498,13 +498,13 @@ class GameApp3d:
             glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
             self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
 
-        elif self.m_KeyBuffer[ K_w ]:
+        if self.m_KeyBuffer[ K_w ]:
             self.m_Camera.MoveForward()
 
         elif self.m_KeyBuffer[ K_s ]:
             self.m_Camera.MoveBackward()
 
-        elif self.m_KeyBuffer[ K_a ]:
+        if self.m_KeyBuffer[ K_a ]:
             self.m_Camera.MoveLeft()
             
         elif self.m_KeyBuffer[ K_d ]:
