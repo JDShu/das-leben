@@ -23,6 +23,7 @@ from ogl_va import VA
 import pygame
 import numpy
 from numpy import *
+import glFreeType
 
 class TexturedRect( Vector3d ):
     '''a textured rectangle'''
@@ -171,9 +172,8 @@ class PopupDialog( TexturedRect ):
         self.m_Values = a_Position.m_Values
         self.m_Width = a_Width
         self.m_Height = a_Height
-        self.m_Values = (200, 311, 2)#pos.m_Values
-        self.appear = True
-
+        self.appear = False
+        
         if a_TextureFilename.upper().endswith( '.SVG' ):
             pass
         else:
@@ -191,12 +191,10 @@ class PopupDialog( TexturedRect ):
             glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData )
 
     def Toggle(self, camera):
-        x, y = pygame.mouse.get_pos()
-        y = camera.m_ViewportHeight - y - self.m_Height
-        self.m_Values = ( x, y, 2 )
+        self.x, self.y = pygame.mouse.get_pos()
+        self.y = camera.m_ViewportHeight - self.y
+        self.m_Values = ( self.x, self.y - self.m_Height, 2 )
         self.appear = not self.appear
 
     def Appears(self):
         return self.appear
-
-    

@@ -576,6 +576,7 @@ class GameApp3d:
             self.m_Camera.BeginDrawing2d()
             self.dialog.Draw()
             self.m_Camera.EndDrawing2d()
+            self.font.glPrint( self.dialog.x + 10, self.dialog.y - 20, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
             glEnable( GL_LIGHTING )
             
         # out put messages
