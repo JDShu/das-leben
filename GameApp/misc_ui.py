@@ -29,8 +29,8 @@ class TexturedRect( Vector3d ):
     '''a textured rectangle'''
     def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height ):
         self.m_Values = a_Position.m_Values
-        self.m_Width = a_Width
-        self.m_Height = a_Height
+        self.m_Width = float(a_Width)
+        self.m_Height = float(a_Height)
 
         if a_TextureFilename.upper().endswith( '.SVG' ):
             pass
@@ -49,13 +49,15 @@ class TexturedRect( Vector3d ):
             glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData )
             
     def Draw( self ):
+        glPushMatrix()
+        glLoadIdentity()
         glEnable( GL_TEXTURE_2D )
         glBindTexture( GL_TEXTURE_2D, self.m_Texture )
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
         glEnable(GL_BLEND)
         
-        glTranslate( self.GetX(), self.GetY(), self.GetZ() )
+        glTranslate( self.GetX(), self.GetY() - self.m_Height, self.GetZ() )
         glBegin(GL_QUADS)
         glColor(1, 1, 1, 1)
         glTexCoord2f(0.0, 0.0)
@@ -69,6 +71,7 @@ class TexturedRect( Vector3d ):
         glVertex2f( 0, self.m_Height )
         glEnd()
         glDisable( GL_TEXTURE_2D )
+        glPopMatrix()
         
 class SelectedRegion:
     def __init__( self, a_StepWidth, a_Altitude, a_StartPosition, a_EndPosition, a_StartTicks):
@@ -167,34 +170,18 @@ class AreaDimensions:
             height = 0
     
 class PopupDialog( TexturedRect ):
-
     def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height ):
-        self.m_Values = a_Position.m_Values
-        self.m_Width = a_Width
-        self.m_Height = a_Height
+        TexturedRect.__init__( self, a_TextureFilename, a_Position, a_Width, a_Height )
         self.appear = False
-        
-        if a_TextureFilename.upper().endswith( '.SVG' ):
-            pass
-        else:
-            textureSurface = pygame.image.load( a_TextureFilename )
 
-            textureData = pygame.image.tostring( textureSurface, "RGBA", 1 )
-
-            width = textureSurface.get_width()
-            height = textureSurface.get_height()
-
-            self.m_Texture = glGenTextures( 1 )
-            glBindTexture( GL_TEXTURE_2D, self.m_Texture )
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR )
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, textureData )
-
-    def Toggle(self, camera):
-        self.x, self.y = pygame.mouse.get_pos()
-        self.y = camera.m_ViewportHeight - self.y
-        self.m_Values = ( self.x, self.y - self.m_Height, 2 )
+    def Toggle( self, camera ):
+        x, y = pygame.mouse.get_pos()
+        self.SetPosition( float( x ), camera.m_ViewportHeight - y, 1.0 )
         self.appear = not self.appear
+        
+    def Draw( self ):
+        if self.appear:
+            TexturedRect.Draw( self )
 
-    def Appears(self):
+    def Appears( self ):
         return self.appear

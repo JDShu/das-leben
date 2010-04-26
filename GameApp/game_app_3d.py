@@ -128,8 +128,10 @@ class GameApp3d:
 
         # start loading basic assets
         self.StartMusicTrack( "01_every_thought_has_been_thought.ogg" )
-        self.m_SplashBg = TexturedRect( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
-                                       self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
+        self.m_SplashBg = TexturedRect( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, 
+                                        Vector3d( 0, self.m_Camera.m_ViewportHeight, 1.0 ), 
+                                       self.m_Camera.m_ViewportWidth, 
+                                       self.m_Camera.m_ViewportHeight )
 
         self.m_SplashLogo = TexturedRect( "%s/gui/graphics/logo_la_vida.png" % self.DATA_PATH, Vector3d( 200, 311, 1.0 ), 676, 200 )
         pos_x = self.m_Camera.m_ViewportWidth - 130
@@ -568,15 +570,15 @@ class GameApp3d:
         for Object in self.m_FirstFloorLevel:
             Object.Draw()
         
-        
         self.m_Camera.EndDrawing()
-
+        
+        
         if self.dialog.Appears(): #gui dialog appears and disappears when mouse is clicked
             glDisable( GL_LIGHTING )
             self.m_Camera.BeginDrawing2d()
             self.dialog.Draw()
             self.m_Camera.EndDrawing2d()
-            self.font.glPrint( self.dialog.x + 10, self.dialog.y - 20, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
+            self.font.glPrint( self.dialog.GetX() + 10, self.dialog.GetY() - 20, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
             glEnable( GL_LIGHTING )
             
         # out put messages

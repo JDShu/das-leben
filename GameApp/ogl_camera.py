@@ -102,10 +102,10 @@ class oglCamera( Vector3d ):
         return l_RetVal
     
     def BeginDrawing2d( self ):
-        glPushMatrix()
         glDisable(GL_DEPTH_TEST)
         glMatrixMode( GL_PROJECTION )
-        glPushMatrix()        
+        glPushMatrix()   
+        glLoadIdentity()
         viewport = glGetIntegerv( GL_VIEWPORT )
         glOrtho( viewport[0],viewport[2],viewport[1],viewport[3], -1, 1 )
         glMatrixMode( GL_MODELVIEW )
@@ -120,7 +120,6 @@ class oglCamera( Vector3d ):
         glPopMatrix()
     
         glEnable( GL_DEPTH_TEST )
-        glPopMatrix()
 
     def Fly ( self, relative_y_angle, relative_x_angle, speed ):
         x, y, z, w = self.GetPosition()
