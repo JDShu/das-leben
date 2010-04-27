@@ -173,6 +173,7 @@ class PopupDialog( TexturedRect ):
     def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height ):
         TexturedRect.__init__( self, a_TextureFilename, a_Position, a_Width, a_Height )
         self.appear = False
+        self.elements = []
 
     def Toggle( self, camera ):
         x, y = pygame.mouse.get_pos()
@@ -182,6 +183,49 @@ class PopupDialog( TexturedRect ):
     def Draw( self ):
         if self.appear:
             TexturedRect.Draw( self )
+            for e in self.elements:
+                e.SetPosition(self.GetX(), self.GetY())
+                e.Draw()
 
     def Appears( self ):
         return self.appear
+
+    def AddElement ( self, dialog_element, position):
+        dialog_element.SetOffset(position)
+        self.elements.append( dialog_element )
+
+class DialogButton( ):
+    def __init__( self, basic, hover, clicked, camera ):
+        self.basic_image = basic
+        self.hover_image = hover
+        self.clicked_image = clicked
+        self.camera_height = camera.m_ViewportHeight
+        self.offset = ( 0,0 )
+        self.clicked = False
+
+    def SetOffset( self, position):
+        self.offset = position
+
+    def SetPosition( self, x, y):
+        new_x = x + self.offset[0]
+        new_y = y - self.offset[1]
+        self.basic_image.m_Values = (new_x, new_y, 1)
+        self.hover_image.m_Values = (new_x, new_y, 1)
+        self.clicked_image.m_Values = (new_x, new_y, 1)
+
+    def Within( self, x, y ): #make global function?
+        c_x = self.basic_image.GetX()
+        c_y = self.camera_height - self.basic_image.GetY()
+        #print c_x, c_x + current.m_Width
+        if c_x < x < c_x + self.basic_image.m_Width and c_y < y < c_y + self.basic_image.m_Height:
+            return True
+        
+    def Draw( self ):
+        x, y = pygame.mouse.get_pos()
+        
+        if self.clicked:
+            self.clicked_image.Draw()
+        elif self.Within( x, y ):
+            self.hover_image.Draw()
+        else:
+            self.basic_image.Draw()

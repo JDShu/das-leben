@@ -158,6 +158,11 @@ class GameApp3d:
         
         #popup dialog
         self.dialog = PopupDialog( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 100, 100 )
+        button_basic = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_basic.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        button_hover = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_hover.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        button_clicked = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_clicked.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        test_button = DialogButton(button_basic, button_hover, button_clicked, self.m_Camera)
+        self.dialog.AddElement( test_button, (30,30) )
         
     def SetupExecutionCycles( self ):
         self.m_ProcessCycles = { "Behaviours": 2, "Events": 3 }
@@ -396,19 +401,25 @@ class GameApp3d:
                 self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
                 if event.button == LEFT_MOUSE:
-                    self.m_SelectedArea.m_Enabled = True
+                    if self.dialog.elements[0].Within(l_X, l_Y):
+                        self.dialog.elements[0].clicked = True
+                    else:
+                        self.m_SelectedArea.m_Enabled = True
                     #self.AddMessage( "Started at %s" % l_Position )
-                    l_Start = Vector3d()
-                    l_Start = l_Position
-                    x, y, z, w = l_Start.GetPosition()
-                    new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
-                    new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
-                    l_Start.SetPosition( new_x, y, new_z )
+                        l_Start = Vector3d()
+                        l_Start = l_Position
+                        x, y, z, w = l_Start.GetPosition()
+                        new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
+                        new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
+                        l_Start.SetPosition( new_x, y, new_z )
+                        
+                        addVec = Vector3d( 0.5, 0, 0.5 )
+                        self.m_SelectedArea.BeginEditing()
+                        self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
                     
-                    addVec = Vector3d( 0.5, 0, 0.5 )
-                    self.m_SelectedArea.BeginEditing()
-                    self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
+                    #dialog button test
                     
+
                 elif event.button == 3: #Right Mouse Button opens and closes gui dialog
                     self.dialog.Toggle(self.m_Camera)
                                         
@@ -428,6 +439,11 @@ class GameApp3d:
                                       self.m_Wall )
                     
                     self.m_GroundFloorObjects.insert( 1, l_Floor )
+
+                    if self.dialog.elements[0].Within(l_X, l_Y) and self.dialog.elements[0].clicked: #release button
+                        self.dialog.Toggle( self.m_Camera ) #action upon activation of the button
+                    self.dialog.elements[0].clicked = False 
+                    
 
             elif event.type == QUIT:
                 return False
