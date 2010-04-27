@@ -42,7 +42,7 @@ from copy import deepcopy
 from os import getcwd, path
 from constants import *
 from misc_ui import *
-import Queue
+import collections
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -167,7 +167,7 @@ class GameApp3d:
         self.dialog.AddElement( test_button, (30,30) )
         
         #Event Class queue
-        self.events = Queue.Queue()
+        self.events = collections.deque()
 
     def SetupExecutionCycles( self ):
         self.m_ProcessCycles = { "Behaviours": 2, "Events": 3 }
@@ -403,7 +403,7 @@ class GameApp3d:
 
             elif event.type == MOUSEBUTTONDOWN:
                 
-                self.events.put(MouseEvent()) # use event classes
+                self.events.appendleft(MouseEvent()) # use event classes
 
                 self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
@@ -426,7 +426,7 @@ class GameApp3d:
                                         
             elif event.type == MOUSEBUTTONUP:
 
-                self.events.put(MouseEvent())
+                self.events.appendleft(MouseEvent())
 
                 if event.button == LEFT_MOUSE:
                     self.m_SelectedArea.EndEditing()
@@ -447,8 +447,8 @@ class GameApp3d:
             elif event.type == QUIT:
                 return False
 
-        while(not self.events.empty()):
-            e = self.events.get()#event class
+        while(len(self.events)): #go through event queue and process each event
+            e = self.events.pop()
             if e.category == MOUSE:
                 self.dialog.elements[0].ProcessClick(e, self.dialog.Toggle, (self.m_Camera,) )
             
