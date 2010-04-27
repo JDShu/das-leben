@@ -34,6 +34,7 @@ from OGLExt import *
 from terrain_objects import *
 from object_3d import *
 from vector_3d import *
+from system import *
 import ogl_shader 
 import glFreeType
 import os
@@ -41,6 +42,7 @@ from copy import deepcopy
 from os import getcwd, path
 from constants import *
 from misc_ui import *
+import Queue
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -164,6 +166,9 @@ class GameApp3d:
         test_button = DialogButton(button_basic, button_hover, button_clicked, self.m_Camera)
         self.dialog.AddElement( test_button, (30,30) )
         
+        #Event Class queue
+        self.events = Queue.Queue()
+
     def SetupExecutionCycles( self ):
         self.m_ProcessCycles = { "Behaviours": 2, "Events": 3 }
                 
@@ -398,32 +403,31 @@ class GameApp3d:
 
             elif event.type == MOUSEBUTTONDOWN:
                 
+                self.events.put(MouseEvent()) # use event classes
+
                 self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
                 if event.button == LEFT_MOUSE:
-                    if self.dialog.elements[0].Within(l_X, l_Y):
-                        self.dialog.elements[0].clicked = True
-                    else:
-                        self.m_SelectedArea.m_Enabled = True
+                    self.m_SelectedArea.m_Enabled = True
                     #self.AddMessage( "Started at %s" % l_Position )
-                        l_Start = Vector3d()
-                        l_Start = l_Position
-                        x, y, z, w = l_Start.GetPosition()
-                        new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
-                        new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
-                        l_Start.SetPosition( new_x, y, new_z )
+                    l_Start = Vector3d()
+                    l_Start = l_Position
+                    x, y, z, w = l_Start.GetPosition()
+                    new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
+                    new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
+                    l_Start.SetPosition( new_x, y, new_z )
                         
-                        addVec = Vector3d( 0.5, 0, 0.5 )
-                        self.m_SelectedArea.BeginEditing()
-                        self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
+                    addVec = Vector3d( 0.5, 0, 0.5 )
+                    self.m_SelectedArea.BeginEditing()
+                    self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
                     
-                    #dialog button test
-                    
-
                 elif event.button == 3: #Right Mouse Button opens and closes gui dialog
                     self.dialog.Toggle(self.m_Camera)
                                         
             elif event.type == MOUSEBUTTONUP:
+
+                self.events.put(MouseEvent())
+
                 if event.button == LEFT_MOUSE:
                     self.m_SelectedArea.EndEditing()
                     self.m_SelectedArea.m_Enabled = False
@@ -440,14 +444,13 @@ class GameApp3d:
                     
                     self.m_GroundFloorObjects.insert( 1, l_Floor )
 
-                    if self.dialog.elements[0].Within(l_X, l_Y) and self.dialog.elements[0].clicked: #release button
-                        self.dialog.Toggle( self.m_Camera ) #action upon activation of the button
-                    self.dialog.elements[0].clicked = False 
-                    
-
             elif event.type == QUIT:
                 return False
 
+        while(not self.events.empty()):
+            e = self.events.get()#event class
+            if e.category == MOUSE:
+                self.dialog.elements[0].ProcessClick(e, self.dialog.Toggle, (self.m_Camera,) )
             
         if self.m_SelectedArea.IsEditing():
             self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )

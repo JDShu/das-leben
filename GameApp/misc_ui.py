@@ -229,3 +229,17 @@ class DialogButton( ):
             self.hover_image.Draw()
         else:
             self.basic_image.Draw()
+
+    def ProcessClick( self, mouse_event, function, args ):
+        if self.Within(mouse_event.x, mouse_event.y):
+            if mouse_event.l_click:
+                self.clicked = True
+            else:
+                apply(function, args)#button function here 
+                self.clicked = False
+        else:
+            self.clicked = False
+
+#if self.dialog.elements[0].Within(l_X, l_Y) and self.dialog.elements[0].clicked: #release button
+        #    self.dialog.Toggle( self.m_Camera ) #action upon activation of the button
+        #    self.clicked = False 
