@@ -163,7 +163,7 @@ class GameApp3d:
         button_basic = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_basic.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
         button_hover = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_hover.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
         button_clicked = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_clicked.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
-        test_button = DialogButton(button_basic, button_hover, button_clicked, self.m_Camera)
+        test_button = DialogButton(self.dialog, (30,30), button_basic, button_hover, button_clicked, self.m_Camera)
         self.dialog.AddElement( test_button, (30,30) )
         
         #Event Class queue
@@ -590,7 +590,6 @@ class GameApp3d:
             Object.Draw()
         
         self.m_Camera.EndDrawing()
-        
         
         if self.dialog.Appears(): #gui dialog appears and disappears when mouse is clicked
             glDisable( GL_LIGHTING )

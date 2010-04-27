@@ -190,33 +190,40 @@ class PopupDialog( TexturedRect ):
     def Appears( self ):
         return self.appear
 
-    def AddElement ( self, dialog_element, position):
-        dialog_element.SetOffset(position)
+    def AddElement ( self, dialog_element, offset):
+        dialog_element.SetOffset( offset )
         self.elements.append( dialog_element )
 
-class DialogButton( ):
-    def __init__( self, basic, hover, clicked, camera ):
-        self.basic_image = basic
-        self.hover_image = hover
-        self.clicked_image = clicked
+class DialogElement():
+    def __init__( self, container, offset, camera ):
+        self.container = container
         self.camera_height = camera.m_ViewportHeight
-        self.offset = ( 0,0 )
-        self.clicked = False
+        self.offset = offset                
+        self.position = (self.container.m_Values[0] + self.offset[0], self.container.m_Values[1] - self.offset[1], 1)
 
     def SetOffset( self, position):
         self.offset = position
 
-    def SetPosition( self, x, y):
-        new_x = x + self.offset[0]
-        new_y = y - self.offset[1]
-        self.basic_image.m_Values = (new_x, new_y, 1)
-        self.hover_image.m_Values = (new_x, new_y, 1)
-        self.clicked_image.m_Values = (new_x, new_y, 1)
+    def SetPosition( self ):
+        self.position = (self.container.m_Values[0] + self.offset[0], self.container.m_Values[1] - self.offset[1], 1)
 
-    def Within( self, x, y ): #make global function?
+class DialogButton( DialogElement ):
+    def __init__( self, container, offset, basic, hover, clicked, camera ):
+        DialogElement.__init__( self, container, offset, camera )
+        self.basic_image = basic
+        self.hover_image = hover
+        self.clicked_image = clicked
+        self.clicked = False
+
+    def SetPosition( self, x, y):
+        DialogElement.SetPosition( self )
+        self.basic_image.m_Values = self.position
+        self.hover_image.m_Values = self.position
+        self.clicked_image.m_Values = self.position
+
+    def Within( self, x, y ): 
         c_x = self.basic_image.GetX()
         c_y = self.camera_height - self.basic_image.GetY()
-        #print c_x, c_x + current.m_Width
         if c_x < x < c_x + self.basic_image.m_Width and c_y < y < c_y + self.basic_image.m_Height:
             return True
         
@@ -239,7 +246,3 @@ class DialogButton( ):
                 self.clicked = False
         else:
             self.clicked = False
-
-#if self.dialog.elements[0].Within(l_X, l_Y) and self.dialog.elements[0].clicked: #release button
-        #    self.dialog.Toggle( self.m_Camera ) #action upon activation of the button
-        #    self.clicked = False 
