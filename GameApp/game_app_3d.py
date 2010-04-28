@@ -158,14 +158,17 @@ class GameApp3d:
         # @warning Not yet implemented
         self.SetupExecutionCycles()
         
-        #popup dialog
+        #popup dialog has 2 elements: a button and a static piece of text
         self.dialog = PopupDialog( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 100, 100 )
         button_basic = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_basic.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
         button_hover = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_hover.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
         button_clicked = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_clicked.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
-        test_button = DialogButton(self.dialog, (30,30), button_basic, button_hover, button_clicked, self.m_Camera)
-        self.dialog.AddElement( test_button, (30,30) )
-        
+        test_button = DialogButton( self.dialog, (35,35), button_basic, button_hover, button_clicked, self.m_Camera)
+        test_text = DialogText( self.dialog, (30, 30), self.m_Camera, self.font, "Dialog", (255,0,0) ) 
+        self.dialog.AddElement( test_button)
+        self.dialog.AddElement( test_text )
+                
+
         #Event Class queue
         self.events = collections.deque()
 
@@ -595,8 +598,8 @@ class GameApp3d:
             glDisable( GL_LIGHTING )
             self.m_Camera.BeginDrawing2d()
             self.dialog.Draw()
+            self.font.glPrint( self.dialog.GetX() + 10, self.dialog.GetY() - 100, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
             self.m_Camera.EndDrawing2d()
-            self.font.glPrint( self.dialog.GetX() + 10, self.dialog.GetY() - 20, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
             glEnable( GL_LIGHTING )
             
         # out put messages
@@ -611,12 +614,10 @@ class GameApp3d:
         if len( self.m_Messages ) > 40:
             self.m_Messages = []
 
-
     def Exit(self):
         pygame.mixer.music.stop()
         pygame.quit()
         sys.exit()
-
 
 if __name__ == "__main__": 
     game_app = GameApp3d()

@@ -184,14 +184,14 @@ class PopupDialog( TexturedRect ):
         if self.appear:
             TexturedRect.Draw( self )
             for e in self.elements:
-                e.SetPosition(self.GetX(), self.GetY())
                 e.Draw()
 
     def Appears( self ):
         return self.appear
 
-    def AddElement ( self, dialog_element, offset):
-        dialog_element.SetOffset( offset )
+    def AddElement ( self, dialog_element, offset=None):
+        if offset != None:
+            dialog_element.SetOffset( offset )
         self.elements.append( dialog_element )
 
 class DialogElement():
@@ -201,11 +201,14 @@ class DialogElement():
         self.offset = offset                
         self.position = (self.container.m_Values[0] + self.offset[0], self.container.m_Values[1] - self.offset[1], 1)
 
-    def SetOffset( self, position):
-        self.offset = position
+    def SetOffset( self, offset ):
+        self.offset = offset
 
     def SetPosition( self ):
         self.position = (self.container.m_Values[0] + self.offset[0], self.container.m_Values[1] - self.offset[1], 1)
+
+    def Draw( self ):
+        pass
 
 class DialogButton( DialogElement ):
     def __init__( self, container, offset, basic, hover, clicked, camera ):
@@ -215,7 +218,7 @@ class DialogButton( DialogElement ):
         self.clicked_image = clicked
         self.clicked = False
 
-    def SetPosition( self, x, y):
+    def SetPosition( self ):
         DialogElement.SetPosition( self )
         self.basic_image.m_Values = self.position
         self.hover_image.m_Values = self.position
@@ -228,6 +231,7 @@ class DialogButton( DialogElement ):
             return True
         
     def Draw( self ):
+        self.SetPosition()
         x, y = pygame.mouse.get_pos()
         
         if self.clicked:
@@ -246,3 +250,23 @@ class DialogButton( DialogElement ):
                 self.clicked = False
         else:
             self.clicked = False
+
+class DialogText( DialogElement ):
+    def __init__( self, container, offset, camera, font, text, color=(0,0,0) ):
+        DialogElement.__init__( self, container, offset, camera )
+        self.font = font
+        self.text = text
+        self.color = color
+
+    def SetFont( self, font ):
+        self.font = font
+    
+    def SetText( self, text ):
+        self.text = text
+
+    def SetColot( self, color ):
+        self.color = color
+
+    def Draw( self ):
+        self.SetPosition()
+        self.font.glPrint( self.position[0], self.position[1], self.text, self.color )
