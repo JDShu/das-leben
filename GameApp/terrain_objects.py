@@ -91,8 +91,25 @@ class RegionQuad( BoundingBox3d ):
         
         self.colour_adjust = random.random()
         
-    def __repr__( self ):
-        return "ll:%s,lr:%s,ul:%s,ur:%s" % ( self.ll, self.lr , self.ul, self.ur)
+    def CreateQuad( self, vertexes, offset, altitude ):
+        radius = self.size / 2.0
+        x, y, z, w = self.GetPosition()
+
+        vertexes[ offset ][ 0 ] = x - radius
+        vertexes[ offset ][ 1 ] = altitude
+        vertexes[ offset ][ 2 ] = z - radius
+        
+        vertexes[ offset + 1 ][ 0 ] = x + radius
+        vertexes[ offset + 1 ][ 1 ] = altitude
+        vertexes[ offset + 1 ][ 2 ] = z - radius
+        
+        vertexes[ offset + 2 ][ 0 ] = x + radius
+        vertexes[ offset + 2 ][ 1 ] = altitude
+        vertexes[ offset + 2 ][ 2 ] = z + radius
+        
+        vertexes[ offset + 3 ][ 0 ] = x - radius
+        vertexes[ offset + 3 ][ 1 ] = altitude
+        vertexes[ offset + 3 ][ 2 ] = z + radius
         
        
     def SetAsObject( self, a_Object3d ):
@@ -269,7 +286,7 @@ class Region( Vector3d ):
             self.SetPosition( 0.0, 0.0, 0.0 )
             
         self.quads = []; qadd = self.quads.append
-        self.quadIDS = []; iadd = self.quadIDS.append
+        
         for x in xrange( self.m_Width ):
             for z in xrange( self.m_Width ):
                 quad = lines[ z ][ x ].replace( "\n", "" )
@@ -281,7 +298,24 @@ class Region( Vector3d ):
                                       quad ) 
                     
                     qadd( rq )
-                    iadd( rq.listID )
+                    
+        size = len( self.quads )
+        va_vertexes = []; vadd = va_vertexes.append
+        va_colours = []; cadd = va_colours.append
+        va_normals = []; nadd = va_normals.append
+        va_texcoords = []; tadd = va_texcoords.append
+        for i, quad in enumerate( self.quads ):
+            if quad.quadType == "+":
+                pass
+            elif quad.quadType == "|":
+                pass
+            elif quad.quadType == "=":
+                pass
+            elif quad.quadType == "#":
+                
+                pass
+                    
+        
         
     def DeleteAllQuads( self ):
         for quad in self.quads:
