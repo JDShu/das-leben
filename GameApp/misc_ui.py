@@ -25,13 +25,20 @@ import numpy
 from numpy import *
 import glFreeType
 
+#enum for DashBoard
+class DashBoardState():
+    IN = 1
+    OUT = 2
+    SLIDE_IN = 3
+    SLIDE_OUT = 4
+
 class TexturedRect( Vector3d ):
     '''a textured rectangle'''
     def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height ):
         self.m_Values = a_Position.m_Values
         self.m_Width = float(a_Width)
         self.m_Height = float(a_Height)
-
+        
         if a_TextureFilename.upper().endswith( '.SVG' ):
             pass
         else:
@@ -168,32 +175,34 @@ class SelectedRegion:
 class AreaDimensions:
             width = 0
             height = 0
-    
-class PopupDialog( TexturedRect ):
+
+class Dialog( TexturedRect ):
     def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height ):
         TexturedRect.__init__( self, a_TextureFilename, a_Position, a_Width, a_Height )
         self.appear = False
         self.elements = []
 
-    def Toggle( self, camera ):
-        x, y = pygame.mouse.get_pos()
-        self.SetPosition( float( x ), camera.m_ViewportHeight - y, 1.0 )
-        self.appear = not self.appear
-        
     def Draw( self ):
-        if self.appear:
-            TexturedRect.Draw( self )
-            for e in self.elements:
-                e.Draw()
-
-    def Appears( self ):
-        return self.appear
-
+        TexturedRect.Draw( self )
+        for e in self.elements:
+            e.Draw()
+                
     def AddElement ( self, dialog_element, offset=None):
         if offset != None:
             dialog_element.SetOffset( offset )
         self.elements.append( dialog_element )
 
+class PopupDialog( Dialog ):
+
+    def Toggle( self, camera ):
+        x, y = pygame.mouse.get_pos()
+        self.SetPosition( float( x ), camera.m_ViewportHeight - y, 1.0 )
+        self.appear = not self.appear    
+
+    def Draw( self ):
+        if self.appear:
+            Dialog.Draw( self )
+        
 class DialogElement():
     def __init__( self, container, offset, camera ):
         self.container = container
@@ -217,7 +226,7 @@ class DialogButton( DialogElement ):
         self.hover_image = hover
         self.clicked_image = clicked
         self.clicked = False
-
+        
     def SetPosition( self ):
         DialogElement.SetPosition( self )
         self.basic_image.m_Values = self.position
@@ -240,7 +249,7 @@ class DialogButton( DialogElement ):
             self.hover_image.Draw()
         else:
             self.basic_image.Draw()
-
+            
     def ProcessClick( self, mouse_event, function, args ):
         if self.Within(mouse_event.x, mouse_event.y):
             if mouse_event.l_click:
@@ -266,7 +275,39 @@ class DialogText( DialogElement ):
 
     def SetColot( self, color ):
         self.color = color
-
+        
     def Draw( self ):
         self.SetPosition()
         self.font.glPrint( self.position[0], self.position[1], self.text, self.color )
+
+class DashBoard ( Dialog ):
+    def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height, displacement, inside_position, outside_position ):
+        Dialog.__init__( self, a_TextureFilename, a_Position, a_Width, a_Height )
+        self.state = DashBoardState.IN
+        self.displacement = displacement
+        self.inside_position = inside_position
+        self.outside_position = outside_position
+        self.appear = True
+        
+    def Slide( self, displacement ):
+        self.SetPosition(self.GetX() + displacement[0], self.GetY() + displacement[1], 1)
+
+    def Draw( self ):
+        if self.state == DashBoardState.IN:
+            Dialog.Draw(self)
+        elif self.state == DashBoardState.SLIDE_IN:
+            self.Slide((self.displacement[0], self.displacement[1]))
+            Dialog.Draw(self)
+            if self.m_Values[0] == self.inside_position[0]:
+                self.state = DashBoardState.IN
+        elif self.state == DashBoardState.SLIDE_OUT:
+            self.Slide((-self.displacement[0], -self.displacement[1]))
+            Dialog.Draw(self)
+            if self.m_Values[0] == self.outside_position[0]:
+                self.state = DashBoardState.OUT
+
+    def Toggle( self ):
+        if self.state == DashBoardState.IN:
+            self.state = DashBoardState.SLIDE_OUT
+        elif self.state == DashBoardState.OUT:
+            self.state = DashBoardState.SLIDE_IN

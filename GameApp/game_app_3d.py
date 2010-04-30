@@ -167,7 +167,8 @@ class GameApp3d:
         test_text = DialogText( self.dialog, (30, 30), self.m_Camera, self.font, "Dialog", (255,0,0) ) 
         self.dialog.AddElement( test_button)
         self.dialog.AddElement( test_text )
-                
+        #dashboard
+        self.dashboard = DashBoard( "%s/gui/graphics/dashboard.png" % self.DATA_PATH, Vector3d(0,300,1), 1024, 300, (20,0), (0,300), (-800,300))
 
         #Event Class queue
         self.events = collections.deque()
@@ -426,7 +427,7 @@ class GameApp3d:
                     
                 elif event.button == 3: #Right Mouse Button opens and closes gui dialog
                     self.dialog.Toggle(self.m_Camera)
-                                        
+                                                         
             elif event.type == MOUSEBUTTONUP:
 
                 self.events.appendleft(MouseEvent())
@@ -453,7 +454,8 @@ class GameApp3d:
         while(len(self.events)): #go through event queue and process each event
             e = self.events.pop()
             if e.category == MOUSE:
-                self.dialog.elements[0].ProcessClick(e, self.dialog.Toggle, (self.m_Camera,) )
+                self.dialog.elements[0].ProcessClick(e, self.dashboard.Toggle, ())
+                pass
             
         if self.m_SelectedArea.IsEditing():
             self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
@@ -594,13 +596,14 @@ class GameApp3d:
         
         self.m_Camera.EndDrawing()
         
-        if self.dialog.Appears(): #gui dialog appears and disappears when mouse is clicked
-            glDisable( GL_LIGHTING )
-            self.m_Camera.BeginDrawing2d()
-            self.dialog.Draw()
-            self.font.glPrint( self.dialog.GetX() + 10, self.dialog.GetY() - 100, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
-            self.m_Camera.EndDrawing2d()
-            glEnable( GL_LIGHTING )
+        #if self.dialog.Appears(): #gui dialog appears and disappears when mouse is clicked
+        glDisable( GL_LIGHTING )
+        self.m_Camera.BeginDrawing2d()
+        self.dialog.Draw()
+        #self.font.glPrint( self.dialog.GetX() + 10, self.dialog.GetY() - 100, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
+        self.dashboard.Draw()
+        self.m_Camera.EndDrawing2d()
+        glEnable( GL_LIGHTING )
             
         # out put messages
         for i, message in enumerate( self.m_Messages ):
