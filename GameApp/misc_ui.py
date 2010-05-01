@@ -258,7 +258,7 @@ class DialogButton( DialogElement ):
         if self.Within(mouse_event.x, mouse_event.y):
             if mouse_event.l_click:
                 self.clicked = True
-            elif not (mouse_event.s_up or mouse_event.s_down):
+            elif self.clicked and not (mouse_event.s_up or mouse_event.s_down):
                 apply(function, args)#button function here 
                 self.clicked = False
         else:
