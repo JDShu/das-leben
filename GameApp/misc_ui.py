@@ -194,10 +194,14 @@ class Dialog( TexturedRect ):
 
 class PopupDialog( Dialog ):
 
+    def ProcessClick( self, mouse_event, camera ):
+        if mouse_event.r_click:
+            self.Toggle( camera )
+    
     def Toggle( self, camera ):
         x, y = pygame.mouse.get_pos()
         self.SetPosition( float( x ), camera.m_ViewportHeight - y, 1.0 )
-        self.appear = not self.appear    
+        self.appear = not self.appear
 
     def Draw( self ):
         if self.appear:
@@ -254,7 +258,7 @@ class DialogButton( DialogElement ):
         if self.Within(mouse_event.x, mouse_event.y):
             if mouse_event.l_click:
                 self.clicked = True
-            else:
+            elif not (mouse_event.s_up or mouse_event.s_down):
                 apply(function, args)#button function here 
                 self.clicked = False
         else:

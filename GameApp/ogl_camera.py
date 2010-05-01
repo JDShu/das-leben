@@ -143,8 +143,8 @@ class oglCamera( Vector3d ):
     def MoveRight( self ):
         self.Fly(90,0,0.25)
 
-    def ZoomIn( self ):
-        self.Fly(0,self.m_XRot.GetAngle(),0.25)
+    def ZoomIn( self, speed = 0.25 ):
+        self.Fly(0,self.m_XRot.GetAngle(),speed)
 
-    def ZoomOut( self ):
-        self.Fly(180,-self.m_XRot.GetAngle(),0.25)
+    def ZoomOut( self, speed = 0.25 ):
+        self.Fly(180,-self.m_XRot.GetAngle(),speed)

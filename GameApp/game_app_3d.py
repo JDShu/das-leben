@@ -406,9 +406,7 @@ class GameApp3d:
                 self.m_KeyBuffer[ event.key ] = False
 
             elif event.type == MOUSEBUTTONDOWN:
-                
-                self.events.appendleft(MouseEvent()) # use event classes
-
+                self.events.appendleft( MouseEvent(event) ) # use event classes
                 self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
                 if event.button == LEFT_MOUSE:
@@ -425,12 +423,16 @@ class GameApp3d:
                     self.m_SelectedArea.BeginEditing()
                     self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
                     
-                elif event.button == 3: #Right Mouse Button opens and closes gui dialog
-                    self.dialog.Toggle(self.m_Camera)
-                                                         
+                #elif event.button == 3: #Right Mouse Button opens and closes gui dialog
+                #    self.dialog.Toggle(self.m_Camera)
+                elif event.button == 4:
+                    self.m_Camera.ZoomIn( 1 )
+                elif event.button == 5:
+                    self.m_Camera.ZoomOut( 1 )
+                    
             elif event.type == MOUSEBUTTONUP:
 
-                self.events.appendleft(MouseEvent())
+                self.events.appendleft( MouseEvent(event) ) # use event classes
 
                 if event.button == LEFT_MOUSE:
                     self.m_SelectedArea.EndEditing()
@@ -455,7 +457,7 @@ class GameApp3d:
             e = self.events.pop()
             if e.category == MOUSE:
                 self.dialog.elements[0].ProcessClick(e, self.dashboard.Toggle, ())
-                pass
+                self.dialog.ProcessClick( e, self.m_Camera )
             
         if self.m_SelectedArea.IsEditing():
             self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
