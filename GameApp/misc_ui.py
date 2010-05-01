@@ -293,21 +293,31 @@ class DashBoard ( Dialog ):
         self.SetPosition(self.GetX() + displacement[0], self.GetY() + displacement[1], 1)
 
     def Draw( self ):
-        if self.state == DashBoardState.IN:
-            Dialog.Draw(self)
-        elif self.state == DashBoardState.SLIDE_IN:
+        if self.state == DashBoardState.SLIDE_IN:
             self.Slide((self.displacement[0], self.displacement[1]))
-            Dialog.Draw(self)
-            if self.m_Values[0] == self.inside_position[0]:
+            if self.IsInside():
                 self.state = DashBoardState.IN
         elif self.state == DashBoardState.SLIDE_OUT:
             self.Slide((-self.displacement[0], -self.displacement[1]))
-            Dialog.Draw(self)
-            if self.m_Values[0] == self.outside_position[0]:
+            if self.IsOutside():
                 self.state = DashBoardState.OUT
+        Dialog.Draw (self)
 
+    def IsInside( self ):
+        for x in range(2):
+            if abs(self.m_Values[x] - self.outside_position[x]) < abs(self.outside_position[x] - self.inside_position[x]): 
+                return False
+        return True
+
+    def IsOutside( self ):
+        for x in range(2):
+            if abs(self.m_Values[x] - self.inside_position[x]) < abs(self.outside_position[x] - self.inside_position[x]): 
+                return False
+        return True
+    
     def Toggle( self ):
-        if self.state == DashBoardState.IN:
+        if self.state == DashBoardState.IN or self.state == DashBoardState.SLIDE_IN:
             self.state = DashBoardState.SLIDE_OUT
-        elif self.state == DashBoardState.OUT:
+        elif self.state == DashBoardState.OUT or self.state == DashBoardState.SLIDE_OUT:
             self.state = DashBoardState.SLIDE_IN
+        
