@@ -281,13 +281,20 @@ class DialogText( DialogElement ):
         self.font.glPrint( self.position[0], self.position[1], self.text, self.color )
 
 class DashBoard ( Dialog ):
-    def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height, displacement, inside_position, outside_position ):
+    def __init__( self, a_TextureFilename, a_Width, a_Height, speed, inside_position, outside_position ):
+        a_Position = Vector3d(inside_position[0], inside_position[1], 1)
         Dialog.__init__( self, a_TextureFilename, a_Position, a_Width, a_Height )
         self.state = DashBoardState.IN
-        self.displacement = displacement
         self.inside_position = inside_position
         self.outside_position = outside_position
+        self.displacement = self.CalculateDisplacement(speed)
         self.appear = True
+
+    def CalculateDisplacement ( self, speed ):
+        x = self.outside_position[0] - self.inside_position[0]
+        y = self.outside_position[1] - self.inside_position[1]
+        ratio = speed/hypot( x, y )
+        return (-ratio*x, -ratio*y)
         
     def Slide( self, displacement ):
         self.SetPosition(self.GetX() + displacement[0], self.GetY() + displacement[1], 1)

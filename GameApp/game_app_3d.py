@@ -164,12 +164,12 @@ class GameApp3d:
         button_hover = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_hover.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
         button_clicked = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_clicked.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
         test_button = DialogButton( self.dialog, (35,35), button_basic, button_hover, button_clicked, self.m_Camera)
-        test_text = DialogText( self.dialog, (30, 30), self.m_Camera, self.font, "Dashboard", (255,0,0) ) 
+        test_text = DialogText( self.dialog, (8, 30), self.m_Camera, self.font, "Dashboard", (255,0,0) ) 
         self.dialog.AddElement( test_button)
         self.dialog.AddElement( test_text )
         #dashboard
-        self.dashboard = DashBoard( "%s/gui/graphics/dashboard.png" % self.DATA_PATH, Vector3d(0,300,1), 800, 300, (20,0), (0,300), (-600,300))
-                        
+        self.dashboard = DashBoard( "%s/gui/graphics/dashboard.png" % self.DATA_PATH, 800, 300, 20, (0,300), (-600,0))
+        
         #Event Class queue
         self.events = collections.deque()
 
