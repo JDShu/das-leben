@@ -428,8 +428,7 @@ class GameApp3d:
                     addVec = Vector3d( 0.5, 0, 0.5 )
                     self.m_SelectedArea.BeginEditing()
                     self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
-                
-                    pass
+
                 elif event.button == 4:
                     self.m_Camera.ZoomIn( 1 )
                 elif event.button == 5:
@@ -456,7 +455,7 @@ class GameApp3d:
                     self.m_GroundFloorObjects.insert( 1, l_Floor )
 
             elif event.type == USEREVENT+1:
-                self.dashboard.elements[0].Decrease(1)
+                self.events.appendleft(TimeEvent())                
                     
             elif event.type == QUIT:
                 return False
@@ -466,7 +465,9 @@ class GameApp3d:
             if e.category == MOUSE:
                 self.dialog.elements[0].ProcessClick( e )
                 self.dialog.ProcessClick( e, self.m_Camera )
-            
+            elif e.category == TIME:
+                self.dashboard.elements[0].Decrease(1)
+                
         if self.m_SelectedArea.IsEditing():
             self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
             l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )

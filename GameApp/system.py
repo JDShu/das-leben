@@ -1,6 +1,7 @@
 import pygame
 
 MOUSE = 1
+TIME = 2
 
 class Event():
     def __init__( self, category ):
@@ -18,3 +19,7 @@ class MouseEvent( Event ):
             self.s_up = True
         if pygame_event.button == 5:
             self.s_down = True
+
+class TimeEvent( Event ):
+    def __init__( self ):
+        Event.__init__( self, TIME )
