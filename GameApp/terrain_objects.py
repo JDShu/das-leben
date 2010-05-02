@@ -141,6 +141,85 @@ class RegionQuad( BoundingBox3d ):
         texCoords[ offset + 3 ][ 0 ] = 0.0
         texCoords[ offset + 3 ][ 1 ] = 1.0
 
+    def CreateLBQuad( self, vertexes, offset, altitude ):
+        radius = self.size / 2.0
+        x, y, z, w = self.GetPosition()
+
+        vertexes[ offset ][ 0 ] = x 
+        vertexes[ offset ][ 1 ] = altitude
+        vertexes[ offset ][ 2 ] = z 
+        
+        vertexes[ offset + 1 ][ 0 ] = x + radius
+        vertexes[ offset + 1 ][ 1 ] = altitude
+        vertexes[ offset + 1 ][ 2 ] = z - radius
+        
+        vertexes[ offset + 2 ][ 0 ] = x + radius
+        vertexes[ offset + 2 ][ 1 ] = altitude
+        vertexes[ offset + 2 ][ 2 ] = z + radius
+        
+        vertexes[ offset + 3 ][ 0 ] = x - radius
+        vertexes[ offset + 3 ][ 1 ] = altitude
+        vertexes[ offset + 3 ][ 2 ] = z + radius
+        
+    def CreateRBQuad( self, vertexes, offset, altitude ):
+        radius = self.size / 2.0
+        x, y, z, w = self.GetPosition()
+
+        vertexes[ offset ][ 0 ] = x - radius
+        vertexes[ offset ][ 1 ] = altitude
+        vertexes[ offset ][ 2 ] = z - radius
+        
+        vertexes[ offset + 1 ][ 0 ] = x 
+        vertexes[ offset + 1 ][ 1 ] = altitude
+        vertexes[ offset + 1 ][ 2 ] = z 
+        
+        vertexes[ offset + 2 ][ 0 ] = x + radius
+        vertexes[ offset + 2 ][ 1 ] = altitude
+        vertexes[ offset + 2 ][ 2 ] = z + radius
+        
+        vertexes[ offset + 3 ][ 0 ] = x - radius
+        vertexes[ offset + 3 ][ 1 ] = altitude
+        vertexes[ offset + 3 ][ 2 ] = z + radius
+        
+    def CreateRTQuad( self, vertexes, offset, altitude ):
+        radius = self.size / 2.0
+        x, y, z, w = self.GetPosition()
+
+        vertexes[ offset ][ 0 ] = x - radius
+        vertexes[ offset ][ 1 ] = altitude
+        vertexes[ offset ][ 2 ] = z - radius
+        
+        vertexes[ offset + 1 ][ 0 ] = x + radius
+        vertexes[ offset + 1 ][ 1 ] = altitude
+        vertexes[ offset + 1 ][ 2 ] = z - radius
+        
+        vertexes[ offset + 2 ][ 0 ] = x 
+        vertexes[ offset + 2 ][ 1 ] = altitude
+        vertexes[ offset + 2 ][ 2 ] = z 
+        
+        vertexes[ offset + 3 ][ 0 ] = x - radius
+        vertexes[ offset + 3 ][ 1 ] = altitude
+        vertexes[ offset + 3 ][ 2 ] = z + radius
+        
+    def CreateLTQuad( self, vertexes, offset, altitude ):
+        radius = self.size / 2.0
+        x, y, z, w = self.GetPosition()
+
+        vertexes[ offset ][ 0 ] = x - radius
+        vertexes[ offset ][ 1 ] = altitude
+        vertexes[ offset ][ 2 ] = z - radius
+        
+        vertexes[ offset + 1 ][ 0 ] = x + radius
+        vertexes[ offset + 1 ][ 1 ] = altitude
+        vertexes[ offset + 1 ][ 2 ] = z - radius
+        
+        vertexes[ offset + 2 ][ 0 ] = x + radius
+        vertexes[ offset + 2 ][ 1 ] = altitude
+        vertexes[ offset + 2 ][ 2 ] = z + radius
+        
+        vertexes[ offset + 3 ][ 0 ] = x
+        vertexes[ offset + 3 ][ 1 ] = altitude
+        vertexes[ offset + 3 ][ 2 ] = z
         
     def SetAsObject( self, a_Object3d ):
         '''
@@ -293,7 +372,6 @@ class Region( Vector3d ):
         f.close()
         
     def Load( self, a_Filename ):
-        self.DeleteAllQuads()
         
         f = open( a_Filename, "r" )
         lines = f.readlines()
@@ -312,41 +390,52 @@ class Region( Vector3d ):
             z = float( pos[ 2 ] )
             self.SetPosition( x, y, z )
             del lines[ 0 ]
-        else:
-            self.SetPosition( 0.0, 0.0, 0.0 )
+        
             
+        
+                    
+        self.CreateVAFromFloorPlan( lines )
+        
+    def CreateVAFromFloorPlan( self, lines ):
+        self.DeleteAllQuads()
+        
         self.quads = []; qadd = self.quads.append
         
-        for x in xrange( self.m_Width ):
-            for z in xrange( self.m_Width ):
+        for z in xrange( self.m_Width ):
+            for x in xrange( self.m_Width ):
                 quad = lines[ z ][ x ].replace( "\n", "" )
-                if quad != '?':
-                    rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
-                                      self.GetY(), 
-                                      self.GetZ() + ( float( z ) * self.m_Size ),
-                                      self.m_Size,
-                                      quad ) 
-                    
-                    qadd( rq )
-                    
+                
+                rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
+                                  self.GetY(), 
+                                  self.GetZ() + ( float( z ) * self.m_Size ),
+                                  self.m_Size,
+                                  quad ) 
+                
+                qadd( rq )
+                
         size = len( self.quads )
         va_vertexes = zeros( ( self.m_Width * self.m_Height * 4, 3 ), dtype=float32 )
         # va_colours = []; cadd = va_colours.append
         va_normals = zeros( ( self.m_Width * self.m_Height * 4, 3 ), dtype=float32 )
         va_texcoords = zeros( ( self.m_Width * self.m_Height * 4, 2 ), dtype=float32 )
         for i, quad in enumerate( self.quads ):
-            quad.CreateQuad( va_vertexes, i * 4, 0.0 )
-            quad.CreateNormals( va_normals, i * 4, 0.0 )
-            quad.CreateTexCoords( va_texcoords, i * 4, 0.0 )
-            if quad.quadType == "+":
-                pass
-            elif quad.quadType == "|":
-                pass
-            elif quad.quadType == "=":
-                pass
-            elif quad.quadType == "#":
-                pass
-                    
+            if quad.quadType != '?':
+                quad.CreateQuad( va_vertexes, i * 4, 0.0 )
+                quad.CreateNormals( va_normals, i * 4, 0.0 )
+                quad.CreateTexCoords( va_texcoords, i * 4, 0.0 )
+                if quad.quadType == "a":
+                    pass
+                elif quad.quadType == "b":
+                    pass
+                elif quad.quadType == "c":
+                    pass
+                elif quad.quadType == "d":
+                    pass
+                elif quad.quadType == "/":
+                    pass
+                elif quad.quadType == "\\":
+                    pass
+                        
         self.va = VA( va_vertexes, va_normals, None, va_texcoords, None )
         
     def DeleteAllQuads( self ):
@@ -569,6 +658,13 @@ class FloorRegion( Region ):
 class LoadableRegion( Region ):
         def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5 ):
             Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size )
+            
+        def Load( self, a_Filename ):
+            Region.Load( self, a_Filename )
+            f = open( a_Filename, "r" )
+            lines = f.readlines()
+            f.close()
+            
             
         def Draw( self ):
             self._draw()
