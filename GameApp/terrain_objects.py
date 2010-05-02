@@ -111,7 +111,37 @@ class RegionQuad( BoundingBox3d ):
         vertexes[ offset + 3 ][ 1 ] = altitude
         vertexes[ offset + 3 ][ 2 ] = z + radius
         
-       
+    def CreateNormals( self, normals, offset, altitude ):
+        normals[ offset ][ 0 ] = 0.0
+        normals[ offset ][ 1 ] = 1.0
+        normals[ offset ][ 2 ] = 0.0
+        
+        normals[ offset + 1 ][ 0 ] = 0.0
+        normals[ offset + 1 ][ 1 ] = 1.0
+        normals[ offset + 1 ][ 2 ] = 0.0
+        
+        normals[ offset + 2 ][ 0 ] = 0.0
+        normals[ offset + 2 ][ 1 ] = 1.0
+        normals[ offset + 2 ][ 2 ] = 0.0
+        
+        normals[ offset + 3 ][ 0 ] = 0.0
+        normals[ offset + 3 ][ 1 ] = 1.0
+        normals[ offset + 3 ][ 2 ] = 0.0
+        
+    def CreateTexCoords( self, texCoords, offset, altitude ):
+        texCoords[ offset ][ 0 ] = 0.0
+        texCoords[ offset ][ 1 ] = 0.0
+        
+        texCoords[ offset + 1 ][ 0 ] = 1.0
+        texCoords[ offset + 1 ][ 1 ] = 0.0
+        
+        texCoords[ offset + 2 ][ 0 ] = 1.0
+        texCoords[ offset + 2 ][ 1 ] = 1.0
+                
+        texCoords[ offset + 3 ][ 0 ] = 0.0
+        texCoords[ offset + 3 ][ 1 ] = 1.0
+
+        
     def SetAsObject( self, a_Object3d ):
         '''
         make this quad a 3d object 
@@ -300,11 +330,14 @@ class Region( Vector3d ):
                     qadd( rq )
                     
         size = len( self.quads )
-        va_vertexes = []; vadd = va_vertexes.append
-        va_colours = []; cadd = va_colours.append
-        va_normals = []; nadd = va_normals.append
-        va_texcoords = []; tadd = va_texcoords.append
+        va_vertexes = zeros( ( self.m_Width * self.m_Height * 4, 3 ), dtype=float32 )
+        # va_colours = []; cadd = va_colours.append
+        va_normals = zeros( ( self.m_Width * self.m_Height * 4, 3 ), dtype=float32 )
+        va_texcoords = zeros( ( self.m_Width * self.m_Height * 4, 2 ), dtype=float32 )
         for i, quad in enumerate( self.quads ):
+            quad.CreateQuad( va_vertexes, i * 4, 0.0 )
+            quad.CreateNormals( va_normals, i * 4, 0.0 )
+            quad.CreateTexCoords( va_texcoords, i * 4, 0.0 )
             if quad.quadType == "+":
                 pass
             elif quad.quadType == "|":
@@ -312,10 +345,9 @@ class Region( Vector3d ):
             elif quad.quadType == "=":
                 pass
             elif quad.quadType == "#":
-                
                 pass
                     
-        
+        self.va = VA( va_vertexes, va_normals, None, va_texcoords, None )
         
     def DeleteAllQuads( self ):
         for quad in self.quads:
