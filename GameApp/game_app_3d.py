@@ -157,19 +157,25 @@ class GameApp3d:
         # setup the process pipelining
         # @warning Not yet implemented
         self.SetupExecutionCycles()
+
+        #dashboard
+        self.dashboard = DashBoard( "%s/gui/graphics/dashboard.png" % self.DATA_PATH, 722, 238, 20, (0,238), (-300,0))
         
         #popup dialog has 2 elements: a button and a static piece of text
         self.dialog = PopupDialog( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 100, 100 )
-        button_basic = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_basic.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
-        button_hover = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_hover.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
-        button_clicked = self.m_SplashLogo = TexturedRect( "%s/gui/graphics/button_clicked.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
-        test_button = DialogButton( self.dialog, (35,35), button_basic, button_hover, button_clicked, self.m_Camera)
+        button_basic = TexturedRect( "%s/gui/graphics/button_basic.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        button_hover = TexturedRect( "%s/gui/graphics/button_hover.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        button_clicked = TexturedRect( "%s/gui/graphics/button_clicked.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        test_button = DialogButton( self.dialog, (35,35), button_basic, button_hover, button_clicked, self.m_Camera,  self.dashboard.Toggle, ())
         test_text = DialogText( self.dialog, (8, 30), self.m_Camera, self.font, "Dashboard", (255,0,0) ) 
         self.dialog.AddElement( test_button)
         self.dialog.AddElement( test_text )
-        #dashboard
-        self.dashboard = DashBoard( "%s/gui/graphics/dashboard.png" % self.DATA_PATH, 800, 300, 20, (0,300), (-600,0))
-        
+        #stamina bar
+        yellow_bar = TexturedRect( "%s/gui/graphics/stamina_bar.png" % self.DATA_PATH, Vector3d(100,100,1), 106, 22 )
+        stamina_bar = HorizontalBar( self.dashboard, (252, 94), self.m_Camera, 1000, yellow_bar )
+        self.dashboard.AddElement( stamina_bar )
+        pygame.time.set_timer(USEREVENT+1, 250)
+
         #Event Class queue
         self.events = collections.deque()
 
@@ -422,9 +428,8 @@ class GameApp3d:
                     addVec = Vector3d( 0.5, 0, 0.5 )
                     self.m_SelectedArea.BeginEditing()
                     self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
-                    
-                #elif event.button == 3: #Right Mouse Button opens and closes gui dialog
-                #    self.dialog.Toggle(self.m_Camera)
+                
+                    pass
                 elif event.button == 4:
                     self.m_Camera.ZoomIn( 1 )
                 elif event.button == 5:
@@ -450,13 +455,16 @@ class GameApp3d:
                     
                     self.m_GroundFloorObjects.insert( 1, l_Floor )
 
+            elif event.type == USEREVENT+1:
+                self.dashboard.elements[0].Decrease(1)
+                    
             elif event.type == QUIT:
                 return False
 
         while(len(self.events)): #go through event queue and process each event
             e = self.events.pop()
             if e.category == MOUSE:
-                self.dialog.elements[0].ProcessClick(e, self.dashboard.Toggle, ())
+                self.dialog.elements[0].ProcessClick( e )
                 self.dialog.ProcessClick( e, self.m_Camera )
             
         if self.m_SelectedArea.IsEditing():
@@ -601,9 +609,10 @@ class GameApp3d:
         #GUI stuff
         glDisable( GL_LIGHTING )
         self.m_Camera.BeginDrawing2d()
+        self.dashboard.Draw()
         self.dialog.Draw()
         #self.font.glPrint( self.dialog.GetX() + 10, self.dialog.GetY() - 100, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
-        self.dashboard.Draw()
+        
         self.m_Camera.EndDrawing2d()
         glEnable( GL_LIGHTING )
             

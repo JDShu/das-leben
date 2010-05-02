@@ -224,12 +224,14 @@ class DialogElement():
         pass
 
 class DialogButton( DialogElement ):
-    def __init__( self, container, offset, basic, hover, clicked, camera ):
+    def __init__( self, container, offset, basic, hover, clicked, camera, func, args ):
         DialogElement.__init__( self, container, offset, camera )
         self.basic_image = basic
         self.hover_image = hover
         self.clicked_image = clicked
         self.clicked = False
+        self.func = func
+        self.args = args
         
     def SetPosition( self ):
         DialogElement.SetPosition( self )
@@ -254,12 +256,12 @@ class DialogButton( DialogElement ):
         else:
             self.basic_image.Draw()
             
-    def ProcessClick( self, mouse_event, function, args ):
+    def ProcessClick( self, mouse_event ):
         if self.Within(mouse_event.x, mouse_event.y):
             if mouse_event.l_click:
                 self.clicked = True
             elif self.clicked and not (mouse_event.s_up or mouse_event.s_down):
-                apply(function, args)#button function here 
+                apply(self.func, self.args)#button function here 
                 self.clicked = False
         else:
             self.clicked = False
@@ -313,6 +315,7 @@ class DashBoard ( Dialog ):
             if self.IsOutside():
                 self.state = DashBoardState.OUT
         Dialog.Draw (self)
+        
 
     def IsInside( self ):
         for x in range(2):
@@ -331,4 +334,36 @@ class DashBoard ( Dialog ):
             self.state = DashBoardState.SLIDE_OUT
         elif self.state == DashBoardState.OUT or self.state == DashBoardState.SLIDE_OUT:
             self.state = DashBoardState.SLIDE_IN
+
+class HorizontalBar( DialogElement ):
+    def __init__( self, container, offset, camera, maximum, front ):
+        DialogElement.__init__( self, container, offset, camera )
+        self.current = float( maximum )
+        self.max = float ( maximum )
+        self.front = front
+        self.max_width = self.front.m_Width
         
+    def Decrease( self, amount = 1):
+        if self.current > 0:
+            self.current -= amount
+            if self.current < 0:
+                self.current = 0
+            
+    def Increase( self, amount = 1):
+        if self.current < self.max:
+            self.current -= amount
+            if self.current > self.max:
+                self.current = 0
+
+    def SetPosition( self ):
+        DialogElement.SetPosition( self )
+        self.front.m_Values = self.position
+
+    def SetSize( self ):
+        width = ( self.current / self.max ) * self.max_width
+        self.front.m_Width = width
+        
+    def Draw( self ):
+        self.SetPosition()
+        self.SetSize()
+        self.front.Draw()

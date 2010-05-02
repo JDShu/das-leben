@@ -13,6 +13,7 @@ class MouseEvent( Event ):
         self.l_click, self.m_click, self.r_click = pygame.mouse.get_pressed()
         self.s_up = False
         self.s_down = False
+        
         if pygame_event.button == 4:
             self.s_up = True
         if pygame_event.button == 5:
