@@ -138,8 +138,8 @@ class AssetManager:
         for Object in self.assets:
             if a_Name == Object.name:
                 return Object
-            else:
-                raise Exception, "The name %s is not in this collection" % a_Name
+            
+        raise Exception, "The name %s is not in this collection" % a_Name    
         
         
     

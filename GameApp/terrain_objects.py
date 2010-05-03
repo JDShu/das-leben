@@ -423,18 +423,15 @@ class Region( Vector3d ):
                 quad.CreateQuad( va_vertexes, i * 4, 0.0 )
                 quad.CreateNormals( va_normals, i * 4, 0.0 )
                 quad.CreateTexCoords( va_texcoords, i * 4, 0.0 )
-                if quad.quadType == "a":
-                    pass
-                elif quad.quadType == "b":
-                    pass
-                elif quad.quadType == "c":
-                    pass
-                elif quad.quadType == "d":
-                    pass
-                elif quad.quadType == "/":
-                    pass
-                elif quad.quadType == "\\":
-                    pass
+                if quad.quadType == "A":
+                    quad.CreateLBQuad( va_vertexes, i * 4, 0.0 )
+                elif quad.quadType == "B":
+                    quad.CreateRBQuad( va_vertexes, i * 4, 0.0 )
+                elif quad.quadType == "C":
+                    quad.CreateRTQuad( va_vertexes, i * 4, 0.0 )
+                elif quad.quadType == "D":
+                    quad.CreateLTQuad( va_vertexes, i * 4, 0.0 )
+                
                         
         self.va = VA( va_vertexes, va_normals, None, va_texcoords, None )
         
@@ -656,16 +653,78 @@ class FloorRegion( Region ):
                 quad.Draw()
         
 class LoadableRegion( Region ):
-        def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5 ):
+        def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_AssetManager=None, a_Width=50, a_Height=50, a_Size=0.5 ):
             Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size )
+            self.AssetManager = a_AssetManager
+            self.ShowWalls = True
             
         def Load( self, a_Filename ):
             Region.Load( self, a_Filename )
-            f = open( a_Filename, "r" )
-            lines = f.readlines()
-            f.close()
             
+            quad = self.GetFirstQuad()
+            if quad.quadType == "a":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "b":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "c":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "d":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "A":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "B":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "C":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "D":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "L":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "R":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "l":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+            elif quad.quadType == "h":
+                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
             
+            for i in xrange( 1, len( self.quads ) ):
+                quad = self.quads[ i ]
+                if quad.quadType == "a":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                elif quad.quadType == "b":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                elif quad.quadType == "c":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) ) 
+                elif quad.quadType == "d":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) ) 
+                elif quad.quadType == "A":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                elif quad.quadType == "B":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                elif quad.quadType == "C":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                elif quad.quadType == "D":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                elif quad.quadType == "L":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL90" ) )
+                elif quad.quadType == "R":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL90" ) )
+                elif quad.quadType == "l":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                elif quad.quadType == "h":
+                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+            
+            x, y, z, w = self.GetPosition()
+            self.walls.SetPosition( x, y, z )
+            
+        def GetFirstQuad( self ):
+            for quad in self.quads:
+                if quad.quadType != "?":
+                    return quad
+                
         def Draw( self ):
             self._draw()
+            if self.ShowWalls:
+                self.walls.Draw()
+            
         

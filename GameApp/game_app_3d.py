@@ -280,7 +280,7 @@ class GameApp3d:
         
         self.AssetManager = AssetManager( "environment/manifests/default.man" , self.DATA_PATH ) 
         
-        rgn = LoadableRegion( 0.0, 1.0, 0.0, 10, 10, 0.5 )
+        rgn = LoadableRegion( 0.0, 0.0, 0.0, self.AssetManager, 10, 10, 0.5 )
         rgn.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
         oadd( rgn )
         self.rgn = rgn
@@ -571,9 +571,6 @@ class GameApp3d:
             Object.Draw()
             
         for Object in self.m_FirstFloorLevel:
-            Object.Draw()
-            
-        for Object in self.AssetManager.assets:
             Object.Draw()
             
         self.m_Camera.EndDrawing()
