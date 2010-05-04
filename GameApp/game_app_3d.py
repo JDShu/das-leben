@@ -413,47 +413,15 @@ class GameApp3d:
 
             elif event.type == MOUSEBUTTONDOWN:
                 self.events.appendleft( MouseEvent(event) ) # use event classes
-                self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
-                l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
-                if event.button == LEFT_MOUSE:
-                    self.m_SelectedArea.m_Enabled = True
-                    #self.AddMessage( "Started at %s" % l_Position )
-                    l_Start = Vector3d()
-                    l_Start = l_Position
-                    x, y, z, w = l_Start.GetPosition()
-                    new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
-                    new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
-                    l_Start.SetPosition( new_x, y, new_z )
-                        
-                    addVec = Vector3d( 0.5, 0, 0.5 )
-                    self.m_SelectedArea.BeginEditing()
-                    self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
 
-                elif event.button == 4:
+                if event.button == 4:
                     self.m_Camera.ZoomIn( 1 )
                 elif event.button == 5:
                     self.m_Camera.ZoomOut( 1 )
                     
             elif event.type == MOUSEBUTTONUP:
-
                 self.events.appendleft( MouseEvent(event) ) # use event classes
-
-                if event.button == LEFT_MOUSE:
-                    self.m_SelectedArea.EndEditing()
-                    self.m_SelectedArea.m_Enabled = False
-                    
-                    l_Dimensions = self.m_SelectedArea.GetGranularDimensions( self.m_Grids[ 0 ].m_Size )
-                    l_Floor = FloorRegion( self.m_SelectedArea.m_Position.GetX(), 
-                                      0.0, 
-                                      self.m_SelectedArea.m_Position.GetZ(), 
-                                      l_Dimensions.width, 
-                                      l_Dimensions.height, 
-                                      0.5, 
-                                      1.0,
-                                      self.m_Wall )
-                    
-                    self.m_GroundFloorObjects.insert( 1, l_Floor )
-
+                
             elif event.type == USEREVENT+1:
                 self.events.appendleft(TimeEvent())                
                     
