@@ -171,8 +171,8 @@ class GameApp3d:
         self.dialog.AddElement( test_button)
         self.dialog.AddElement( test_text )
         #stamina bar
-        yellow_bar = TexturedRect( "%s/gui/graphics/stamina_bar.png" % self.DATA_PATH, Vector3d(100,100,1), 106, 22 )
-        stamina_bar = HorizontalBar( self.dashboard, (252, 94), self.m_Camera, 1000, yellow_bar )
+        yellow_bar = TexturedRect( "%s/gui/graphics/stamina_bar.png" % self.DATA_PATH, Vector3d(100,100,1), 106, 21 )
+        stamina_bar = HorizontalBar( self.dashboard, (252, 97), self.m_Camera, 1000, yellow_bar )
         self.dashboard.AddElement( stamina_bar )
         pygame.time.set_timer(USEREVENT+1, 250)
 
