@@ -413,11 +413,6 @@ class GameApp3d:
 
             elif event.type == MOUSEBUTTONDOWN:
                 self.events.appendleft( MouseEvent(event) ) # use event classes
-
-                if event.button == 4:
-                    self.m_Camera.ZoomIn( 1 )
-                elif event.button == 5:
-                    self.m_Camera.ZoomOut( 1 )
                     
             elif event.type == MOUSEBUTTONUP:
                 self.events.appendleft( MouseEvent(event) ) # use event classes
@@ -433,6 +428,7 @@ class GameApp3d:
             if e.category == MOUSE:
                 self.dialog.elements[0].ProcessClick( e )
                 self.dialog.ProcessClick( e, self.m_Camera )
+                self.m_Camera.ProcessMouse( e )
             elif e.category == TIME:
                 self.dashboard.elements[0].Decrease(1)
                 

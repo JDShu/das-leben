@@ -121,6 +121,12 @@ class oglCamera( Vector3d ):
     
         glEnable( GL_DEPTH_TEST )
 
+    def ProcessMouse( self, event ):
+        if event.s_up:
+            self.ZoomIn( 1 )
+        elif event.s_down:
+            self.ZoomOut( 1 )
+
     def Fly ( self, relative_y_angle, relative_x_angle, speed ):
         x, y, z, w = self.GetPosition()
         roh = radians(self.m_YRot.GetAngle() + relative_y_angle)
