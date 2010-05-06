@@ -402,7 +402,7 @@ class Region( Vector3d ):
         self.quads = []; qadd = self.quads.append
         
         for z in xrange( self.m_Width ):
-            for x in xrange( self.m_Width ):
+            for x in xrange( self.m_Height):
                 quad = lines[ z ][ x ].replace( "\n", "" )
                 
                 rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
@@ -661,67 +661,86 @@ class LoadableRegion( Region ):
         def Load( self, a_Filename ):
             Region.Load( self, a_Filename )
             
-            quad = self.GetFirstQuad()
-            if quad.quadType == "a":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "b":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "c":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "d":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "A":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "B":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "C":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "D":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "L":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "R":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "l":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            elif quad.quadType == "h":
-                self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-            
             for i in xrange( 1, len( self.quads ) ):
                 quad = self.quads[ i ]
                 if quad.quadType == "a":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad + Vector3d( 0.0, 0.25, 0.0 ), w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "b":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "c":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) ) 
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad + Vector3d( 0.0, 0.25, 0.0 ), w, self.AssetManager.GetObject( "WALL_CORNER_BL" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "d":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) ) 
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad + Vector3d( 0.0, 0.25, 0.0 ), w, self.AssetManager.GetObject( "WALL_CORNER_TR" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL_CORNER_BL" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "A":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "B":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "C":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        x, y, z, w_pos = self.GetPosition()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "D":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        x, y, z, w_pos = self.GetPosition()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "L":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL90" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad + Vector3d( 0.225, 0.25, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "R":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL90" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad + Vector3d( -0.22, 0.25, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "l":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad + Vector3d( 0.0, 0.25, -0.2 ), w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.25, -0.20 ) )
                 elif quad.quadType == "h":
-                    ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    if hasattr( self, "walls"):
+                        ConcatenateObject( quad + Vector3d( 0.0, 0.25, 0.22 ), w, self.AssetManager.GetObject( "WALL0" ) )
+                    else:
+                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
             
             x, y, z, w = self.GetPosition()
             self.walls.SetPosition( x, y, z )
-            
-        def GetFirstQuad( self ):
-            for quad in self.quads:
-                if quad.quadType != "?":
-                    return quad
-                
+                           
         def Draw( self ):
             self._draw()
             if self.ShowWalls:

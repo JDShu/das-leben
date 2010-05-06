@@ -304,3 +304,20 @@ def ConcatenateObject( a_Direction, a_Object, a_ObjectToAdd ):
    
    a_Object.extentions[ a_ObjectToAdd.name ] = a_ObjectToAdd
    
+def TranslateVertexArray( a_Object, a_Direction ):
+   va_vertexes = a_Object._model.va.vertexes
+   
+   for values in va_vertexes:
+      values[ 0 ] = values[ 0 ] + a_Direction.GetX() 
+      values[ 1 ] = values[ 1 ] + a_Direction.GetY() 
+      values[ 2 ] = values[ 2 ] + a_Direction.GetZ() 
+      
+def ScaleVertexArray( a_Object, a_Scale ):
+   va_vertexes = a_Object._model.va.vertexes
+   
+   for values in va_vertexes:
+      values[ 0 ] = values[ 0 ] * a_Scale
+      values[ 1 ] = values[ 1 ] * a_Scale
+      values[ 2 ] = values[ 2 ] * a_Scale
+      
+   

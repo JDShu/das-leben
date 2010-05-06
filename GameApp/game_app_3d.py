@@ -569,10 +569,7 @@ class GameApp3d:
             
         for Object in self.m_GroundFloorObjects:
             Object.Draw()
-            
-        for Object in self.m_FirstFloorLevel:
-            Object.Draw()
-            
+
         self.m_Camera.EndDrawing()
 
         # out put messages

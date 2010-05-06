@@ -79,7 +79,8 @@ class AssetManager:
                 y = float( pos_parts[ 1 ] )
                 z = float( pos_parts[ 2 ] )
                 scale = float( parts[ 4 ] )
-                obj.SetScale( scale )
+                obj.SetScale( 1.0 )
+                ScaleVertexArray( obj, scale )
                 obj.SetPosition( x, y, z )
                 self.AddObject( obj )
                 
