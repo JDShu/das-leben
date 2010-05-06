@@ -46,8 +46,9 @@ class Node():
     def set_value( self ):
         self.value = self.g + h_function( self )
 
-    def h_function( self, end):
-        return abs( end[0] - self.x) + abs(end[1] - self.y )
+    def h_function( self, goal):
+        temp = [ ( abs( g[0] - self.x) + abs(g[1] - self.y ) ) for g in goal ]
+        return min( temp )
 
     def print_coordinates( self ):
         print ( x, y )
@@ -74,7 +75,16 @@ class Grid():
         
     def print_grid( self ):
         for y in xrange(self.width):
-            print self.grid[y]
+            for x in xrange(self.height):
+                if self.grid[y][x] == None:
+                    print "0",
+                elif self.grid[y][x] == "X":
+                    print "X",
+                elif self.grid[y][x] == 1:
+                    print "W",
+                else:
+                    print "?",
+            print " "
             
     def draw_path( self, path ):
         for sq in path:
@@ -92,8 +102,9 @@ class Path():
         self.grid.insert_node(start[0], start[1], start_node)
         heap = []
         heappush( heap, (0,start) )
-        current = heappop(heap)[1]        
-        while current != goal:
+        current = heappop(heap)[1]
+        reached_goal = False
+        while not reached_goal:
             c_x, c_y = current
             current_node = self.grid.grid[c_x][c_y]
             current_node.close_node()
@@ -113,13 +124,14 @@ class Path():
                     pass
                 elif node.open and cost < node.g:
                     node.close_node()
-                    
+            print current
             current = heappop(heap)[1]
-            if current == goal:
-                goal_node = Node(*goal)
-                goal_node.set_parent((c_x, c_y),)
-                self.grid.insert_node(goal[0], goal[1], goal_node)
-
+            for g in goal:
+                if current == g:
+                    goal_node = Node(*g)
+                    goal_node.set_parent((c_x, c_y),)
+                    self.grid.insert_node(g[0], g[1], goal_node)
+                    reached_goal = True
         self.path = self._construct_path( current )
                 
     def _find_adjacents ( self, current ):
