@@ -159,7 +159,7 @@ class OBJ( Vector3d ):
     def Clone( self ):
         clone = OBJ( None, False, False, True )
         clone.textureID = self.textureID
-        clone.va = VA( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+        clone.va = VA( self.va.vertexes, self.va.normals, None, self.va.texCoords, self.va_colours, False )
         return clone
     
     def __repr__(self):
