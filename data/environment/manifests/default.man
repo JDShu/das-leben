@@ -11,9 +11,6 @@
 OBJECT:environment/manmade/furniture/chair_70th.obj:CHAIR:5.0,0.0,6.0:0.25
 OBJECT:environment/manmade/furniture/oven.obj:DEFAULT_OVEN:10.0,0.0,6.0:0.25 
 OBJECT:environment/manmade/walls/wall.obj:WALL0:0.0,0.0,0.0:0.25 
-OBJECT:environment/manmade/walls/wall-corner-BL.obj:WALL_CORNER_BL:0.0,0.0,0.0:0.25
-OBJECT:environment/manmade/walls/wall-corner-BR.obj:WALL_CORNER_BR:0.0,0.0,0.0:0.25
-OBJECT:environment/manmade/walls/wall-corner-TR.obj:WALL_CORNER_TR:0.0,0.0,0.0:0.25
 OBJECT:environment/manmade/walls/wall_plus_90degrees.obj:WALL90:0.0,0.0,0.0:0.25 
 FLOOR:environment/floors/first.flr:10.0,0.0,10.0
 

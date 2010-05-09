@@ -666,15 +666,16 @@ class LoadableRegion( Region ):
                 quad = self.quads[ i ]
                 if quad.quadType == "a":
                     if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( 0.0, altitude, -0.2 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
+                        ConcatenateObject( quad + Vector3d( 0.005, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
+                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
                     else:
                         self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, altitude, -0.2 ) )
-                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.005, altitude, -0.225 ) )
+                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
                 elif quad.quadType == "b":
                     if hasattr( self, "walls"):
-                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                        ConcatenateObject( quad + Vector3d( -0.01, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
+                        ConcatenateObject( quad + Vector3d( 0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
                     else:
                         self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
                         TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
@@ -732,10 +733,10 @@ class LoadableRegion( Region ):
                         TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "l":
                     if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( 0.0, altitude, -0.2 ), w, self.AssetManager.GetObject( "WALL0" ) )
+                        ConcatenateObject( quad + Vector3d( 0.0, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
                     else:
                         self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, altitude, -0.20 ) )
+                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, altitude, -0.225 ) )
                 elif quad.quadType == "h":
                     if hasattr( self, "walls"):
                         ConcatenateObject( quad + Vector3d( 0.0, altitude, 0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
