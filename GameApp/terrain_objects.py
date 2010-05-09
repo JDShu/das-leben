@@ -270,6 +270,9 @@ class Region( Vector3d ):
         self.m_Height = a_Height
         self.m_Size = a_Size
         
+        self.textureID = 0
+        self.wallTextureID = 0
+        
         for z in xrange( a_Height ):
             for x in xrange( a_Width ):
                 rq = RegionQuad( a_X + ( float( x ) * a_Size ), 
@@ -371,7 +374,7 @@ class Region( Vector3d ):
             
         f.close()
         
-    def Load( self, a_Filename ):
+    def Load( self, a_Filename, a_AssetManager ):
         
         f = open( a_Filename, "r" )
         lines = f.readlines()
@@ -383,13 +386,17 @@ class Region( Vector3d ):
         else:
             raise Exception, "unable to load dimensions of floor plan %s" % a_Filename
         
-        if lines[ 0 ].startswith( "POSITION" ):
-            pos = lines[ 0 ].split( ":" )[ 1 ].split( "," )
-            x = float( pos[ 0 ] )
-            y = float( pos[ 1 ] )
-            z = float( pos[ 2 ] )
-            self.SetPosition( x, y, z )
+        if lines[ 0 ].startswith( "FLOOR" ):
+            parts = lines[ 0 ].split( ":" )
+            self.textureID = a_AssetManager.GetTexture( parts[ 1 ].replace( "\n", "" ) )
             del lines[ 0 ]
+            
+        if lines[ 0 ].startswith( "WALLS" ):
+            parts = lines[ 0 ].split( ":" )
+            self.wallTextureID = a_AssetManager.GetTexture( parts[ 1 ].replace( "\n", "" ) )
+            del lines[ 0 ]
+            
+        
         
             
         
@@ -454,12 +461,16 @@ class Region( Vector3d ):
         glPushMatrix()
         glCullFace( GL_FRONT )
         glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
+
+        if self.textureID:
+            glEnable( GL_TEXTURE_2D )
+            glBindTexture( GL_TEXTURE_2D, self.textureID )
+            
+        self.va.Draw()
         
-        if not self.useVBO:
-            glCallList( self.listID )
-        else:
-            self.va.Draw()
-        
+        if self.textureID:
+            glDisable( GL_TEXTURE_2D )
+            
         glCullFace( GL_BACK )
         glPopMatrix()      
     
@@ -659,7 +670,7 @@ class LoadableRegion( Region ):
             self.ShowWalls = True
             
         def Load( self, a_Filename ):
-            Region.Load( self, a_Filename )
+            Region.Load( self, a_Filename, self.AssetManager )
             
             altitude = 0.40
             for i in xrange( 1, len( self.quads ) ):
@@ -746,10 +757,14 @@ class LoadableRegion( Region ):
             
             x, y, z, w = self.GetPosition()
             self.walls.SetPosition( x, y, z )
+            
+            if self.wallTextureID: self.walls.SetTexture( self.wallTextureID )
                            
         def Draw( self ):
             self._draw()
             if self.ShowWalls:
                 self.walls.Draw()
+        
+                
             
         

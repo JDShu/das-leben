@@ -159,6 +159,9 @@ class Object3d( Vector3d ):
    def SetDrawMode( self, a_DrawMode ):
       self.drawmode = a_DrawMode
       
+   def SetTexture( self, a_TextureID ):
+      self._model.textureID = a_TextureID
+      
    def Draw(self):
       glPushMatrix()
       if self.drawmode == OBJECT_3D_DRAW_WIREFRAME:

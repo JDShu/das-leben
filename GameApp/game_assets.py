@@ -56,7 +56,7 @@ class AssetManager:
         Create and instance of AssetManager
         '''
         self.assets = []
-        self.textures = {}
+        self.textures = []
 
         self.data_path = a_DataPath
 
@@ -85,7 +85,16 @@ class AssetManager:
                 self.AddObject( obj )
                 
             elif item.startswith( "TEXTURE:" ):
-                pass
+                parts = item.split( ":" )
+                surf = pygame.image.load( path.join( self.data_path, parts[ 1 ] ) )
+                image = pygame.image.tostring( surf, 'RGBA', 1 )
+                ix, iy = surf.get_rect().size
+                texid = glGenTextures( 1 )
+                glBindTexture( GL_TEXTURE_2D, texid )
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR )
+                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image )
+                self.AddTexture( parts[ 2 ].replace( "\n", "" ) , texid )
 
     def AddTexture( self, a_Name, a_TextureID ):
         '''
@@ -93,10 +102,7 @@ class AssetManager:
         @param a_Name String : the name of this texture
         @param a_TextureID Integer : OpenGL texture ID        
         '''
-        if a_Name not in self.textures.keys():
-            self.textures[ a_Name ] = a_TextureID
-        else:
-            raise Exception, "The name %s is already assigned to a texture in this collection" % a_Name
+        self.textures.append( { a_Name: a_TextureID } )
         
         
     def ReplaceTexture( self, a_Name, a_TextureID ):
@@ -113,7 +119,9 @@ class AssetManager:
         @param a_Name String : the name of the texture in this collection
         @return Integer : the OpenGL ID
         '''
-        return self.textures[ a_Name ]
+        for tex in self.textures:
+            if a_Name in tex:
+                return tex[ a_Name ]
     
     def AddObject( self, a_Object3d ):
         '''
