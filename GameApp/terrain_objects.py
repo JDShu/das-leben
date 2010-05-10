@@ -664,15 +664,20 @@ class FloorRegion( Region ):
                 quad.Draw()
         
 class LoadableRegion( Region ):
-        def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_AssetManager=None, a_Width=50, a_Height=50, a_Size=0.5 ):
+        def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_AssetManager=None, a_Width=50, a_Height=50, a_Size=0.5, a_FirstFloor=True ):
             Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size )
             self.AssetManager = a_AssetManager
             self.ShowWalls = True
+            self.FirstFloor = a_FirstFloor
             
         def Load( self, a_Filename ):
             Region.Load( self, a_Filename, self.AssetManager )
             
-            altitude = 0.40
+            if self.FirstFloor:
+                altitude = 0.40
+            else:
+                altitude = -0.41
+                
             for i in xrange( 1, len( self.quads ) ):
                 quad = self.quads[ i ]
                 if quad.quadType == "a":
@@ -764,6 +769,9 @@ class LoadableRegion( Region ):
             self._draw()
             if self.ShowWalls:
                 self.walls.Draw()
+                
+        def ToggleWalls( self ):
+            self.ShowWalls = not self.ShowWalls
         
                 
             

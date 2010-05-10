@@ -13,6 +13,7 @@ OBJECT:environment/manmade/furniture/oven.obj:DEFAULT_OVEN:10.0,0.0,6.0:0.25
 OBJECT:environment/manmade/walls/wall.obj:WALL0:0.0,0.0,0.0:0.25 
 OBJECT:environment/manmade/walls/wall_plus_90degrees.obj:WALL90:0.0,0.0,0.0:0.25 
 FLOOR:environment/floors/first.flr:10.0,0.0,10.0
+FLOOR:environment/floors/first.flr:10.0,1.0,10.0
 TEXTURE:environment/manmade/floors/floor_tiles_0.png:DEFAULT_FLOOR
 TEXTURE:environment/manmade/floors/floor_tiles_1.png:FLOOR_TILES0
 TEXTURE:environment/manmade/walls/wall_blank.png:DEFAULT_WALL

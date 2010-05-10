@@ -73,9 +73,9 @@ class GameApp3d:
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
         self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
-        self.m_Camera.SetPosition(0, -4, 3.0)
-        self.m_Camera.m_XRot += 31
-        self.m_Camera.m_YRot += 157
+        self.m_Camera.SetPosition(-7.5, -3, -6)
+        self.m_Camera.m_XRot += 18
+        self.m_Camera.m_YRot += 154
         
         if self.config.fullscreen:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
@@ -284,6 +284,10 @@ class GameApp3d:
         rgn.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
         oadd( rgn )
         self.rgn = rgn
+        
+        rgn = LoadableRegion( 0.0, 0.81, 0.0, self.AssetManager, 10, 10, 0.5, False )
+        rgn.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+        oadd( rgn )
         
         self.m_FirstFloorLevel = []; fadd = self.m_FirstFloorLevel.append
         
@@ -536,6 +540,9 @@ class GameApp3d:
             
         elif self.m_KeyBuffer[ K_q ]:
             self.m_Mode = NORMAL_MODE
+            
+        elif self.m_KeyBuffer[ K_t ]:
+            self.rgn.ToggleWalls()
             
         return True
 
