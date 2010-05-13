@@ -501,16 +501,16 @@ class GameApp3d:
 
         if self.m_KeyBuffer[ K_w ]:
             self.m_Camera.MoveForward()
-
+                        
         elif self.m_KeyBuffer[ K_s ]:
             self.m_Camera.MoveBackward()
-
+            
         if self.m_KeyBuffer[ K_a ]:
             self.m_Camera.MoveLeft()
-            
+                        
         elif self.m_KeyBuffer[ K_d ]:
             self.m_Camera.MoveRight()
-
+            
         elif self.m_KeyBuffer[ K_z ]:
             self.m_Camera.ZoomIn()
 
@@ -540,6 +540,13 @@ class GameApp3d:
             
         elif self.m_KeyBuffer[ K_q ]:
             self.m_Mode = NORMAL_MODE
+
+        elif self.m_KeyBuffer[ K_p ]:
+            self.m_Camera.FlybyOn((-10, 0, -10))
+            self.flyby_y_angle = self.m_Camera.m_YRot.GetAngle()
+            
+        elif self.m_KeyBuffer[ K_o ]:
+            self.m_Camera.FlybyOff()
 
         return True
 

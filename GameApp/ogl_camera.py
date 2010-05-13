@@ -20,6 +20,7 @@ import pygame
 from pygame.locals import *
 from vector_3d import *
 from angle import *
+from math import atan2
 
 class oglCamera( Vector3d ):
     def __init__( self, a_ViewportWidth=800, a_ViewportHeight=600 ):
@@ -29,7 +30,8 @@ class oglCamera( Vector3d ):
         self.m_ZRot = Angle()
         self.m_ViewportWidth = a_ViewportWidth
         self.m_ViewportHeight = a_ViewportHeight
-
+        self.flyby_mode = False
+        
     def BeginDrawing( self ):
         glLoadIdentity()
         glPushMatrix()
@@ -128,29 +130,49 @@ class oglCamera( Vector3d ):
             self.ZoomOut( 1 )
 
     def Fly ( self, relative_y_angle, relative_x_angle, speed ):
+
+        if self.flyby_mode:
+            y_angle = self.saved_y_angle
+        else:
+            y_angle = self.m_YRot.GetAngle()
+
         x, y, z, w = self.GetPosition()
-        roh = radians(self.m_YRot.GetAngle() + relative_y_angle)
+        roh = radians(y_angle + relative_y_angle)
         theta = radians(relative_x_angle)
         x -= speed * cos(theta) * sin(roh)
         z += speed * cos(theta) * cos(roh)
         y += speed * sin(theta)
 
         self.SetPosition( x, y, z, w )
-
+        if self.flyby_mode:
+            self.PointCamera(*self.flyby_point)
+        
     def MoveForward( self ):
         self.Fly(0,0,1)
 
     def MoveBackward( self ):
-        self.Fly(180,0,0.25)
+        self.Fly(180,0,1)
 
     def MoveLeft( self ):
-        self.Fly(-90,0,0.25)
+        self.Fly(-90,0,1)
 
     def MoveRight( self ):
-        self.Fly(90,0,0.25)
+        self.Fly(90,0,1)
 
     def ZoomIn( self, speed = 0.25 ):
         self.Fly(0,self.m_XRot.GetAngle(),speed)
 
     def ZoomOut( self, speed = 0.25 ):
         self.Fly(180,-self.m_XRot.GetAngle(),speed)
+
+    def PointCamera( self, x2,y2,z2 ):
+        x1,y1,z1,w1 = self.GetPosition()
+        self.m_YRot = Angle(degrees(atan2( z1 - z2 ,x1 - x2 )) + 90)
+
+    def FlybyOn( self, flyby_point ):
+        self.flyby_mode = True
+        self.saved_y_angle = self.m_YRot.GetAngle()
+        self.flyby_point = flyby_point
+        
+    def FlybyOff( self ):
+        self.flyby_mode = False
