@@ -175,7 +175,8 @@ class GameApp3d:
         stamina_bar = HorizontalBar( self.dashboard, (252, 97), self.m_Camera, 1000, yellow_bar )
         self.dashboard.AddElement( stamina_bar )
         pygame.time.set_timer(USEREVENT+1, 250)
-
+        pygame.time.set_timer(USEREVENT+2, 10) #flyto
+        
         #Event Class queue
         self.events = collections.deque()
 
@@ -418,7 +419,10 @@ class GameApp3d:
                 self.events.appendleft( MouseEvent(event) ) # use event classes
                 
             elif event.type == USEREVENT+1:
-                self.events.appendleft(TimeEvent())                
+                self.events.appendleft(TimeEvent(1))
+
+            elif event.type == USEREVENT+2:
+                self.events.appendleft(TimeEvent(2))
                     
             elif event.type == QUIT:
                 return False
@@ -431,6 +435,7 @@ class GameApp3d:
                 self.m_Camera.ProcessMouse( e )
             elif e.category == TIME:
                 self.dashboard.elements[0].Decrease(1)
+                self.m_Camera.ProcessTime( e )
                 
         if self.m_SelectedArea.IsEditing():
             self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
@@ -542,12 +547,15 @@ class GameApp3d:
             self.m_Mode = NORMAL_MODE
 
         elif self.m_KeyBuffer[ K_p ]:
-            self.m_Camera.FlybyOn((-10, 0, -10))
+            self.m_Camera.FlybyOn((-1, -1))
             self.flyby_y_angle = self.m_Camera.m_YRot.GetAngle()
             
         elif self.m_KeyBuffer[ K_o ]:
             self.m_Camera.FlybyOff()
 
+        elif self.m_KeyBuffer[ K_m ]:
+            self.m_Camera.FlyTo((-10,-5) , (-1, -1) )
+            
         return True
 
     def PrintToConsole(self, a_Message, a_LineNumber ):

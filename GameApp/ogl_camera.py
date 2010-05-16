@@ -31,6 +31,7 @@ class oglCamera( Vector3d ):
         self.m_ViewportWidth = a_ViewportWidth
         self.m_ViewportHeight = a_ViewportHeight
         self.flyby_mode = False
+        self.flyto_mode = False
         
     def BeginDrawing( self ):
         glLoadIdentity()
@@ -131,7 +132,9 @@ class oglCamera( Vector3d ):
 
     def Fly ( self, relative_y_angle, relative_x_angle, speed ):
 
-        if self.flyby_mode:
+        if self.flyto_mode:
+            y_angle = self.flyto_angle
+        elif self.flyby_mode:
             y_angle = self.saved_y_angle
         else:
             y_angle = self.m_YRot.GetAngle()
@@ -147,17 +150,17 @@ class oglCamera( Vector3d ):
         if self.flyby_mode:
             self.PointCamera(*self.flyby_point)
         
-    def MoveForward( self ):
-        self.Fly(0,0,1)
+    def MoveForward( self, speed = 1 ):
+        self.Fly(0,0,speed)
 
-    def MoveBackward( self ):
-        self.Fly(180,0,1)
+    def MoveBackward( self, speed = 1 ):
+        self.Fly(180,0,speed)
 
-    def MoveLeft( self ):
-        self.Fly(-90,0,1)
+    def MoveLeft( self, speed = 1 ):
+        self.Fly(-90,0,speed)
 
-    def MoveRight( self ):
-        self.Fly(90,0,1)
+    def MoveRight( self, speed = 1 ):
+        self.Fly(90,0,speed)
 
     def ZoomIn( self, speed = 0.25 ):
         self.Fly(0,self.m_XRot.GetAngle(),speed)
@@ -165,7 +168,7 @@ class oglCamera( Vector3d ):
     def ZoomOut( self, speed = 0.25 ):
         self.Fly(180,-self.m_XRot.GetAngle(),speed)
 
-    def PointCamera( self, x2,y2,z2 ):
+    def PointCamera( self, x2,z2 ):
         x1,y1,z1,w1 = self.GetPosition()
         self.m_YRot = Angle(degrees(atan2( z1 - z2 ,x1 - x2 )) + 90)
 
@@ -176,3 +179,19 @@ class oglCamera( Vector3d ):
         
     def FlybyOff( self ):
         self.flyby_mode = False
+
+    def FlyTo( self, flyto_point, flyby_point, speed = 0.1 ):
+        self.flyto_mode = True
+        self.FlybyOn( flyby_point )
+        x1,y1,z1,w1 = self.GetPosition()
+        self.displacement = hypot(flyto_point[0] - x1, flyto_point[1] - z1)
+        self.flyto_angle = degrees(atan2(z1 - flyto_point[1], x1 - flyto_point[0])) + 90
+        self.flyto_speed = speed
+        
+    def ProcessTime( self, e ):
+        if self.flyto_mode:            
+            self.MoveForward(self.flyto_speed)
+            self.displacement -= self.flyto_speed
+            if self.displacement < 0:
+                self.flyto_mode = False
+                self.FlybyOff()

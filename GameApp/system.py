@@ -22,8 +22,9 @@ class MouseEvent( Event ):
             self.s_down = True
 
 class TimeEvent( Event ):
-    def __init__( self ):
+    def __init__( self, time_type ):
         Event.__init__( self, TIME )
+        self.time_type = time_type
 
 class Node():
     def __init__( self, x, y ):
