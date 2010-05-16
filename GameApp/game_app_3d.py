@@ -434,7 +434,8 @@ class GameApp3d:
                 self.dialog.ProcessClick( e, self.m_Camera )
                 self.m_Camera.ProcessMouse( e )
             elif e.category == TIME:
-                self.dashboard.elements[0].Decrease(1)
+                if e.time_type == 1:
+                    self.dashboard.elements[0].Decrease(1)
                 self.m_Camera.ProcessTime( e )
                 
         if self.m_SelectedArea.IsEditing():

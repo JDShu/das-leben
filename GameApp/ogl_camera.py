@@ -189,9 +189,10 @@ class oglCamera( Vector3d ):
         self.flyto_speed = speed
         
     def ProcessTime( self, e ):
-        if self.flyto_mode:            
-            self.MoveForward(self.flyto_speed)
-            self.displacement -= self.flyto_speed
-            if self.displacement < 0:
-                self.flyto_mode = False
-                self.FlybyOff()
+        if e.time_type == 2:
+            if self.flyto_mode:            
+                self.MoveForward(self.flyto_speed)
+                self.displacement -= self.flyto_speed
+                if self.displacement < 0:
+                    self.flyto_mode = False
+                    self.FlybyOff()
