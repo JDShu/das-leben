@@ -40,11 +40,29 @@ class VBO:
         self.vertxCount = len( a_Vertexes )
         vertexes = zeros( ( len( a_Vertexes ), 3 ), dtype=float32 ) 
         
+        min_x = 1000000.0
+        max_x = -1000000.0
+        min_y = 1000000.0
+        max_y = -1000000.0
+        min_z = 1000000.0
+        max_z = -1000000.0
+        
         for i, vert in enumerate( a_Vertexes ):
-            vertexes[ i ][ 0 ] = vert.GetX()
-            vertexes[ i ][ 1 ] = vert.GetY()
-            vertexes[ i ][ 2 ] = vert.GetZ()
-            
+            if hasattr( vert, "GetX" ):
+                vertexes[ i ][ 0 ] = vert.GetX()
+                vertexes[ i ][ 1 ] = vert.GetY()
+                vertexes[ i ][ 2 ] = vert.GetZ()
+            else:
+                vertexes[ i ] = vert
+                
+            if vertexes[ i ][0] < min_x: min_x = vertexes[ i ][ 0 ]
+            if vertexes[ i ][0] > max_x: max_x = vertexes[ i ][ 0 ]
+            if vertexes[ i ][1] < min_y: min_y = vertexes[ i ][ 1 ]
+            if vertexes[ i ][1] > max_y: max_y = vertexes[ i ][ 1 ]
+            if vertexes[ i ][2] < min_z: min_z = vertexes[ i ][ 2 ]
+            if vertexes[ i ][2] > max_z: max_z = vertexes[ i ][ 2 ]
+                
+        self.m_Dimensions = array( [ max_x - min_y, max_y - min_y, max_z - min_z ], dtype=float32 )
         self.vboVertArray = glGenBuffersARB( 1 )
         glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboVertArray )
         glBufferDataARB( GL_ARRAY_BUFFER_ARB, vertexes, a_BufferType )
@@ -53,22 +71,27 @@ class VBO:
         if self.useNormals:
             normals = zeros( ( len( a_Normals ), 3 ), dtype=float32 ) 
             for i, vert in enumerate( a_Normals ):
-                normals[ i ][ 0 ] = vert.GetX()
-                normals[ i ][ 1 ] = vert.GetY()
-                normals[ i ][ 2 ] = vert.GetZ()
-                
+                if hasattr( vert, "GetX" ):
+                    normals[ i ][ 0 ] = vert.GetX()
+                    normals[ i ][ 1 ] = vert.GetY()
+                    normals[ i ][ 2 ] = vert.GetZ()
+                else:
+                    normals[ i ] = vert
+                    
             self.vboNormalArray = glGenBuffersARB( 1 )
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboNormalArray )
             glBufferDataARB( GL_ARRAY_BUFFER_ARB, normals, a_BufferType )
             
         self.useTexCoords = a_TexCoords != None and True or False
         if self.useTexCoords:
-            texCoords = zeros( ( len( a_TexCoords ), 3 ), dtype=float32 ) 
+            texCoords = zeros( ( len( a_TexCoords ), 2 ), dtype=float32 ) 
             for i, vert in enumerate( a_TexCoords ):
-                texCoords[ i ][ 0 ] = vert.GetX()
-                texCoords[ i ][ 1 ] = vert.GetY()
-                texCoords[ i ][ 2 ] = vert.GetZ()
-                
+                if hasattr( vert, "GetX" ):
+                    texCoords[ i ][ 0 ] = vert.GetX()
+                    texCoords[ i ][ 1 ] = vert.GetY()
+                else:
+                    texCoords[ i ] = vert
+                    
             self.vboTexCoordArray = glGenBuffersARB( 1 )
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vboTexCoordArray )
             glBufferDataARB( GL_ARRAY_BUFFER_ARB, texCoords, GL_STATIC_DRAW_ARB )
@@ -77,10 +100,13 @@ class VBO:
         if self.useColoursCoords:
             coloursCoords = zeros( ( len( a_Colours ), 3 ), dtype=float32 ) 
             for i, vert in enumerate( a_Colours ):
-                coloursCoords[ i ][ 0 ] = vert[ 0 ]
-                coloursCoords[ i ][ 1 ] = vert[ 1 ]
-                coloursCoords[ i ][ 2 ] = vert[ 2 ]
-                
+                if hasattr( vert, "GetX" ):
+                    coloursCoords[ i ][ 0 ] = vert[ 0 ]
+                    coloursCoords[ i ][ 1 ] = vert[ 1 ]
+                    coloursCoords[ i ][ 2 ] = vert[ 2 ]
+                else:
+                    coloursCoords[ i ] = vert
+                    
             self.vbocColourCoordsArray = glGenBuffersARB( 1 )
             glBindBufferARB( GL_ARRAY_BUFFER_ARB, self.vbocColourCoordsArray )
             glBufferDataARB( GL_ARRAY_BUFFER_ARB, coloursCoords, GL_STATIC_DRAW_ARB )
@@ -140,9 +166,18 @@ class VBO:
         glUnmapBufferARB( GL_ARRAY_BUFFER_ARB )
         glPopClientAttrib()  
     
+    def GetDimensions( self ):
+        return self.m_Dimensions
+    
     def __del__( self ):
         glDeleteBuffersARB( 1, self.vboVertArray )
         if self.useNormals: glDeleteBuffersARB( 1, self.vboNormalArray )
         if self.useTexCoords: glDeleteBuffersARB( 1, self.vboTexCoordArray )
         if self.useColoursCoords: glDeleteBuffersARB( 1, self.vbocColourCoordsArray )
         
+def CreateVBOFromVA( a_VA ):
+    new_vbo = VBO( a_VA.vertexes, 
+               a_VA.normals,
+               a_VA.texCoords )
+    
+    return new_vbo

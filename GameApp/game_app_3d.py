@@ -43,6 +43,9 @@ from os import getcwd, path
 from constants import *
 from misc_ui import *
 import collections
+from game_assets import *
+from game_config import *
+
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -64,24 +67,20 @@ class GameApp3d:
         @param a_DataPath String: The path to the data directory
         @return returns a GameApp3d instance
         '''
-        # start pygame
+        
+        self.config = GameConfig( os.path.join( a_DataPath.replace( '/data', '' ), "la_vida.cfg" ) )
         pygame.init()
         self.m_Clock = pygame.time.Clock()
-
-        # start glut
-        # @warning may be removed later as glut isnt really needed now
         glutInit()
 
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
-        # create the camera
         self.m_Camera = oglCamera( a_ViewPortWidth, a_ViewPortHeight)
-        self.m_Camera.SetPosition(0, -4, 3.0)
-        self.m_Camera.m_XRot += 31
-        self.m_Camera.m_YRot += 157
+        self.m_Camera.SetPosition(-7.5, -3, -6)
+        self.m_Camera.m_XRot += 18
+        self.m_Camera.m_YRot += 154
         
-        # set the display mode
-        if a_Fullscreen:
+        if self.config.fullscreen:
             video_options = OPENGL|DOUBLEBUF|FULLSCREEN
             modes = self.m_Camera.GetModesList()
             for mode in modes:
@@ -99,11 +98,10 @@ class GameApp3d:
             sys.exit(1)
             return False
         
-        # set some OpenGL options
         glEnable(GL_CULL_FACE)
         glCullFace( GL_BACK )
         glShadeModel(GL_SMOOTH)
-        glClearColor( 0.5, 0.5, 1.0, 1.0 )
+        glClearColor( 0.7, 0.7, 1.0, 1.0 )
         glEnable(GL_COLOR_MATERIAL)
         glMaterial( GL_FRONT, GL_SHININESS, 5.0 )
         glClearDepth(1.0)
@@ -122,10 +120,8 @@ class GameApp3d:
 
         self.SetupFog()
 
-        # init the keyboard input processing
         self.SetupKeyBuffer()
 
-        # init the messaging system console
         self.LoadConsole()
 
         # start loading basic assets
@@ -151,11 +147,8 @@ class GameApp3d:
         
         self.SetupUI()
         
-        # setup the game timers
         self.SetupTiming()
         
-        # setup the process pipelining
-        # @warning Not yet implemented
         self.SetupExecutionCycles()
 
         #dashboard
@@ -181,9 +174,15 @@ class GameApp3d:
         self.events = collections.deque()
 
     def SetupExecutionCycles( self ):
+        '''
+        Setup on which game loop iteration the various processes should be executed
+        '''
         self.m_ProcessCycles = { "Behaviours": 2, "Events": 3 }
                 
     def SetupUI( self ):
+        '''
+        Setup the different parts of the GUI interface
+        '''
         self.m_SelectedArea = SelectedRegion( 0.5, 0.0, Vector3d(), Vector3d(), pygame.time.get_ticks() )
         self.m_SelectedStart = 0
         self.m_SelectStartTicks = 0
@@ -191,6 +190,9 @@ class GameApp3d:
         self.m_Mode = EDIT_MODE
         
     def SetupTiming( self ):
+        '''
+        Setup the game timer and initialise all timing variables
+        '''
         self.m_Ticks = 0
         self.m_oldTicks = 0
         self.m_currentTicks = 0
@@ -203,15 +205,23 @@ class GameApp3d:
         self.m_ProcessCounterThreshhold = 3
         
     def StartMusicTrack( self, a_Filename ):
+        '''
+        Play a background music track
+        
+        @param a_Filename String : A path to the folder inside data/
+        '''
         try:
             if os.path.exists( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) ):
                 pygame.mixer.music.load( "%s/music/%s" % ( self.DATA_PATH, a_Filename ) )
                 pygame.mixer.music.play( -1 )
-                pygame.mixer.music.set_volume( 0.05 )
+                pygame.mixer.music.set_volume( self.config.music_volume / 100.0 )
         except IOError, e:
             raise Exception, "Unable to load %s: %s" ( a_Filename, e )
 
     def SetupLighting( self ):
+        '''
+        Setup OpenGL and some variable relating to lighting
+        '''
         LightAmbient  = [ 0.2, 0.2, 0.2, 1.0 ]
         LightDiffuse  = [ 0.8, 0.8, 0.8, 1.0 ]
         self.LightPosition = [ 10.0, 50.0, 30, 1.0 ]
@@ -228,22 +238,32 @@ class GameApp3d:
 
 
     def SetupFog( self ):
-        density = 0.05
-        fogColor = [0.5, 0.5, 1.0, 1.0] 
+        '''
+        Setup OpenGL fog
+        '''
+        density = 1.2
+        fogColor = [0.7, 0.7, 1.0, 1.0] 
         glEnable(GL_FOG)
-        glFogi(GL_FOG_MODE, GL_EXP2)
         glFogfv(GL_FOG_COLOR, fogColor)
         glFogf(GL_FOG_DENSITY, density)
         glHint(GL_FOG_HINT, GL_NICEST)
-        glDisable( GL_FOG )
+        glFogi(GL_FOG_MODE, GL_LINEAR)
+        glFogf(GL_FOG_START, 15.0)
+        glFogf(GL_FOG_END, 20.0)
     
 
     def SetupKeyBuffer( self ):
+        '''
+        Setup the keyboard buffer
+        '''
         self.m_KeyBuffer = []
         for i in range(320):
             self.m_KeyBuffer.append( False )
 
     def LoadConsole( self ):
+        '''
+        Setup the console display
+        '''
         self.font = glFreeType.font_data( "%s/gui/fonts/body.ttf" % self.DATA_PATH, 16 )
         self.Titlefont = glFreeType.font_data( "%s/gui/fonts/head.ttf" % self.DATA_PATH, 72 )
         self.m_Messages = []
@@ -263,7 +283,7 @@ class GameApp3d:
         gadd( Ground )
         
         Ground = TerrainGridedRegion( 0.0, 0.0, 0.0, 50, 50, 0.5 )
-
+        #Ground.ToggleGrid()
         self.m_GroundGrid = Ground
         gradd( Ground )
         gadd( Ground )
@@ -276,82 +296,29 @@ class GameApp3d:
         oadd( self.m_Light )
         obadd( self.m_Light )
 
-        #self.UpdateSplash( "Loading character model..." )
-        #Model = Avatar( self.DATA_PATH, DUDETTE )
-        #Model.SetPosition( 4.0,
-                           #Model.GetAltitude( 0.0 ),
-                           #4.5 )
+##        self.UpdateSplash( "Loading character model..." )
+##        Model = Avatar( self.DATA_PATH, DUDETTE )
+##        Model.SetPosition( 10.0,
+##                           Model.GetAltitude( 0.0 ),
+##                           15.5 )
+##        
+##        self.m_Model = Model
+##        oadd( Model )
+##        
+        self.AssetManager = AssetManager( "environment/manifests/default.man" , self.DATA_PATH ) 
         
-        #self.m_Model = Model
-        #oadd( Model )
-
-        self.UpdateSplash( "Loading Furniture..." )
-        chair = Object3d( "%s/environment/manmade/furniture/chair_70th.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
+        rgn = LoadableRegion( 0.0, 0.0, 0.0, self.AssetManager, 10, 10, 0.5 )
+        rgn.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+        oadd( rgn )
+        self.rgn = rgn
         
-        chair.SetScale( 0.1 )
-        chair.SetPosition( 4.0, 
-                           chair._model.va.GetDimensions()[ 1 ] 
-                           * chair._model.GetScale() * 0.5, 
-                           2.0 )
-        oadd( chair )
-        obadd( chair )
-        
-        oven = Object3d( "%s/environment/manmade/furniture/oven.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        oven.SetScale( 0.15 )
-        oven.SetPosition( 3.0, 
-                           oven._model.va.GetDimensions()[ 1 ] 
-                           * oven._model.GetScale() * 0.5, 
-                           3.0 )
-        oadd( oven )
-        obadd( oven )
-        
-        self.UpdateSplash( "Loading Wall..." )
-        wall = Object3d( "%s/environment/manmade/walls/wall.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        wall.SetScale( 0.25 )
-        wall.SetPosition( 2.75, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
-        self.m_FloorHeight = wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5
-        oadd( wall )
-        obadd( wall )
-        self.m_Wall = wall
-        
-        new_wall = wall.Clone()
-        new_wall.SetScale( 0.25 )
-        new_wall.SetPosition( 4, self.m_FloorHeight, 4 )
-        ObjectMultiplier( 6, Vector3d( 1, 0, 0), new_wall )
-        oadd( new_wall )
-        
-        self.UpdateSplash( "Loading Wall with window..." )
-        wall = Object3d( "%s/environment/manmade/walls/wall_with_small_window.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        wall.SetScale( 0.25 )
-        wall.SetPosition( 2.25, wall._model.va.GetDimensions()[ 1 ] * wall._model.GetScale() * 0.5 , 2.0 )
-        oadd( wall )
-        obadd( wall )
-        
-        door = Object3d( "%s/environment/manmade/doors/door.obj" % self.DATA_PATH, 
-                          None, 
-                          object_type=OBJECT_3D_MESH)
-        
-        door.SetScale( 0.22 )
-        door.SetPosition( 6.0, 
-                           door._model.va.GetDimensions()[ 1 ] 
-                           * door._model.GetScale() * 0.5, 
-                           3.0 )
-        oadd( door )
-        obadd( door )
+        rgn = LoadableRegion( 0.0, 0.81, 0.0, self.AssetManager, 10, 10, 0.5, False )
+        rgn.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+        oadd( rgn )
         
         self.m_FirstFloorLevel = []; fadd = self.m_FirstFloorLevel.append
         
+        self.m_FloorHeight = 0.0
         Ground = TerrainGridedRegion( 0.0, self.m_FloorHeight, 0.0, 50, 50, 0.5 )
 
         self.m_FirstFloorGrid = Ground
@@ -371,9 +338,26 @@ class GameApp3d:
 ##        self.house = house
 
         self.m_currentTicks = self.m_oldTicks = pygame.time.get_ticks()
-        self.m_Ticks = 0    
+        self.m_Ticks = 0   
+        
+        build_tool = Object3d( "%s/gui/tools/building_tool.obj" % self.DATA_PATH, 
+                          None, 
+                          object_type=OBJECT_3D_MESH)
+        
+        build_tool.SetScale( 0.11 )
+        build_tool.SetPosition( 6.0, 
+                           build_tool.GetHeight(), 
+                           3.0 )
+        oadd( build_tool )
+        obadd( build_tool )
+        
+        self.m_BuildTool = build_tool
 
     def UpdateSplash( self, a_Message ):
+        '''
+        Draw the Splash page and a current message
+        @param a_Message String : a message to be displayed
+        '''
         glClear( GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT )
         glDisable( GL_LIGHTING )
         self.m_Camera.BeginDrawing2d()
@@ -390,12 +374,18 @@ class GameApp3d:
         glEnable( GL_LIGHTING )
 
     def TimerUpdate(self):
+        '''
+        Update all timer variables
+        '''
         self.m_oldTicks = self.m_currentTicks
         self.m_currentTicks = pygame.time.get_ticks()
         self.m_Ticks = self.m_currentTicks - self.m_oldTicks
         self.m_FPSTicks += self.m_Ticks
 
     def ProcessEvents(self):
+        '''
+        Process all game events
+        '''
         self.TimerUpdate()
         
         self.m_ProcessCounter += 1
@@ -404,6 +394,7 @@ class GameApp3d:
         events = pygame.event.get()
         
         l_X, l_Y = pygame.mouse.get_pos()
+                
         
         for event in events:
             if event.type == KEYDOWN:
@@ -420,6 +411,10 @@ class GameApp3d:
                 
             elif event.type == USEREVENT+1:
                 self.events.appendleft(TimeEvent(1))
+
+            elif event.type == USEREVENT+2:
+                self.events.appendleft(TimeEvent(2))
+
 
             elif event.type == USEREVENT+2:
                 self.events.appendleft(TimeEvent(2))
@@ -449,10 +444,14 @@ class GameApp3d:
             new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
             l_End.SetPosition( new_x, y, new_z )
             self.m_SelectedArea.UpdateEnd( l_End )
+            self.m_BuildTool.SetPosition( new_x, y, new_z )
                     
         return self.ProccessKeys()
 
     def ProcessBehaviours( self ):
+        '''
+        Process all game object behaviours
+        '''
         for game_object in self.m_Objects:
             if game_object.__module__ == "GameApp.characters":
                 if game_object.m_ObjectType == OBJECT_3D_ANIMATED_MESH:
@@ -462,9 +461,19 @@ class GameApp3d:
                 # self.AddMessage( "Avatar : %s,%s,%s" % ( game_object.GetX(), game_object.GetY(), game_object.GetZ() ) )
 
     def GetSelectedObject( self, a_X, a_Y ):
+        '''
+        Get the object that is slected under the current mouse coords
+        @param a_X Integer : the current mouse x coord
+        @param a_Y Integer : the current mouse y coord
+        @return String : a string containg the OpenGL ID for the selected object
+        '''
         return "The Selected Object ID is %s" % self.m_Camera.GetObjectSelected( a_X, a_Y, self.m_Objects )
 
     def Resize(self, (width, height)):
+        '''
+        Handle resizing of the OpenGL viewport
+        @param (width, height) list : width & height of the new viewport
+        '''
         if height==0:
             height=1
         glViewport(0, 0, width, height)
@@ -475,6 +484,9 @@ class GameApp3d:
         glLoadIdentity()
 
     def ProccessKeys( self ):
+        '''
+        Process the assigned keys and trigger behaviours
+        '''
         if self.m_FPSTicks < self.m_FPSLimit: return True
         
         if self.m_KeyBuffer[ K_ESCAPE ]:
@@ -485,12 +497,12 @@ class GameApp3d:
         elif self.m_KeyBuffer[ K_DOWN ]:
             self.m_Camera.m_XRot -= 1.0
 
-        if self.m_KeyBuffer[ K_LEFT ]:
+        elif self.m_KeyBuffer[ K_LEFT ]:
             self.m_Camera.m_YRot -= 1.0
-        
+
         elif self.m_KeyBuffer[ K_RIGHT ]:
             self.m_Camera.m_YRot += 1.0
-        
+
         elif self.m_KeyBuffer[ K_u ]:
             x, y, z, w = self.m_Ground.GetPosition()
             y += 0.25
@@ -505,18 +517,18 @@ class GameApp3d:
             glLightfv( GL_LIGHT0, GL_POSITION, [ x, y, z ] )
             self.AddMessage( "Position: %s,%s,%s" % ( x, y, z ) )
 
-        if self.m_KeyBuffer[ K_w ]:
+        elif self.m_KeyBuffer[ K_w ]:
             self.m_Camera.MoveForward()
-                        
+
         elif self.m_KeyBuffer[ K_s ]:
             self.m_Camera.MoveBackward()
-            
-        if self.m_KeyBuffer[ K_a ]:
+
+        elif self.m_KeyBuffer[ K_a ]:
             self.m_Camera.MoveLeft()
-                        
+            
         elif self.m_KeyBuffer[ K_d ]:
             self.m_Camera.MoveRight()
-            
+
         elif self.m_KeyBuffer[ K_z ]:
             self.m_Camera.ZoomIn()
 
@@ -539,7 +551,7 @@ class GameApp3d:
             x, y, z, w = self.m_Camera.GetPosition()
             y += 0.25
             self.m_Camera.SetPosition( x, y, z, w )
-             
+            
         elif self.m_KeyBuffer[ K_e ]:
             self.AddMessage( "edit mode" )
             self.m_Mode = EDIT_MODE
@@ -560,9 +572,17 @@ class GameApp3d:
         return True
 
     def PrintToConsole(self, a_Message, a_LineNumber ):
+        '''
+        Print a message to the console on a specific line
+        @param a_Message String : a message to display
+        @param a_LineNumber Integer: the line to pront your message
+        '''
         self.font.glPrint( 10 , self.m_Camera.m_ViewportHeight - ( 17 * a_LineNumber ), a_Message )
 
     def Draw(self):
+        '''
+        Render the current scene
+        '''
         if self.m_FPSTicks < self.m_FPSLimit: 
             self.m_FrameTicks += self.m_Ticks
             return
@@ -581,10 +601,7 @@ class GameApp3d:
             
         for Object in self.m_GroundFloorObjects:
             Object.Draw()
-            
-        for Object in self.m_FirstFloorLevel:
-            Object.Draw()
-        
+
         self.m_Camera.EndDrawing()
 
         #GUI stuff
@@ -605,16 +622,21 @@ class GameApp3d:
         self.m_Camera.Flip()
 
     def AddMessage( self, a_Message ):
+        '''
+        Add a message to the console message queue
+        @param a_Message String : a message to display
+        '''
         self.m_Messages.append( a_Message )
         if len( self.m_Messages ) > 40:
             self.m_Messages = []
 
+
     def Exit(self):
+        '''
+        Perform system shutdown
+        '''
         pygame.mixer.music.stop()
         pygame.quit()
         sys.exit()
 
-if __name__ == "__main__": 
-    game_app = GameApp3d()
-    game_app.Exit()
 

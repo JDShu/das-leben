@@ -1,13 +1,13 @@
 # Blender3D MTL File: 
-# Material Count: 3
-
-newmtl wall
-Ns 90.196078
+# Material Count: 1
+newmtl wall_wall_tiles_0.png
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
 Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
-map_Kd wall_blank.png
+illum 2
+map_Kd wall_tiles_0.png
 
 

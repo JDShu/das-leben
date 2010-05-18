@@ -21,9 +21,18 @@ import pygame
 from pygame.locals import *
 from vector_3d import *
 from object_3d import *
+from game_assets import *
 
 class House:
+    '''
+    A House objects manager
+    '''
     def __init__(self, filename=None, floors=1):
+        '''
+        Create a House() instance
+        @param filename String : a path to an existing house definition file
+        @param floors Integer : how many floors hight the house is
+        '''
         self.m_Floors = []
         
         if filename:
@@ -43,11 +52,17 @@ class House:
             self.m_Floors[ floor ].SetPosition( 0, -2 + (floor * 10), 0 )
         
     def Draw(self):
+        '''
+        Render the house
+        '''
         for floor in self.m_Floors:
             if floor.Visible():
                 floor.Draw()
                 
     def DrawSelectMode( self ):
+        '''
+        Render whilst adding object IDs to OpenGL to support object picking
+        '''
         for floor in self.m_Floors:
             if floor.Visible():
                 glPushName( floor.GetGLName() )
@@ -55,6 +70,10 @@ class House:
                 glPopName()
                 
     def GetGLName( self ):
+        '''
+        Get the object IDs ( GLName ) of this houses objects
+        @return Names List : a list of object GLNames
+        '''
         Names = []; nadd = Names.append;
         for floor in self.m_Floors:
             nadd( floor.GetGLName() )
@@ -62,9 +81,17 @@ class House:
         return Names
     
     def SetFloorVisible( self, a_Floor ):
+        '''
+        Set a floor as visible
+        @param a_Floor Integer : the floor to make visible
+        '''
         self.m_Floors[ a_Floor ].m_Visible = True
         
     def SetFloorInvisible( self, a_Floor ):
+        '''
+        Set a floor as invisible
+        @param a_Floor Integer : the floor to make invisible
+        '''
         self.m_Floors[ a_Floor ].m_Visible = False
         
 class Floor:
@@ -73,9 +100,21 @@ class Floor:
        walls + floor + objects NOT the actual floor
     """
     
-    def __init__(self, objects=None):
+    def __init__(self, a_Filename=None):
+        '''
+        Create a Floor instance
+        @param objects List : a list of game objects on this floor
+        '''
+        
+        if a_Filename:
+            f = open( a_Filename, "r" )
+            lines = f.readlines()
+            
+            
         self.m_Objects = []
         self.m_Visible = True
+        
+        self.asset_manager = AssetManager()
         
         if objects:
             self.m_Objects.extend( objects )
@@ -84,13 +123,31 @@ class Floor:
         
         self.m_GLName = random.randint( 1, 1000 )
         
+    def Save( self, a_Filename ):
+        pass
+        
     def GetGLName( self ):
+        '''
+        Get the floors GLName fpr picking
+        @return Integer : the GLName or ID number
+        '''
         return self.m_GLName
             
     def Visible(self):
+        '''
+        Is this Floor visible?
+        
+        @return Boolean : The current visiblilty state
+        '''
         return self.m_Visible
     
     def SetPosition( self, a_X, a_Y, a_Z ):
+        '''
+        Set the position of this FLoor and all object within it
+        @param a_X Float : the x position
+        @param a_Y Float : the y position
+        @param a_Z Float : the z position
+        '''
         xoffset = 0
         for i in xrange( 0, 4 ):
             self.m_Objects[ i ].SetPosition( a_X + xoffset, a_Y, a_Z, 1.0 )
@@ -118,6 +175,9 @@ class Floor:
         self.m_Objects[ 14 ].m_XRot.SetAngle( 90 )
             
     def MakeDefaultFloor(self):
+        '''
+        Create a Default floor layout etc
+        '''
         oadd = self.m_Objects.append
         
         # ------- wall one ------------
@@ -131,6 +191,9 @@ class Floor:
         self.SetPosition( 0, 0, 0 )
         
     def Draw(self):
+        '''
+        Render all objects on this floor
+        '''
         for item in self.m_Objects:
             item.Draw()
             

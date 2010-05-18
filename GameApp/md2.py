@@ -618,9 +618,9 @@ class MD2Model(object):
             # vertex 1
             vertex = l_Frames[ frame ].vertices[ face.p1 ].vertex
             
-            vertex1[0] = ( vertex[0] * scale[0]) + translate[0] * l_ObjectScale
-            vertex1[1] = ( vertex[1] * scale[1]) + translate[1] * l_ObjectScale
-            vertex1[2] = ( vertex[2] * scale[2]) + translate[2] * l_ObjectScale
+            vertex1[0] = ( vertex[0] * scale[0] ) + translate[0] * l_ObjectScale
+            vertex1[1] = ( vertex[1] * scale[1] ) + translate[1] * l_ObjectScale
+            vertex1[2] = ( vertex[2] * scale[2] ) + translate[2] * l_ObjectScale
 
             vertexes[ (i * 3) ][0] = vertex1[0]
             vertexes[ (i * 3) ][1] = vertex1[1]
@@ -688,6 +688,7 @@ class MD2Model(object):
     def draw(self):
         glMaterial( GL_FRONT_AND_BACK, GL_SPECULAR, [ 1.0, 1.0, 1.0, 1.0 ] )
         glMaterial( GL_FRONT_AND_BACK, GL_SHININESS, 60 )
+        #glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE )
         if self.m_VBO:
             glEnable(GL_DEPTH_TEST)
             glEnable( GL_TEXTURE_2D )
@@ -716,14 +717,16 @@ class MD2Model(object):
             glDisable( GL_TEXTURE_2D )
             
         elif self.m_useVAS:
-            
-            glEnable( GL_TEXTURE_2D )
+            glCullFace( GL_FRONT )
             if self._texture:
+                glEnable( GL_TEXTURE_2D )
                 glBindTexture( GL_TEXTURE_2D, self._texture )
             glScale( self._scale, self._scale, self._scale )
             self.m_VAS[ self._currentFrame ].Draw()
-            glDisable( GL_TEXTURE_2D )
             
+            if self._texture:
+                glDisable( GL_TEXTURE_2D )
+            glCullFace( GL_BACK )
         else:
             glCallList(self._lists + self._currentFrame) 
 

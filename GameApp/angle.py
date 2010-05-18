@@ -19,6 +19,10 @@ ANGLE_PI = 3.141592654
 class Angle:
     '''Angle class'''
     def __init__(self, a_Angle=0.0):
+        '''
+        Create an instance of Angle()
+        @param a_Angle float or Angle() : a value to set this angle to
+        '''
         if isinstance( a_Angle, Angle ):
             self.m_Angle = a_Angle.GetAngle()
 
@@ -30,6 +34,10 @@ class Angle:
             return NotImplemented
 
     def __eq__(self, rhs):
+        '''
+        Perform equality comparison
+        @param rhs Angle, Integer or Float : a value to test
+        '''
         l_ReturnVal = False
         if isinstance( rhs, Angle ):
             l_ReVal = ( self.m_Angle == rhs.GetAngle() )        
@@ -42,6 +50,10 @@ class Angle:
         return l_RetVal
 
     def __ne__(self, rhs):
+        '''
+        Perform inequality comparison
+        @param rhs Angle, Integer or Float : a value to test
+        '''
         l_ReturnVal = False
         if isinstance( rhs, Angle ):
             l_ReVal = ( self.m_Angle != rhs.GetAngle() )        
@@ -54,6 +66,10 @@ class Angle:
         return l_RetVal
 
     def __gt__(self, rhs):
+        '''
+        Perform greater than comparison
+        @param rhs Angle, Integer or Float : a value to test
+        '''
         l_ReturnVal = False
         if isinstance( rhs, Angle ):
             l_ReVal = ( self.m_Angle > rhs.GetAngle() )        
@@ -66,6 +82,10 @@ class Angle:
         return l_RetVal
 
     def __lt__(self, rhs):
+        '''
+        Perform less than comparison
+        @param rhs Angle, Integer or Float : a value to test
+        '''
         l_ReturnVal = False
         if isinstance( rhs, Angle ):
             l_ReVal = ( self.m_Angle < rhs.GetAngle() )        
@@ -79,7 +99,10 @@ class Angle:
 
 
     def __add__(self, rhs):
-        
+        '''
+        Add to the existing angle
+        @param rhs Angle, Integer or Float : a value to add
+        '''
         if isinstance( rhs, Angle ):
             self.m_Angle += rhs.GetAngle()        
         elif type( rhs ) is int or float:
@@ -94,7 +117,10 @@ class Angle:
         return Angle(self)
 
     def __sub__(self, rhs):
-        
+        '''
+        Subtract to the existing angle
+        @param rhs Angle, Integer or Float : a value to subtract
+        '''
         if isinstance( rhs, Angle ):
             self.m_Angle -= rhs.GetAngle()        
         elif type( rhs ) is int or float:
@@ -115,13 +141,28 @@ class Angle:
         return self.__sub__( rhs )
 
     def GetAngle(self):
+        '''
+        Return the current angle 
+        @return Float
+        '''
         return self.m_Angle
 
     def GetAngleInRadians(self):
+        '''
+        Get the angle in radians
+        @return Float
+        '''
         return (self.m_Angle / 180.0 * ANGLE_PI)
 
     def SetAngle(self, a_Angle):
+        '''
+        Set the angles value
+        @param a_Angle Float : the angles value
+        '''
         self.m_Angle = a_Angle
     
     def Print(self):
+        '''
+        Output the angles value as a string
+        '''
         print "Angle is %s" % self.m_Angle

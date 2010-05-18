@@ -170,7 +170,7 @@ class oglCamera( Vector3d ):
 
     def PointCamera( self, x2,z2 ):
         x1,y1,z1,w1 = self.GetPosition()
-        self.m_YRot = Angle(degrees(atan2( z1 - z2 ,x1 - x2 )) + 90)
+        self.m_YRot = Angle( degrees( atan2( z1 - z2 ,x1 - x2 ) ) + 90 )
 
     def FlybyOn( self, flyby_point ):
         self.flyby_mode = True
