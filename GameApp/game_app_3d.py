@@ -314,7 +314,7 @@ class GameApp3d:
         
         rgn = LoadableRegion( 0.0, 0.81, 0.0, self.AssetManager, 10, 10, 0.5, False )
         rgn.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
-        oadd( rgn )
+        ConcatenateObject( Vector3d( 0.0, 1.0, 0.0 ), self.rgn.walls, rgn.walls )
         
         self.m_FirstFloorLevel = []; fadd = self.m_FirstFloorLevel.append
         
