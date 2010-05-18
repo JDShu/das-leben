@@ -762,7 +762,7 @@ class LoadableRegion( Region ):
             
             x, y, z, w = self.GetPosition()
             self.walls.SetPosition( x, y, z )
-            
+                                  
             if self.wallTextureID: self.walls.SetTexture( self.wallTextureID )
                            
         def Draw( self ):

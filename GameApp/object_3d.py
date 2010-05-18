@@ -164,6 +164,8 @@ class Object3d( Vector3d ):
       
    def Draw(self):
       glPushMatrix()
+      glEnable(GL_CULL_FACE)
+      glCullFace( GL_BACK )
       if self.drawmode == OBJECT_3D_DRAW_WIREFRAME:
          glPolygonMode( GL_FRONT_AND_BACK, GL_LINE )
       glTranslatef( self.GetX(), self.GetY(), self.GetZ() )
@@ -183,6 +185,7 @@ class Object3d( Vector3d ):
          elif self.m_ObjectType == OBJECT_3D_WALL:
             self.wall.render(self.m_Scale)  
             
+      glDisable(GL_CULL_FACE)
       glPopMatrix()  
    
    def GetGLName( self ):
@@ -323,4 +326,5 @@ def ScaleVertexArray( a_Object, a_Scale ):
       values[ 1 ] = values[ 1 ] * a_Scale
       values[ 2 ] = values[ 2 ] * a_Scale
       
+
    

@@ -34,6 +34,7 @@ from OGLExt import *
 from terrain_objects import *
 from object_3d import *
 from vector_3d import *
+from system import *
 import ogl_shader 
 import glFreeType
 import os
@@ -41,8 +42,10 @@ from copy import deepcopy
 from os import getcwd, path
 from constants import *
 from misc_ui import *
+import collections
 from game_assets import *
 from game_config import *
+
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -121,10 +124,12 @@ class GameApp3d:
 
         self.LoadConsole()
 
-        if self.config.music:
-            self.StartMusicTrack( self.config.music_track )
-        self.m_SplashBg = TexturedRect( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 
-                                       self.m_Camera.m_ViewportWidth, self.m_Camera.m_ViewportHeight )
+        # start loading basic assets
+        self.StartMusicTrack( "01_every_thought_has_been_thought.ogg" )
+        self.m_SplashBg = TexturedRect( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, 
+                                        Vector3d( 0, self.m_Camera.m_ViewportHeight, 1.0 ), 
+                                       self.m_Camera.m_ViewportWidth, 
+                                       self.m_Camera.m_ViewportHeight )
 
         self.m_SplashLogo = TexturedRect( "%s/gui/graphics/logo_la_vida.png" % self.DATA_PATH, Vector3d( 200, 311, 1.0 ), 676, 200 )
         pos_x = self.m_Camera.m_ViewportWidth - 130
@@ -145,7 +150,29 @@ class GameApp3d:
         self.SetupTiming()
         
         self.SetupExecutionCycles()
+
+        #dashboard
+        self.dashboard = DashBoard( "%s/gui/graphics/dashboard.png" % self.DATA_PATH, 722, 238, 20, (0,238), (-300,0))
         
+        #popup dialog has 2 elements: a button and a static piece of text
+        self.dialog = PopupDialog( "%s/gui/graphics/background_light_clouds.png" % self.DATA_PATH, Vector3d( 0, 0, 1.0 ), 100, 100 )
+        button_basic = TexturedRect( "%s/gui/graphics/button_basic.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        button_hover = TexturedRect( "%s/gui/graphics/button_hover.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        button_clicked = TexturedRect( "%s/gui/graphics/button_clicked.png" % self.DATA_PATH, Vector3d(100,100,1), 30, 30 )
+        test_button = DialogButton( self.dialog, (35,35), button_basic, button_hover, button_clicked, self.m_Camera,  self.dashboard.Toggle, ())
+        test_text = DialogText( self.dialog, (8, 30), self.m_Camera, self.font, "Dashboard", (255,0,0) ) 
+        self.dialog.AddElement( test_button)
+        self.dialog.AddElement( test_text )
+        #stamina bar
+        yellow_bar = TexturedRect( "%s/gui/graphics/stamina_bar.png" % self.DATA_PATH, Vector3d(100,100,1), 106, 21 )
+        stamina_bar = HorizontalBar( self.dashboard, (252, 97), self.m_Camera, 1000, yellow_bar )
+        self.dashboard.AddElement( stamina_bar )
+        pygame.time.set_timer(USEREVENT+1, 250)
+        pygame.time.set_timer(USEREVENT+2, 10) #flyto
+        
+        #Event Class queue
+        self.events = collections.deque()
+
     def SetupExecutionCycles( self ):
         '''
         Setup on which game loop iteration the various processes should be executed
@@ -268,16 +295,16 @@ class GameApp3d:
         self.m_Light.SetPosition( 10.0, 50.0, 30 )
         oadd( self.m_Light )
         obadd( self.m_Light )
-##
+
 ##        self.UpdateSplash( "Loading character model..." )
 ##        Model = Avatar( self.DATA_PATH, DUDETTE )
-##        Model.SetPosition( 4.0,
+##        Model.SetPosition( 10.0,
 ##                           Model.GetAltitude( 0.0 ),
-##                           4.5 )
+##                           15.5 )
 ##        
 ##        self.m_Model = Model
 ##        oadd( Model )
-        
+##        
         self.AssetManager = AssetManager( "environment/manifests/default.man" , self.DATA_PATH ) 
         
         rgn = LoadableRegion( 0.0, 0.0, 0.0, self.AssetManager, 10, 10, 0.5 )
@@ -377,45 +404,35 @@ class GameApp3d:
                 self.m_KeyBuffer[ event.key ] = False
 
             elif event.type == MOUSEBUTTONDOWN:
-                
-                self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
-                l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
-                if event.button == LEFT_MOUSE:
-                    self.m_SelectedArea.m_Enabled = True
-                    #self.AddMessage( "Started at %s" % l_Position )
-                    l_Start = Vector3d()
-                    l_Start = l_Position
-                    x, y, z, w = l_Start.GetPosition()
-                    new_x = int( ( x + 0.5 ) / 0.5 ) * 0.5
-                    new_z = int( ( z + 0.5 ) / 0.5 ) * 0.5
-                    l_Start.SetPosition( new_x, y, new_z )
-                    
-                    addVec = Vector3d( 0.5, 0, 0.5 )
-                    self.m_SelectedArea.BeginEditing()
-                    self.m_SelectedArea.SetBegin( l_Start, l_Start + addVec )
-                    self.m_BuildTool.SetPosition( new_x, y, new_z )
+                self.events.appendleft( MouseEvent(event) ) # use event classes
                     
             elif event.type == MOUSEBUTTONUP:
-                if event.button == LEFT_MOUSE:
-                    self.m_SelectedArea.EndEditing()
-                    self.m_SelectedArea.m_Enabled = False
-                    
-                    l_Dimensions = self.m_SelectedArea.GetGranularDimensions( self.m_Grids[ 0 ].m_Size )
-                    l_Floor = FloorRegion( self.m_SelectedArea.m_Position.GetX(), 
-                                      0.0, 
-                                      self.m_SelectedArea.m_Position.GetZ(), 
-                                      l_Dimensions.width, 
-                                      l_Dimensions.height, 
-                                      0.5, 
-                                      1.0,
-                                      self.m_Wall )
-                    
-                    self.m_GroundFloorObjects.insert( 1, l_Floor )
+                self.events.appendleft( MouseEvent(event) ) # use event classes
+                
+            elif event.type == USEREVENT+1:
+                self.events.appendleft(TimeEvent(1))
 
+            elif event.type == USEREVENT+2:
+                self.events.appendleft(TimeEvent(2))
+
+
+            elif event.type == USEREVENT+2:
+                self.events.appendleft(TimeEvent(2))
+                    
             elif event.type == QUIT:
                 return False
 
-            
+        while(len(self.events)): #go through event queue and process each event
+            e = self.events.pop()
+            if e.category == MOUSE:
+                self.dialog.elements[0].ProcessClick( e )
+                self.dialog.ProcessClick( e, self.m_Camera )
+                self.m_Camera.ProcessMouse( e )
+            elif e.category == TIME:
+                if e.time_type == 1:
+                    self.dashboard.elements[0].Decrease(1)
+                self.m_Camera.ProcessTime( e )
+                
         if self.m_SelectedArea.IsEditing():
             self.m_SelectedObject =  self.GetSelectedObject( l_X, l_Y )
             l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
@@ -536,13 +553,21 @@ class GameApp3d:
             self.m_Camera.SetPosition( x, y, z, w )
             
         elif self.m_KeyBuffer[ K_e ]:
+            self.AddMessage( "edit mode" )
             self.m_Mode = EDIT_MODE
             
         elif self.m_KeyBuffer[ K_q ]:
             self.m_Mode = NORMAL_MODE
+
+        elif self.m_KeyBuffer[ K_p ]:
+            self.m_Camera.FlybyOn((-1, -1))
+            self.flyby_y_angle = self.m_Camera.m_YRot.GetAngle()
             
-        elif self.m_KeyBuffer[ K_t ]:
-            self.rgn.ToggleWalls()
+        elif self.m_KeyBuffer[ K_o ]:
+            self.m_Camera.FlybyOff()
+
+        elif self.m_KeyBuffer[ K_m ]:
+            self.m_Camera.FlyTo((-10,-5) , (-1, -1) )
             
         return True
 
@@ -579,7 +604,17 @@ class GameApp3d:
 
         self.m_Camera.EndDrawing()
 
-        # out put messages
+        #GUI stuff
+        glDisable( GL_LIGHTING )
+        self.m_Camera.BeginDrawing2d()
+        self.dashboard.Draw()
+        self.dialog.Draw()
+        #self.font.glPrint( self.dialog.GetX() + 10, self.dialog.GetY() - 100, "%i, %i" % (pygame.mouse.get_pos()), [0,0,0])
+        
+        self.m_Camera.EndDrawing2d()
+        glEnable( GL_LIGHTING )
+            
+        # output messages
         for i, message in enumerate( self.m_Messages ):
             self.PrintToConsole( message, i )
         self.font.glPrint( 900, 10, "FPS:%f" % self.m_Clock.get_fps() )

@@ -19,16 +19,26 @@ from GameApp.game_app_3d import GameApp3d
 from lavida_config import getDataPath
 
 def main():
+    '''
+    The main loop of the La Vida framework
+    @author Mike Hibbert
+    @version 0.1
+    '''
 
+    # Create the game object 
     l_Game = GameApp3d(a_AppName="La Vida", a_DataPath=getDataPath() )
 
     Running = True
 
     while Running:
+        # Process event
         Running = l_Game.ProcessEvents()
+        # Process behaviours for game objects
         l_Game.ProcessBehaviours()
+        # Render the game scene and objects
         l_Game.Draw()
 
+    # shut down all video, audio and anything else on exit
     l_Game.Exit()
 
 if __name__ == "__main__": main()

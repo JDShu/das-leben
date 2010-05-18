@@ -175,3 +175,9 @@ class VBO:
         if self.useTexCoords: glDeleteBuffersARB( 1, self.vboTexCoordArray )
         if self.useColoursCoords: glDeleteBuffersARB( 1, self.vbocColourCoordsArray )
         
+def CreateVBOFromVA( a_VA ):
+    new_vbo = VBO( a_VA.vertexes, 
+               a_VA.normals,
+               a_VA.texCoords )
+    
+    return new_vbo
