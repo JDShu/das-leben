@@ -90,86 +90,78 @@ class MS3DKeyframe:
 
 class MS3dModel:
     def __init__( self, a_Filename ):
-        
-	
-	try:
-	    f = open( a_Filename, 'rb' )
-	except IOError:
-	    return "Failed to open the file!"
 
-	# get the file size
+
+        try:
+            f = open( a_Filename, 'rb' )
+        except IOError:
+            return "Failed to open the file!"
+
+        # get the file size
         f.seek(0, os.SEEK_END)
-	fileSize = f.tell()
-	f.seek(0, os.SEEK_SET)
-	
+        fileSize = f.tell()
+        f.seek(0, os.SEEK_SET)
+
         self.header = MS3DHeader()
-        
+
         self.header.ID = f.read( 10 ) 
-	
+
         self.header.version = unpack( 'i', f.read( 4 ) )[0]
-        
+
         if not self.header.ID == "MS3D000000":
             print "Not a valid Milkshape model\n"
             return False
-        
+
         if self.header.version < 3 or self.header.version > 4:
             print "Only version 3 Milkshape models are supported\n"
             return False
 
         # ============================ VERTEXES ============================================
         self.vertexCount = unpack( 'H', f.read( 2 ) )[0]
-        
+
         self.vertexes = []; vadd = self.vertexes.append        
-	self.boneIDs = []; badd = self.boneIDs.append
+        self.boneIDs = []; badd = self.boneIDs.append
         for i in xrange( self.vertexCount ):
             f.read( 1 ) # ignore flags
-            
+
             vadd( unpack( 'fff', f.read( 3 * 4 ) ) )
-	    
+
             badd( unpack( 'b', f.read( 1 ) )[0] )
-            
+
             f.read( 1 ) # ignore refCount
-            
-            
+
+
         # ============================== TRIANGLES =========================================    
-        self.triangleCount = ( unpack( 'i', fileData[ offset:offset + 2 ] ) )[0]
-        offset += 2
-        self.triangles = []; tadd = self.triangles.append        
+        self.triangleCount = unpack( 'H', f.read( 2 ) )[0]
+        
+        self.faces = []; fadd = self.faces.append   
+        self.uvs = []; tadd = self.uvs.append
+        self.normals = []; nadd = self.normals.append
         for i in xrange( self.triangleCount ):
-            t = MS3DTriangle()
-            
-            t.flags = ( unpack( 'i', fileData[ offset:offset + 2 ] ) )[0]
-            offset += 2
-            
+            f.read( 1 ) # ignore flags
+
+            fadd( unpack( 'HHH', f.read( 3 * 2 ) ) )
+
             for j in xrange( 3 ):
-                t.vertexIndices[ j ] = ( unpack( 'i', fileData[ offset:offset + 2 ] ) )[0]
-                offset += 2
-                
-            for j in xrange( 3 ):
-                for k in xrange( 3 ):
-                    t.vertexNormals[ j ][ k ] = ( unpack( 'f', fileData[ offset:offset + 4 ] ) )[0]
-                    offset += 4
+                nadd( unpack( 'fff', f.read( 3 * 4 ) ) )
                     
-            for j in xrange( 3 ):
-                t.s[ j ] = ( unpack( 'f', fileData[ offset:offset + 4 ] ) )[0]
-                offset += 4
-                
-            for j in xrange( 3 ):
-                t.t[ j ] = ( unpack( 'f', fileData[ offset:offset + 4 ] ) )[0]
-                offset += 4 
-                
-            t.smoothingGroup = ( unpack( 'i', fileData[ offset:offset + 1 ] ) )[0]
-            offset += 1
-            
-            t.groupIndex = ( unpack( 'i', fileData[ offset:offset + 1 ] ) )[0]
-            offset += 1
-            
-            tadd( t )
-            
+            s = unpack( "fff", f.read( 3 * 4 ) )
+	    t = unpack( "fff", f.read( 3 * 4 ) )
+	    
+	    tadd( [ s[0], 1-t[0]], [s[1], 1-t[1]], [s[2], 1-t[2] ] )
+	    
+	    if self.faces[-1][2] == 0: # Cant have zero at the third index
+		self.faces[-1] = self.faces[-1][1], self.faces[-1][2], self.faces[-1][0]
+		self.uvs[-1] = self.uvs[-1][1], self.uvs[-1][2], self.uvs[-1][0]
+		
+	    f.read( 1 ) # ignore smooth group
+	    
+	    f.read( 1 ) # ignore group
+		
+
         # ================================ Materials ======================================
         self.materialCount = ( unpack( 'i', fileData[ offset:offset + 2 ] ) )[0]
         offset += 2
         self.materials = []; madd = self.materials.append 
         for i in xrange( self.materialCount ):
             m = MS3DMaterial()
-            

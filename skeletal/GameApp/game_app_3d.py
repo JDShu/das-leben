@@ -362,9 +362,9 @@ class GameApp3d:
             color2 = glGetUniformLocation(self.m_Shader._program, "color2")
             eyePos = glGetUniformLocation(self.m_Shader._program, "eyePos")
 
-            glUniform4f( color0, 0.8, 1.0, 0.0, 1.0 )
-            glUniform4f( color1, 0.4, 0.4, 0.4, 1.0 )
-            glUniform4f( color2, 1.0, 1.0, 0.0, 1.0 )
+            glUniform4f( color0, 0.0, 0.0, 1.0, 1.0 )
+            glUniform4f( color1, 1.0, 0.0, 0.0, 1.0 )
+            glUniform4f( color2, 0.0, 0.0, 0.4, 1.0 )
             glUniform3f( eyePos, self.m_Camera.GetX(), self.m_Camera.GetY(), self.m_Camera.GetZ() )
             
 
