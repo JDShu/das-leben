@@ -15,6 +15,7 @@
 '''
 from struct import *
 from numpy import array, zeros
+import os
 
 # max values
 MAX_VERTICES  =  65534
@@ -89,17 +90,24 @@ class MS3DKeyframe:
 
 class MS3dModel:
     def __init__( self, a_Filename ):
-        f = open( a_Filename, 'rb' )
-        fileData = f.read()
-        f.close()
+        
+	
+	try:
+	    f = open( a_Filename, 'rb' )
+	except IOError:
+	    return "Failed to open the file!"
 
-        offset = 0
+	# get the file size
+        f.seek(0, os.SEEK_END)
+	fileSize = f.tell()
+	f.seek(0, os.SEEK_SET)
+	
         self.header = MS3DHeader()
         
-        self.header.ID = ( unpack( '10B', fileData[ offset:10 ] ) )[0]
-        offset += 10
-        self.header.version = ( unpack( 'i', fileData[ offset:offset + 4 ] ) )[0]
-        offset += 4
+        self.header.ID = f.read( 10 ) 
+	
+        self.header.version = unpack( 'i', f.read( 4 ) )[0]
+        
         if not self.header.ID == "MS3D000000":
             print "Not a valid Milkshape model\n"
             return False
@@ -109,26 +117,19 @@ class MS3dModel:
             return False
 
         # ============================ VERTEXES ============================================
-        self.vertexCount = ( unpack( 'i', fileData[ offset:offset + 2 ] ) )[0]
-        offset += 2
+        self.vertexCount = unpack( 'H', f.read( 2 ) )[0]
+        
         self.vertexes = []; vadd = self.vertexes.append        
+	self.boneIDs = []; badd = self.boneIDs.append
         for i in xrange( self.vertexCount ):
-            v = MS3DVertex()
+            f.read( 1 ) # ignore flags
             
-            v.flags = ( unpack( 'b', fileData[ offset:offset + 1 ] ) )[0]
-            offset += 1
+            vadd( unpack( 'fff', f.read( 3 * 4 ) ) )
+	    
+            badd( unpack( 'b', f.read( 1 ) )[0] )
             
-            for j in xrange( 3 ):
-                v.vertex[ j ] = ( unpack( 'f', fileData[ offset:offset + 4 ] ) )[0]
-                offset += 4
-                
-            v.boneID = ( unpack( 'i', fileData[ offset:offset + 1 ] ) )[0]
-            offset += 1
+            f.read( 1 ) # ignore refCount
             
-            v.refCount = ( unpack( 'i', fileData[ offset:offset + 1 ] ) )[0]
-            offset += 1
-            
-            vadd( v )
             
         # ============================== TRIANGLES =========================================    
         self.triangleCount = ( unpack( 'i', fileData[ offset:offset + 2 ] ) )[0]
