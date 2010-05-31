@@ -1,48 +1,48 @@
 import pickle
 from os import path
 
-class Mask_Manager:
+class Psyche_Tables: #defines which emotions are affected by each noesis and by how much
     def __init__( self ):
-        self.masks = {} # double dict mask name: mask object
-        self.load_masks("./", "default.msk" )
+        self.NE_table = {} #dict of list - noesis: [(emotion, modvalue), ...] (how a noesis affects emotions)
+        self.IN_table = {} #dict of list - interactions: [noesis, ...] (which noesis' affect interactions)
+        self.load_NE_table("default.ne")
+        self.load_IN_table("default.in")
         
-    def load_masks( self, a_DataPath, filename ):
-        mask_file = open( path.join( a_DataPath, filename ), "rb" )
+    def load_NE_table( self, NE_table_file):
+        F = open(NE_table_file, 'rb')
+        self.NE_table.update(pickle.load(F))
+        F.close()
         
-        while True:
-            try:
-                self.add_mask( pickle.load( mask_file ) )
-            except EOFError:
-                break
-
-    def add_mask( self, mask ):
-        self.masks[mask.name] = mask
-        print mask
-
-class Mask:
-    def __init__( self, name, rules ):
-        self.name = name
-        self.rules = rules #double dict interactions: emotions: modvalue
+    def load_IN_table( self, IN_table_file):
+        F = open(IN_table_file, 'rb')
+        self.IN_table.update(pickle.load(F))
+        F.close()
         
 class Psyche:
     def __init__( self ):
-        self.emotions = {} #dict of ints - emotion name : emotion value
-        self.interactions = {} #double dict interactions: emotions: modvalue
+        self.state = {} #dict of ints - emotion name : emotion value
+        self.noesis = {} #dict - records whether noesis' are active - noesis : boolean
+        self.load_state_file("default.state")
+        self.load_noesis_file("default.noesis")
         
-    def apply_mask( self, mask, mask_manager ):
-        print "lol"
-        for m in mask_manager.masks[mask]:
-            print "noob"
-            for i in m.rules:
-                for e in i:
-                    self.interactions[i][e] += m.rules[i][e]                
+    def interact( self, interaction, psyche_tables ):
+        for n in psyche_tables.IN_table[ interaction ]:
+            if self.noesis[n]:
+                for e in psyche_tables.NE_table[ n ]:
+                    self.state[ e[0] ] += e[1]
 
-    def remove_mask( self, mask, mask_manager):
-        for m in mask_manager.masks[mask]:
-            for i in m.rules:
-                for e in i:
-                    self.interactions[i][e] -= m.rules[i][e]                
-                    
-    def interact( self, interaction):
-        for e in self.interactions[interaction]:
-            self.emotions[e] += self.interactions[interaction][e]
+    def add_noesis( self, n):
+        self.noesis[n] = True
+
+    def remove_noesis(self, n):
+        self.noesis[n] = False
+
+    def load_noesis_file( self, noesis_file):
+        F = open(noesis_file, 'rb')
+        self.noesis.update(pickle.load(F))
+        F.close()
+
+    def load_state_file( self, state_dict):
+        F = open(state_dict, 'rb')
+        self.state.update(pickle.load(F))
+        F.close()
