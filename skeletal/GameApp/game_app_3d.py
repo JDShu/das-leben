@@ -43,6 +43,7 @@ from constants import *
 from misc_ui import *
 from game_assets import *
 from ogl_vbo import NewVBO
+from milkshape import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -189,6 +190,8 @@ class GameApp3d:
 
         cube = NewVBO()
         cube.SetPosition( 0, 0, 5 )
+        
+        cheese = MS3dModel( "%s/male.txt" % self.DATA_PATH )
 
         #oadd( cube )
 

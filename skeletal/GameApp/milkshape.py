@@ -20,6 +20,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from struct import *
 from numpy import array, zeros, matrix
+import re
 import os
 
 # max values
@@ -37,13 +38,24 @@ SELECTED2  = 4
 DIRTY      = 8
 
 
-# trims a string by removing ending 0 and everything after it
-def CleanString( s ):
-     try:
-	  return s[ :s.index('\0') ]
-     except:
-	  return s
-	
+# returns the next non-empty, non-comment line from the file
+def getNextLine(file):
+     ready = False
+     while ready==False:
+	  line = file.readline()
+	  if len(line)==0:
+	       print "Warning: End of file reached."
+	       return line
+	  ready = True
+	  line = line.strip()
+	  if len(line)==0 or line.isspace():
+	       ready = False
+	  if len(line)>=2 and line[0]=='/' and line[1]=='/':
+	       ready = False
+		  
+     return line	
+
+
 
 # Converts ms3d euler angles to a rotation matrix
 def EulerToMatrix( a ):
@@ -53,171 +65,131 @@ def EulerToMatrix( a ):
      cp = cos( a[ 1 ] )
      sr = sin( a[ 0 ] )
      cr = cos( a[ 0 ] )
-     
+
      m = "%f %f %f; %f %f %f; %f %f %f" % ( cp*cy, cp*sy, -sp, 
                                             sr*sp*cy+cr*-sy, sr*sp*sy+cr*cy, sr*cp, 
                                             cr*sp*cy+-sr*-sy, cr*sp*sy+-sr*cy, cr*cp )
      return matrix( m )
 
-
+# limits
+MAX_NUMMESHES = 1000
+MAX_NUMVERTS = 100000
+MAX_NUMNORMALS = 100000
+MAX_NUMTRIS = 100000
+MAX_NUMMATS = 16
+MAX_NUMBONES = 100
+MAX_NUMPOSKEYS = 1000
+MAX_NUMROTKEYS = 1000
+	
 class MS3dModel:
      def __init__( self, a_Filename ):
+	  try:
+	       f = open( a_Filename, "r" )
+	  except IOError:
+	       return "Can't open file %s" % a_Filename
+	  
+	  # Read frame info
+	  try:
+	       lines = getNextLine( f ).split()
+	       if len( lines ) != 2 or lines[ 0 ] != "Frames:":
+		    raise ValueError
+	       lines = getNextLine( f ).split()
+	       if len( lines ) != 2 or lines[ 0 ] != "Frame:":
+		    raise ValueError
+	  except ValueError:
+	       return "Frame information not invalid!"
+          
+	  # read the number of meshes
+	  try:
+	       lines = getNextLine( f ).split()
+	       if len( lines )!=2 or lines[ 0 ]!="Meshes:":
+		    raise ValueError
+	       numMeshes = int( lines[ 1 ] )
+	       if numMeshes < 0 or numMeshes > MAX_NUMMESHES:
+		    raise ValueError
+	  except ValueError:
+	       return "Number of meshes is invalid!"
 
-
-          try:
-               f = open( a_Filename, 'rb' )
-          except IOError:
-               return "Failed to open the file!"
-
-          # get the file size
-          f.seek(0, os.SEEK_END)
-          fileSize = f.tell()
-          f.seek(0, os.SEEK_SET)
-
-          self.header = MS3DHeader()
-
-          self.header.ID = f.read( 10 ) 
-
-          self.header.version = unpack( 'i', f.read( 4 ) )[0]
-
-          if not self.header.ID == "MS3D000000":
-               print "Not a valid Milkshape model\n"
-               return False
-
-          if self.header.version < 3 or self.header.version > 4:
-               print "Only version 3 Milkshape models are supported\n"
-               return False
-
-          # ============================ VERTEXES ============================================
-          self.vertexCount = unpack( 'H', f.read( 2 ) )[0]
-
-          self.vertexes = []; vadd = self.vertexes.append        
-          self.boneIDs = []; badd = self.boneIDs.append
-          for i in xrange( self.vertexCount ):
-               f.read( 1 ) # ignore flags
-
-               vadd( unpack( 'fff', f.read( 3 * 4 ) ) )
-
-               badd( unpack( 'b', f.read( 1 ) )[0] )
-
-               f.read( 1 ) # ignore refCount
-
-
-          # ============================== TRIANGLES =========================================    
-          self.triangleCount = unpack( 'H', f.read( 2 ) )[0]
-
-          self.faces = []; fadd = self.faces.append   
-          self.uvs = []; tadd = self.uvs.append
-          self.normals = []; nadd = self.normals.append
-          for i in xrange( self.triangleCount ):
-               f.read( 1 ) # ignore flags
-
-               fadd( unpack( 'HHH', f.read( 3 * 2 ) ) )
-
-               for j in xrange( 3 ):
-                    nadd( unpack( 'fff', f.read( 3 * 4 ) ) )
-
-               s = unpack( "fff", f.read( 3 * 4 ) )
-               t = unpack( "fff", f.read( 3 * 4 ) )
-
-               tadd( [ s[0], 1-t[0]], [s[1], 1-t[1]], [s[2], 1-t[2] ] )
-
-               if self.faces[-1][2] == 0: # Cant have zero at the third index
-                    self.faces[-1] = self.faces[-1][1], self.faces[-1][2], self.faces[-1][0]
-                    self.uvs[-1] = self.uvs[-1][1], self.uvs[-1][2], self.uvs[-1][0]
-
-               f.read( 1 ) # ignore smooth group
-
-               f.read( 1 ) # ignore group
-
-          # ================================ Groups =========================================
-          # NOTE: in a editor program we might want this data but not in our game
-          #       so we're just going to load the data to maintain the file position
-
-          # read number of groups
-          numGroups = unpack( "H", f.read( 2 ) )[0]
-
-          # read groups
-          for i in xrange(numGroups):
-               # ignore flags
-               f.read( 1 )
-
-               # ignore name
-               f.read( 32 )
-
-               # read the number of triangles in the group
-               numGroupTriangles = unpack( "H", f.read( 2 ) )[0]
-
-               # read the group triangles
-               if numGroupTriangles > 0:
-                    # ignore the group triangles
-                    unpack( "%sH" % str( numGroupTriangles ), f.read( 2 * numGroupTriangles ) )
-
-               # read material
-               material = unpack( "b", f.read( 1 ) )[0]
-
-
-
-          # ================================ Materials ======================================
-          # read the number of materials
-          numMaterials = unpack( "H", f.read(2) )[ 0 ]
-
-          # read materials
-          for i in xrange( numMaterials ):
-               # read name
-               name = f.read( 32 )
-
-               # read ambient color
-               ambient = unpack( "ffff", f.read( 4 * 4 ) )[ 0:3 ]
-
-               # read diffuse color
-               diffuse = unpack( "ffff", f.read( 4 * 4 ) )[ 0:3 ]
-
-               # read specular color
-               specular = unpack( "ffff", f.read( 4 * 4 ))[ 0:3 ]
-
-               # read emissive color
-               emissive = unpack( "ffff", f.read( 4 * 4 ))[ 0:3 ]
-
-               # read shininess
-               shininess = unpack( "f", f.read( 4 ) )[ 0 ]
-
-               # read transparency		
-               transparency = unpack( "f", f.read( 4 ) )[ 0 ]
-
-               # read mode
-               mode = unpack( "B", f.read( 1 ) )[ 0 ]
-
-               # read texturemap
-               texturemap = CleanString( f.read( 128 ) )
-               if len(texturemap)>0:
-                    textureSurface = pygame.image.load(texture)
-
-                    textureData = pygame.image.tostring(textureSurface, "RGBA", 1)
-        
-                    width = textureSurface.get_width()
-                    height = textureSurface.get_height()
-        
-                    self.texture = glGenTextures(1)
-                    glBindTexture(GL_TEXTURE_2D, self._texture)
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-                    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
-		                 GL_UNSIGNED_BYTE, textureData)
-
-               # read alphamap
-               f.read( 128 )  
+	  vertexBase = 0
+	  faceBase = 0
+	  boneIDS = []
+	  
+	  for i in xrange( numMeshes ):
+	       # read name, flags and material
+	       try:
+		    lines = re.findall( r'\".*\"|[^ ]+', getNextLine( f ) )
+		    if len( lines ) != 3:
+			 raise ValueError
+		    material = int( lines[ 2 ] )
+	       except ValueError:
+		    return "Name, flags or material in mesh %s are invalid!" % str( i + 1 )
 	       
-	  # ================================ Animations ====================================
-	  
-	  # read animation
-	  fps = unpack( "f", f.read( 4 ) )[ 0 ]
-	  time = unpack( "f", f.read( 4 ) )[ 0 ]
-	  frames = unpack( "i", f.read( 4 ) )[ 0 ]
-   
-	  # read the number of joints
-	  numJoints = unpack( "H", f.read( 2 ) )[ 0 ]
-	  
-	  
-	  
-	  
+	       # read the number of vertices
+	       try:
+		    numVerts = int( getNextLine( f ) )
+		    if numVerts < 0 or numVerts > MAX_NUMVERTS:
+			 raise ValueError
+	       except ValueError:
+		    return "Number of vertices in mesh " + str(i+1) + " is invalid!"
+	       
+	       # read vertices
+	       coords = []
+	       uvs = []
+	       for j in xrange( numVerts ):
+		    try:
+			 lines = getNextLine( f ).split()
+			 if len( lines ) != 7:
+			      raise ValueError
+			 coords.append( [ float( lines[ 1 ] ), float( lines[ 2 ] ), float( lines[ 3 ] ) ] )
+			 uvs.append( [ float( lines[ 4 ] ), 1.0 - float( lines[ 5 ] ) ] )
+			 boneIDS.append( int( lines[ 6 ] ) )
+		    except ValueError:
+			 return "Vertex %d in mesh %d is invalid!" % ( str( j + 1 ), str( i + 1 ) )
+		    
+	       # read number of normals
+	       try:
+		    numNormals = int( getNextLine( f ) )
+		    if numNormals < 0 or numNormals > MAX_NUMNORMALS:
+			 raise ValueError
+	       except ValueError:
+		    return "Number of normals in mesh %d is invalid!" % str( i + 1 )
+
+	       # read normals
+	       normals = []
+	       for j in xrange( numNormals ):
+		    try:
+			 lines = getNextLine( f ).split()
+			 if len( lines ) != 3:
+			      raise ValueError
+			 normals.append( [ float( lines[ 0 ] ), float( lines[ 1 ] ), float( lines[ 2 ] ) ] )
+		    except ValueError:
+			 return "Normal %d in mesh %d is invalid!" % ( str( j + 1 ), str( i + 1 ) )
+		    
+	       # read the number of triangles
+	       try:
+		    numTris = int( getNextLine( f ) )
+		    if numTris < 0 or numTris > MAX_NUMTRIS:
+			 raise ValueError
+	       except ValueError:
+		    return "Number of triangles in mesh %d is invalid!" % str( i + 1 )
+
+	       # read triangles
+	       faces = []
+	       for j in xrange( numTris ):
+		    # read the triangle
+		    try:
+			 lines = getNextLine( f ).split()
+			 if len( lines ) != 8:
+			      raise ValueError
+			 v1 = int( lines[ 1 ] )
+			 v2 = int( lines[ 2 ] )
+			 v3 = int( lines[ 3 ] )
+			 faces.append( [ v1 + vertexBase, v2 + vertexBase, v3 + vertexBase ] )
+		    except ValueError:
+			 return "Triangle %d in mesh %d is invalid!" % ( str( j + 1 ), str( i + 1 ) )
+		    
+	       # increase vertex and face base
+	       vertexBase = len( coords )
+	       faceBase = len( faces )
+	       
+	  return None
