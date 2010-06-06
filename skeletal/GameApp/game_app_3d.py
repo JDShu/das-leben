@@ -193,7 +193,10 @@ class GameApp3d:
         
         cheese = MS3dModel( "%s/male.txt" % self.DATA_PATH )
 
-        #oadd( cube )
+        verts, norms, uvs = cheese.CreateVertexArrays()
+        
+        avatar = NewVBO( 10, 0, 10, data=verts )
+        oadd( avatar )
 
     def TimerUpdate(self):
         '''
@@ -374,7 +377,7 @@ class GameApp3d:
         for Object in self.objects:
             Object.Draw()
 
-        glutSolidTeapot( 1.0 )
+        #glutSolidTeapot( 1.0 )
         
         self.waveTime += self.waveFreq
 
