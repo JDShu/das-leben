@@ -46,3 +46,15 @@ class Psyche:
         F = open(state_dict, 'rb')
         self.state.update(pickle.load(F))
         F.close()
+
+class Create_Noesis:
+    def __init__( self, NE, IN):
+        pass
+
+    def set_name( self, name):
+        pass
+    
+    def create( self ):
+        pass
+
+    
