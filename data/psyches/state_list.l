@@ -1,0 +1,12 @@
+(S'urgency'
+p0
+S'hunger'
+p1
+S'fun'
+p2
+S'comfort'
+p3
+S'alertness'
+p4
+tp5
+.
