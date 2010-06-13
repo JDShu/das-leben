@@ -2,7 +2,8 @@
 
 import sys, os, os.path, soya, soya.sphere
 
-soya.init()
+soya.init( "test", width=1024, height=768 )
+r = soya.get_renderer()
 
 soya.path.append( os.path.join( os.path.dirname( sys.argv[ 0 ] ), "data" ) )
 
@@ -42,7 +43,7 @@ ball.z = 20
 
 
 
-terrain_size = 63
+terrain_size = 129
 t = soya.Terrain( scene, terrain_size, terrain_size )
 
 t2 = soya.Terrain( scene, terrain_size, terrain_size )
@@ -56,11 +57,9 @@ t.patch_size = 10.0
 t2.set_material_layer( grass, 0.0, 1.0 )
 t2.patch_size = 10.0
 
-light = soya.Light(scene)
-light.set_xyz(0.0, 10.0, 0.0)
-
 light2 = soya.Light(scene)
 light2.set_xyz(10.0, 130.0, 10.0)
+light2.diffuse = (0.0, 0.2, 0.7, 1.0)
 
 class MovableCamera(soya.Camera):
 	def __init__(self, parent):
@@ -104,7 +103,12 @@ camera.look_at( soya.Point(scene, 16.0, -6.0, 10.0) )
 soya.set_root_widget(camera)
 
 scene.atmosphere = soya.Atmosphere()
-scene.atmosphere.ambient = (1.0, 1.0, 1.0, 1.0)
+scene.atmosphere.fog = 1
+scene.atmosphere.fog_start = 30.0
+scene.atmosphere.fog_end = 40.0
+scene.atmosphere.fog_color = ( 0.85, 0.85, 1.0, 1.0 )
+scene.atmosphere.bg_color= ( 0.85, 0.85, 1.0, 1.0 )
+scene.atmosphere.ambient = ( 0.85, 0.85, 1.0, 1.0 )
 
 import soya.widget
 soya.set_root_widget(soya.widget.Group())
