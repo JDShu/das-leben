@@ -8,9 +8,14 @@ def main():
     loaded_ne = load_file("default.ne")
     command = raw_input("Command: ").split()
     temp_noesis = {}
-    while( command[0] != "quit"):
+    l = len(command)
+    while True:
         l = len(command)
-        if command[0] == "help":
+        if l == 0:
+            pass
+        elif command[0] == "quit":
+            break
+        elif command[0] == "help":
             print_help()
         elif command[0] == "load":
             if l < 3:
@@ -29,10 +34,17 @@ def main():
                 print "---NE TABLE---"
                 print_dict(loaded_ne)
             else:
-                print command[1], ": ",
-                for y in loaded[command[1]]:
-                    print y,
-                print ""            
+                if command[1] in loaded_ne:
+                    category = "noesis"
+                    print command[1], ": ",
+                    for y in loaded_in[command[1]]:
+                        print y,
+                    print ""
+                elif command[1] in loaded_in:
+                    category = "interaction"
+                else:
+                    print command[1], "does not exist"
+        
         elif command[0] == "save":
             save_dict(loaded_in, "default.in")
             save_dict(loaded_ne, "default.ne")
@@ -40,7 +52,8 @@ def main():
             if l == 2:
                 if command[1] == "noesis":
                     add_noesis( state_list, loaded_ne )                    
-                        
+                elif command[1] == "interaction":
+                    add_interaction(loaded_ne, loaded_in)
                 else:
                     print "can't add", command[1]
             else:
@@ -48,7 +61,9 @@ def main():
         elif command[0] == "delete":
             if l==2:
                 if command[1] == "noesis":
-                    delete_noesis( loaded_ne )
+                    delete( "Noesis", loaded_ne )
+                elif command[1] == "interaction":
+                    delete("Interaction", loaded_in )
                 else:
                     print "cannot delete", command[1]
             else:
@@ -61,7 +76,7 @@ def load_file( filename ):
     if os.path.exists(filename):
         F = open(filename, "rb")
         try:
-            print "load succeeded: ", filename
+            print "Load succeeded: ", filename
             D = pickle.load(F)
             F.close()
             return D
@@ -88,13 +103,45 @@ def print_dict( loaded ):
 def print_help():
     print "Available commands are: help, load, status"
 
-def add_noesis( state_list, loaded_ne ):
+def add_interaction( loaded_ne, loaded_in ):
+    new_interaction = unique_input("Interaction", loaded_in)
+    temp_list = []
     while True:
-        new_noesis = raw_input("Noesis name: ")
-        if new_noesis not in loaded_ne:
+        noesis = raw_input( "Noesis to add to this interaction: " )
+        if noesis == "finished":
+            if len(temp_list) != 0:
+                loaded_in[new_interaction] = temp_list
+            else:
+                print "Interaction not added"
             break
+        elif noesis == "cancel":
+            break
+        elif noesis not in loaded_ne:
+            print "Noesis doesn't exist"
+        elif noesis in temp_list:
+            print "Noesis already added"
         else:
-            print "Noesis already exists"
+            temp_list += [noesis]
+            temp_list.sort()
+            print temp_list
+            
+
+def unique_input( instance, existing ):
+    while True:
+        new_instance = raw_input(instance + " name: ")
+        if new_instance not in existing:
+            return new_instance
+        else:
+            print instance, "already exists"
+        
+def add_noesis( state_list, loaded_ne ):
+    #while True:
+    #    new_noesis = raw_input("Noesis name: ")
+    #    if new_noesis not in loaded_ne:
+    #        break
+    #    else:
+    #        print "Noesis already exists"
+    new_noesis = unique_input("Noesis", loaded_ne)
     temp_list = []
     while True:
         state = raw_input("State to Modify: ")
@@ -124,8 +171,12 @@ def add_noesis( state_list, loaded_ne ):
                             if t[0] == state:
                                 index = i
                                 break
-                        temp_list[index] = (state, value)
-                                
+                        if value != 0:
+                            temp_list[index] = (state, value)
+                        else:
+                            temp_list.pop(index)
+                    elif value == 0:
+                        break
                     else:
                         temp_list += [(state, value)]
                     temp_list.sort()
@@ -142,9 +193,9 @@ def exists_already( L, value ):
             break
     return exists
 
-def delete_noesis( loaded_ne ):
+def delete(instance, loaded_ne ):
     while True:
-        to_delete = raw_input("Noesis to delete: ")
+        to_delete = raw_input(instance + " to delete: ")
         if to_delete == "cancel":
             break
         elif to_delete in loaded_ne:
@@ -152,6 +203,7 @@ def delete_noesis( loaded_ne ):
             print_dict(loaded_ne)
             break
         else:
-            print to_delete, "is not an existing Noesis"
+            print to_delete, "is not an existing", instance
+
 if __name__ == "__main__":
     main()
