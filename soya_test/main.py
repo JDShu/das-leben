@@ -1,5 +1,5 @@
 #!/usr/env python
-
+'''
 import sys, os, os.path, soya, soya.sphere
 
 soya.init( "test", width=1024, height=768 )
@@ -96,10 +96,12 @@ class MovableCamera(soya.Camera):
 		self.turn_x(self.rotation_x_speed * proportion)
 		
 
-camera = MovableCamera(scene)
+camera = soya.ThirdPersonTraveling(scene)
 camera.set_xyz(16.0, 4.0, 0.0)
 camera.look_at( soya.Point(scene, 16.0, -6.0, 10.0) )
 
+camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
+ 
 soya.set_root_widget(camera)
 
 scene.atmosphere = soya.Atmosphere()
@@ -114,5 +116,15 @@ import soya.widget
 soya.set_root_widget(soya.widget.Group())
 soya.root_widget.add(camera)
 soya.root_widget.add(soya.widget.FPSLabel())
+'''
 
-soya.MainLoop( scene ).main_loop()
+import sys, os, os.path, soya
+import GameApp
+from GameApp.game_app_3d import GameApp3d
+
+
+if __name__ == "__main__":
+    DataPath = os.path.join( os.path.dirname( sys.argv[ 0 ] ), "data" )
+    soya.path.append( DataPath )
+    scene = GameApp3d( a_AppName="La Vida", a_DataPath=DataPath )
+    soya.MainLoop( scene ).main_loop()
