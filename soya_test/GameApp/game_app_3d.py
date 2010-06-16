@@ -54,13 +54,13 @@ class GameApp3d( soya.World ):
         
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
-        camera = soya.Camera( self )
-        camera.set_xyz( 16.0, 4.0, 0.0 )
-        camera.look_at( soya.Point( self, 16.0, -6.0, 10.0) )
+        self.m_Camera = oglCamera( self )
+        self.m_Camera.set_xyz( 16.0, 16.0, 0.0 )
+        self.m_Camera.look_at( soya.Point( self, 16.0, -6.0, 10.0) )
 
-        camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
+        self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
          
-        soya.set_root_widget(camera)
+        soya.set_root_widget( self.m_Camera )
 
 
         self.m_SelectedObject = None
@@ -125,9 +125,10 @@ class GameApp3d( soya.World ):
         self.terrain.set_material_layer( grass, 0.0, 1.0 )
         self.terrain.patch_size = 10.0
         
-        self.AssetManager = AssetManager("%s/manifests/default.man" % self.DATA_PATH )
+        self.AssetManager = AssetManager( self, "%s/manifests/default.man" % self.DATA_PATH )
 
     def begin_round( self ):
+        soya.World.begin_round( self )
         self.ProcessEvents()
         self.ProccessKeys()
 
@@ -165,10 +166,36 @@ class GameApp3d( soya.World ):
        
         if self.m_KeyBuffer[ soya.sdlconst.K_ESCAPE ]:
             soya.MAIN_LOOP.stop()
-        '''elif self.m_KeyBuffer[ soya.sdlconst.K_UP ]:
-            self.m_Camera.m_XRot += 1.0
-
-        elif self.m_KeyBuffer[ soya.sdlconst.K_DOWN ]:
+        
+        if self.m_KeyBuffer[ soya.sdlconst.K_d ]:
+            self.m_Camera.speed.x = -1.0
+        elif self.m_KeyBuffer[ soya.sdlconst.K_a ]:
+            self.m_Camera.speed.x = 1.0
+        else:
+            self.m_Camera.speed.x = 0.0
+            
+        if self.m_KeyBuffer[ soya.sdlconst.K_s ]:
+            self.m_Camera.speed.z = -1.0
+        elif self.m_KeyBuffer[ soya.sdlconst.K_w ]:
+            self.m_Camera.speed.z = 1.0
+        else:
+            self.m_Camera.speed.z = 0.0
+            
+        if self.m_KeyBuffer[ soya.sdlconst.K_f ]:
+            self.m_Camera.speed.y = -1.0
+        elif self.m_KeyBuffer[ soya.sdlconst.K_r ]:
+            self.m_Camera.speed.y = 1.0
+        else:
+            self.m_Camera.speed.y = 0.0
+            
+        if self.m_KeyBuffer[ soya.sdlconst.K_DOWN ]:
+            self.m_Camera.rot_x = -10.0
+        elif self.m_KeyBuffer[ soya.sdlconst.K_UP ]:
+            self.m_Camera.rot_x = 10.0
+        else:
+            self.m_Camera.rot_x = 0.0
+            
+        '''elif self.m_KeyBuffer[ soya.sdlconst.K_DOWN ]:
             self.m_Camera.m_XRot -= 1.0
 
         elif self.m_KeyBuffer[ soya.sdlconst.K_LEFT ]:

@@ -52,8 +52,9 @@ OBJECT_3D_DRAW_HIGHLIGHTED = 3
 
 class Object3d( soya.Body ):
    """A 3d object"""   
-   def __init__(self, a_Scene, a_AssetManager, a_ModelName ):
-      model = a_AssetManager.GetModel( a_ModelName )
+   def __init__(self, a_Scene, a_Model, a_ModelName ):
+      model = a_Model
+      self.name = a_ModelName
       soya.Body.__init__( self, a_Scene, model )
       
       

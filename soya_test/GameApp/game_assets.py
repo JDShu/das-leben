@@ -16,6 +16,8 @@
 
 from object_3d import *
 from os import path
+import soya
+
 
 class Manifest:
     '''
@@ -47,18 +49,27 @@ class Manifest:
         except IOError, e:
             print "Unable to save %s : %s" % ( a_Filename, e )
 
-
+class ModelAsset:
+    def __init__( self, name ):
+        self.name = name
+        self.model = None
+        
 class AssetManager:
     '''
     A asset manager class for keeping collections of game objects
     '''
-    def __init__( self, a_Filename=None, a_DataPath=None ):
+    def __init__( self, a_Scene, a_Filename=None, a_DataPath=None ):
         '''
         Create and instance of AssetManager
         '''
         self.assets = []
         self.textures = []
-
+        
+        self.main_scene = a_Scene
+        
+        self.model_builder = soya.SimpleModelBuilder()
+        self.model_builder.shadow = 1
+        
         self.data_path = a_DataPath
 
         if a_Filename:
@@ -74,28 +85,29 @@ class AssetManager:
         for item in manifest.items:
             if item.startswith( "OBJECT:" ):
                 parts = item.split( ":" )
-                obj = Object3d( path.join( self.data_path, parts[ 1 ] ), None, parts[ 2 ].replace( '\n', '' ) )
+                model = soya.Model.get( parts[ 1 ] )
+                obj = ModelAsset( parts[ 1 ] )
+                obj.model = model
                 pos_parts = parts[ 3 ].split( ',' )
                 x = float( pos_parts[ 0 ] )
                 y = float( pos_parts[ 1 ] )
                 z = float( pos_parts[ 2 ] )
                 scale = float( parts[ 4 ] )
-                obj.SetScale( 1.0 )
-                ScaleVertexArray( obj, scale )
-                obj.SetPosition( x, y, z )
+                model.scale( scale )
+                model.set_xyz( x, y, z )
                 self.AddObject( obj )
                 
-            elif item.startswith( "TEXTURE:" ):
-                parts = item.split( ":" )
-                surf = pygame.image.load( path.join( self.data_path, parts[ 1 ] ) )
-                image = pygame.image.tostring( surf, 'RGBA', 1 )
-                ix, iy = surf.get_rect().size
-                texid = glGenTextures( 1 )
-                glBindTexture( GL_TEXTURE_2D, texid )
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR )
-                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image )
-                self.AddTexture( parts[ 2 ].replace( "\n", "" ) , texid )
+##            elif item.startswith( "TEXTURE:" ):
+##                parts = item.split( ":" )
+##                surf = pygame.image.load( path.join( self.data_path, parts[ 1 ] ) )
+##                image = pygame.image.tostring( surf, 'RGBA', 1 )
+##                ix, iy = surf.get_rect().size
+##                texid = glGenTextures( 1 )
+##                glBindTexture( GL_TEXTURE_2D, texid )
+##                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
+##                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR )
+##                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image )
+##                self.AddTexture( parts[ 2 ].replace( "\n", "" ) , texid )
 
     def AddTexture( self, a_Name, a_TextureID ):
         '''
@@ -147,7 +159,7 @@ class AssetManager:
         '''
         for Object in self.assets:
             if a_Name == Object.name:
-                return Object
+                return Object.model
             
         raise Exception, "The name %s is not in this collection" % a_Name    
         
