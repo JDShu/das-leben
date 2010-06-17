@@ -141,7 +141,7 @@ class GameApp3d( soya.World ):
 	
 	chair_model = self.AssetManager.GetObjectModel( "kitchen_chair_orange" )
 	self.chair = soya.Body( self, chair_model )
-	self.chair.set_xyz( 10, 3, 10 )
+	self.chair.set_xyz( 10, 1.72, 20 )
 
     def begin_round( self ):
         soya.World.begin_round( self )
