@@ -26,18 +26,18 @@ class oglCamera( soya.Camera ):
     def __init__( self, a_Scene ):
         soya.Camera.__init__( self, a_Scene )
         self.speed = soya.Vector( self )
-	self.rot_y = 0.0
-	self.rot_x = 0.0
-        
+        self.rot_y = 0.0
+        self.rot_x = 0.0
+
     def begin_round( self ):
         soya.Camera.begin_round( self )
-        
+
     def advance_time( self, proportion ):
-	self.add_xyz( self.speed.x * proportion,
-	              self.speed.y * proportion,
-	              self.speed.z * proportion )
-	self.rotate_y( self.rot_y * proportion )
-	self.rotate_x( self.rot_x * proportion )
+        self.add_xyz( self.speed.x * proportion,
+                      self.speed.y * proportion,
+                      self.speed.z * proportion )
+        self.rotate_y( self.rot_y * proportion )
+        self.rotate_x( self.rot_x * proportion )
 
     def Fly ( self, relative_y_angle, relative_x_angle, speed, multiyplier ):
         pass

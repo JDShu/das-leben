@@ -26,7 +26,7 @@ from os import getcwd, path
 from constants import *
 from misc_ui import *
 from game_assets import *
-import soya
+import soya, soya.widget
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -50,17 +50,23 @@ class GameApp3d( soya.World ):
         '''
 
         soya.init( a_AppName, a_ViewPortWidth, a_ViewPortHeight, a_Fullscreen )
+        #soya.set_quality( 1 )
+        
         soya.World.__init__( self )
         
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
         self.m_Camera = oglCamera( self )
-        self.m_Camera.set_xyz( 16.0, 16.0, 0.0 )
+        self.m_Camera.set_xyz( 16.0, 6.0, 0.0 )
         self.m_Camera.look_at( soya.Point( self, 16.0, -6.0, 10.0) )
 
         self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
          
         soya.set_root_widget( self.m_Camera )
+        
+        soya.set_root_widget( soya.widget.Group() )
+        soya.root_widget.add( self.m_Camera )
+        soya.root_widget.add( soya.widget.FPSLabel() )
 
 
         self.m_SelectedObject = None
@@ -124,6 +130,8 @@ class GameApp3d( soya.World ):
 
         self.terrain.set_material_layer( grass, 0.0, 1.0 )
         self.terrain.patch_size = 10.0
+        self.terrain.texture_factor = 0.50
+
         
         self.AssetManager = AssetManager( self, "%s/manifests/default.man" % self.DATA_PATH )
 
