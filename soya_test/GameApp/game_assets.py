@@ -82,12 +82,18 @@ class AssetManager:
         '''
         manifest = Manifest( path.join( self.data_path, a_Filename ) )
 
+        model_builder = soya.SimpleModelBuilder()
+        model_builder.shadow = 1
+        
         for item in manifest.items:
             if item.startswith( "OBJECT:" ):
                 parts = item.split( ":" )
-                model = soya.Model.get( parts[ 1 ] )
+                model = soya.World.get( parts[ 1 ] )
+                model.model_builder = model_builder
+                
                 obj = ModelAsset( parts[ 1 ] )
-                obj.model = model
+                obj.model = model.to_model()
+                
                 pos_parts = parts[ 3 ].split( ',' )
                 x = float( pos_parts[ 0 ] )
                 y = float( pos_parts[ 1 ] )
