@@ -53,6 +53,8 @@ class ModelAsset:
     def __init__( self, name ):
         self.name = name
         self.model = None
+        self.position = [ 0.0, 0.0, 0.0 ]
+        self.scale = 1.0
         
 class AssetManager:
     '''
@@ -98,7 +100,9 @@ class AssetManager:
                 x = float( pos_parts[ 0 ] )
                 y = float( pos_parts[ 1 ] )
                 z = float( pos_parts[ 2 ] )
+                obj.position = [ x, y, z ]
                 scale = float( parts[ 4 ] )
+                obj.scale = scale
                 self.AddObject( obj )
                 
 ##            elif item.startswith( "TEXTURE:" ):
@@ -155,7 +159,7 @@ class AssetManager:
         '''
         self.assets[ a_Name ] = a_Object3d
         
-    def GetObject( self, a_Name ):
+    def GetObjectModel( self, a_Name ):
         '''
         Return a Object3d referrenced by name
         @param a_Name String : the name of this object in the collection
@@ -166,6 +170,28 @@ class AssetManager:
                 return Object.model
             
         raise Exception, "The name %s is not in this collection" % a_Name    
+    
+    def GetObjectPosition( self, a_Name ):
+        '''
+        Return a Object3d referrenced by name
+        @param a_Name String : the name of this object in the collection
+        @return Object3d instance
+        '''
+        for Object in self.assets:
+            if a_Name == Object.name:
+                return Object.position
+            
+        raise Exception, "The name %s is not in this collection" % a_Name  
         
-        
+    def GetObjectScale( self, a_Name ):
+        '''
+        Return a Object3d referrenced by name
+        @param a_Name String : the name of this object in the collection
+        @return Object3d instance
+        '''
+        for Object in self.assets:
+            if a_Name == Object.name:
+                return Object.scale
+            
+        raise Exception, "The name %s is not in this collection" % a_Name  
     

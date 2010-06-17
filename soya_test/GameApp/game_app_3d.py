@@ -135,13 +135,13 @@ class GameApp3d( soya.World ):
         
         self.AssetManager = AssetManager( self, "environment/manifests/default.man", self.DATA_PATH )
 	
-	oven_model = self.AssetManager.GetObject( "oven" )
+	oven_model = self.AssetManager.GetObjectModel( "oven" )
 	self.oven = soya.Body( self, oven_model )
 	self.oven.set_xyz( 10, 1, 10 )
 	
-	chair_model = self.AssetManager.GetObject( "kitchen_chair_orange" )
+	chair_model = self.AssetManager.GetObjectModel( "kitchen_chair_orange" )
 	self.chair = soya.Body( self, chair_model )
-	self.chair.set_xyz( 10, 1, 20 )
+	self.chair.set_xyz( 10, 3, 10 )
 
     def begin_round( self ):
         soya.World.begin_round( self )
