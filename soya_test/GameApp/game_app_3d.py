@@ -133,7 +133,7 @@ class GameApp3d( soya.World ):
         self.terrain.texture_factor = 0.50
 
         
-        self.AssetManager = AssetManager( self, "%s/manifests/default.man" % self.DATA_PATH )
+        self.AssetManager = AssetManager( self, "/manifests/default.man", self.DATA_PATH )
 
     def begin_round( self ):
         soya.World.begin_round( self )
