@@ -133,7 +133,15 @@ class GameApp3d( soya.World ):
         self.terrain.texture_factor = 0.50
 
         
-        self.AssetManager = AssetManager( self, "/manifests/default.man", self.DATA_PATH )
+        self.AssetManager = AssetManager( self, "environment/manifests/default.man", self.DATA_PATH )
+	
+	oven_model = self.AssetManager.GetObject( "oven" )
+	self.oven = soya.Body( self, oven_model )
+	self.oven.set_xyz( 10, 1, 10 )
+	
+	chair_model = self.AssetManager.GetObject( "kitchen_chair_orange" )
+	self.chair = soya.Body( self, chair_model )
+	self.chair.set_xyz( 10, 1, 20 )
 
     def begin_round( self ):
         soya.World.begin_round( self )
@@ -154,6 +162,11 @@ class GameApp3d( soya.World ):
 
             elif event[ 0 ] == soya.sdlconst.QUIT:
                 soya.MAIN_LOOP.stop()
+                
+            elif event[0] == soya.sdlconst.MOUSEMOTION:
+		self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
+		self.move( self.mouse_pos )
+
 
             '''elif event.type == MOUSEBUTTONDOWN:
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
@@ -202,6 +215,13 @@ class GameApp3d( soya.World ):
             self.m_Camera.rot_x = 10.0
         else:
             self.m_Camera.rot_x = 0.0
+	    
+	if self.m_KeyBuffer[ soya.sdlconst.K_LEFT ]:
+            self.m_Camera.rot_y = -10.0
+        elif self.m_KeyBuffer[ soya.sdlconst.K_RIGHT ]:
+            self.m_Camera.rot_y = 10.0
+        else:
+            self.m_Camera.rot_y = 0.0
             
         '''elif self.m_KeyBuffer[ soya.sdlconst.K_DOWN ]:
             self.m_Camera.m_XRot -= 1.0

@@ -93,8 +93,6 @@ class AssetManager:
                 y = float( pos_parts[ 1 ] )
                 z = float( pos_parts[ 2 ] )
                 scale = float( parts[ 4 ] )
-                model.scale( scale )
-                model.set_xyz( x, y, z )
                 self.AddObject( obj )
                 
 ##            elif item.startswith( "TEXTURE:" ):
