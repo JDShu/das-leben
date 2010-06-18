@@ -91,26 +91,17 @@ class RegionQuad( BoundingBox3d ):
         
         self.colour_adjust = random.random()
         
-    def CreateQuad( self, vertexes, offset, altitude ):
+       
+    def CreateQuad( self, model, altitude ):
         radius = self.size / 2.0
         x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
         
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
+        soya.Face( model, 
+                   [ soya.Vertex( model, x - radius, altitude, z + radius ),
+                     soya.Vertex( model, x + radius, altitude, z + radius ),
+                     soya.Vertex( model, x + radius, altitude, z - radius ),
+                     soya.Vertex( model, x - radius, altitude, z - radius ) ] )
+                     
     def CreateNormals( self, normals, offset, altitude ):
         normals[ offset ][ 0 ] = 0.0
         normals[ offset ][ 1 ] = 1.0
@@ -247,11 +238,11 @@ class RegionQuad( BoundingBox3d ):
                 obj.Draw()
     
     
-class Region( Vector3d ):
+class Region( soya.Terrain ):
     '''
     A region of terrain
     '''
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=0.5 ):
+    def __init__( self, * args ):
         '''
         Create a Region
         @param a_X Float : the bottom left x coord of the region
@@ -262,100 +253,32 @@ class Region( Vector3d ):
         @param a_Size Float : the width and height of each square, ( RegionQuad )
         @param a_Colour Float : the overall colour of the rendered RegionQuads
         '''
-        Vector3d.__init__( self, a_X, a_Y, a_Z )
+        
+        soya.Terrain.__init__( self, * args )
         self.quads = []; qadd = self.quads.append
         self.quadIDS = []; iadd = self.quadIDS.append
         
-        self.m_Width = a_Width
-        self.m_Height = a_Height
-        self.m_Size = a_Size
+##        self.m_Width = a_Width
+##        self.m_Height = a_Height
+##        self.m_Size = a_Size
         
-        self.textureID = 0
-        self.wallTextureID = 0
-        
-        for z in xrange( a_Height ):
-            for x in xrange( a_Width ):
-                rq = RegionQuad( a_X + ( float( x ) * a_Size ), 
-                                  a_Y, 
-                                  a_Z + ( float( z ) * a_Size ),
-                                  a_Size ) 
-                rq.SetAsObject( Object3d() )
-                
-                # rq.compile_list()
-                
-                qadd( rq )
-                iadd( rq.listID )
-                
-        self.vertexes = []; vadd = self.vertexes.append
-        colours = []; cadd = colours.append
-        normals = []; nadd = normals.append
-        indexes = []; ixadd = indexes.append
-        
-        for z in xrange( a_Height + 1 ):
-            for x in xrange( a_Width + 1):
-                extra_light = random.uniform( 0.25, 0.4 )
-                vadd( Vector3d( float( x ) * a_Size, a_Y, float( z ) * a_Size ) )
-                nadd( Vector3d( 0.0, .737, 0.0 ) )
-                if a_Colour < 1.0:
-                    cadd( [ a_Colour - extra_light, a_Colour, a_Colour - extra_light ] )
-                else:
-                    cadd( [ a_Colour, a_Colour, a_Colour ] )
-                if x < a_Width and z < a_Height:
-                    ixadd( int( ( z * ( a_Width + 1 ) ) + x ) )
-                    ixadd( int( ( z * ( a_Width + 1 ) ) + ( x + 1 ) ) )
-                    ixadd( int( ( ( z + 1 ) * ( a_Width + 1 ) ) + ( x + 1 ) ) )
-                    ixadd( int( ( ( z + 1 ) * ( a_Width + 1 ) ) + x ) )
-                
-        for i, rq in enumerate( self.quads ):
-            rq.ll = indexes[ i * 4 ]
-            rq.lr = indexes[ ( i * 4 ) + 1 ]
-            rq.ur = indexes[ ( i * 4 ) + 2 ]
-            rq.ul = indexes[ ( i * 4 ) + 3 ]
-            
-        
-        # now generate a vertex array for opengl
-        va_vertexes = []; vadd = va_vertexes.append
-        va_colours = []; cadd = va_colours.append
-        va_normals = []; nadd = va_normals.append
-        va_texcoords = []; tadd = va_texcoords.append
-        
-        for i, rq in enumerate( self.quads ):
-            rq.va_index = i * 4 # index to first vertex of the quad
-            rq.i = i
-            vadd( self.vertexes[ rq.ll ] )
-            vadd( self.vertexes[ rq.lr ] )
-            vadd( self.vertexes[ rq.ur ] )
-            vadd( self.vertexes[ rq.ul ] )
-            
-            #normals
-            nadd( normals[ rq.ll ] )
-            nadd( normals[ rq.lr ] )
-            nadd( normals[ rq.ur ] )
-            nadd( normals[ rq.ul ] )
-            #texcoords
-            tadd( [ 0, 0] )
-            tadd( [ 1, 0] )
-            tadd( [ 1, 1] )
-            tadd( [ 0, 1] )
-            #colours
-            cadd( colours[ rq.ll ] )
-            cadd( colours[ rq.lr ] )
-            cadd( colours[ rq.ur ] )
-            cadd( colours[ rq.ul ] )
-                      
-        self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours )
-        #self.va = VBO( va_vertexes, va_normals, va_texcoords, va_colours )
-        self.useVBO = True
-        self.mode = REGION_NORMAL
-        
-        self.selected_quads = []
-        
-        self.m_ObjectType = OBJECT_3D_MESH
-        self.listID = None
-        #self.compile_list()
-        
-        self.compiled = False
-        
+##        self.textureID = 0
+##        self.wallTextureID = 0
+##        
+##        for z in xrange( a_Height ):
+##            for x in xrange( a_Width ):
+##                rq = RegionQuad( a_X + ( float( x ) * a_Size ), 
+##                                  a_Y, 
+##                                  a_Z + ( float( z ) * a_Size ),
+##                                  a_Size ) 
+##                
+##        self.mode = REGION_NORMAL
+##        
+##        self.selected_quads = []
+##        
+##        self.m_ObjectType = OBJECT_3D_MESH
+##        self.listID = None
+##        
     def compile_list( self ):
         self.listID = glGenLists( 1 )
         glNewList( self.listID, GL_COMPILE )

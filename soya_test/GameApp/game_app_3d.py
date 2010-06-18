@@ -51,9 +51,9 @@ class GameApp3d( soya.World ):
 
         soya.init( a_AppName, a_ViewPortWidth, a_ViewPortHeight, a_Fullscreen )
         #soya.set_quality( 1 )
-        
+
         soya.World.__init__( self )
-        
+
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
         self.m_Camera = oglCamera( self )
@@ -61,9 +61,9 @@ class GameApp3d( soya.World ):
         self.m_Camera.look_at( soya.Point( self, 16.0, -6.0, 10.0) )
 
         self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
-         
+
         soya.set_root_widget( self.m_Camera )
-        
+
         soya.set_root_widget( soya.widget.Group() )
         soya.root_widget.add( self.m_Camera )
         soya.root_widget.add( soya.widget.FPSLabel() )
@@ -80,8 +80,8 @@ class GameApp3d( soya.World ):
         self.SetupKeyBuffer()
 
         self.LoadObjects()
-      
-        
+
+
     def SetupLighting( self ):
         '''
         Setup OpenGL and some variable relating to lighting
@@ -109,7 +109,7 @@ class GameApp3d( soya.World ):
         self.atmosphere.fog_color = ( 0.7, 0.7, 1.0, 1.0 )
         self.atmosphere.bg_color= ( 0.7, 0.7, 1.0, 1.0 )
         self.atmosphere.ambient = ( 1.0, 1.0, 1.0, 1.0 )
-    
+
 
     def SetupKeyBuffer( self ):
         '''
@@ -122,7 +122,7 @@ class GameApp3d( soya.World ):
     def LoadObjects( self ):
         '''load all 3d objects and models'''
         self.objects = []; oadd = self.objects.append
-        
+
         # floor terrain
         terrain_size = 129
         self.terrain = soya.Terrain( self, terrain_size, terrain_size )
@@ -132,16 +132,20 @@ class GameApp3d( soya.World ):
         self.terrain.patch_size = 10.0
         self.terrain.texture_factor = 0.50
 
-        
+
         self.AssetManager = AssetManager( self, "environment/manifests/default.man", self.DATA_PATH )
-	
-	oven_model = self.AssetManager.GetObjectModel( "oven" )
-	self.oven = soya.Body( self, oven_model )
-	self.oven.set_xyz( 10, 1, 10 )
-	
-	chair_model = self.AssetManager.GetObjectModel( "kitchen_chair_orange" )
-	self.chair = soya.Body( self, chair_model )
-	self.chair.set_xyz( 10, 1.72, 20 )
+
+        oven_model = self.AssetManager.GetObjectModel( "oven" )
+        self.oven = soya.Body( self, oven_model )
+        self.oven.set_xyz( 10, 1, 10 )
+
+        chair_model = self.AssetManager.GetObjectModel( "kitchen_chair_orange" )
+        self.chair = soya.Body( self, chair_model )
+        self.chair.set_xyz( 10, 1.72, 20 )
+        
+        region = Region( self, 50, 50 )
+        
+        region.y = 0.1
 
     def begin_round( self ):
         soya.World.begin_round( self )
@@ -152,7 +156,7 @@ class GameApp3d( soya.World ):
         '''
         Process all game events
         '''           
-        
+
         for event in soya.MAIN_LOOP.events:
             if event[ 0 ] == soya.sdlconst.KEYDOWN:
                 self.m_KeyBuffer[ event[ 1 ] ] = True
@@ -162,67 +166,67 @@ class GameApp3d( soya.World ):
 
             elif event[ 0 ] == soya.sdlconst.QUIT:
                 soya.MAIN_LOOP.stop()
-                
+
             elif event[0] == soya.sdlconst.MOUSEMOTION:
-		self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
-		self.move( self.mouse_pos )
+                self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
+                self.move( self.mouse_pos )
 
 
             '''elif event.type == MOUSEBUTTONDOWN:
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
                 if event.button == LEFT_MOUSE:
                     pass
-                    
+
             elif event.type == MOUSEBUTTONUP:
                 if event.button == LEFT_MOUSE:
                     pass'''
 
-            
+
 
 
     def ProccessKeys( self ):
         '''
         Process the assigned keys and trigger behaviours
         '''
-       
+
         if self.m_KeyBuffer[ soya.sdlconst.K_ESCAPE ]:
             soya.MAIN_LOOP.stop()
-        
+
         if self.m_KeyBuffer[ soya.sdlconst.K_d ]:
             self.m_Camera.speed.x = -1.0
         elif self.m_KeyBuffer[ soya.sdlconst.K_a ]:
             self.m_Camera.speed.x = 1.0
         else:
             self.m_Camera.speed.x = 0.0
-            
+
         if self.m_KeyBuffer[ soya.sdlconst.K_s ]:
             self.m_Camera.speed.z = -1.0
         elif self.m_KeyBuffer[ soya.sdlconst.K_w ]:
             self.m_Camera.speed.z = 1.0
         else:
             self.m_Camera.speed.z = 0.0
-            
+
         if self.m_KeyBuffer[ soya.sdlconst.K_f ]:
             self.m_Camera.speed.y = -1.0
         elif self.m_KeyBuffer[ soya.sdlconst.K_r ]:
             self.m_Camera.speed.y = 1.0
         else:
             self.m_Camera.speed.y = 0.0
-            
+
         if self.m_KeyBuffer[ soya.sdlconst.K_DOWN ]:
             self.m_Camera.rot_x = -10.0
         elif self.m_KeyBuffer[ soya.sdlconst.K_UP ]:
             self.m_Camera.rot_x = 10.0
         else:
             self.m_Camera.rot_x = 0.0
-	    
-	if self.m_KeyBuffer[ soya.sdlconst.K_LEFT ]:
+
+        if self.m_KeyBuffer[ soya.sdlconst.K_LEFT ]:
             self.m_Camera.rot_y = -10.0
         elif self.m_KeyBuffer[ soya.sdlconst.K_RIGHT ]:
             self.m_Camera.rot_y = 10.0
         else:
             self.m_Camera.rot_y = 0.0
-            
+
         '''elif self.m_KeyBuffer[ soya.sdlconst.K_DOWN ]:
             self.m_Camera.m_XRot -= 1.0
 
@@ -254,7 +258,7 @@ class GameApp3d( soya.World ):
 
         elif self.m_KeyBuffer[ K_a ]:
             self.m_Camera.MoveLeft()
-            
+
         elif self.m_KeyBuffer[ K_d ]:
             self.m_Camera.MoveRight()
 
@@ -280,13 +284,13 @@ class GameApp3d( soya.World ):
             x, y, z, w = self.m_Camera.GetPosition()
             y += 0.25
             self.m_Camera.SetPosition( x, y, z, w )
-            
+
         elif self.m_KeyBuffer[ K_e ]:
             self.m_Mode = EDIT_MODE
-            
+
         elif self.m_KeyBuffer[ K_q ]:
             self.m_Mode = NORMAL_MODE
-            
+
         elif self.m_KeyBuffer[ K_t ]:
             self.rgn.ToggleWalls()
         '''
