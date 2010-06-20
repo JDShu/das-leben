@@ -33,6 +33,63 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 NORMAL_MODE = 1
 EDIT_MODE = 2
 
+def random_terrain_border(terrain):
+  out_of_map_vertex_options = (1, 1)
+  TERRAIN_SIZE = 129
+  fall_length  = 2
+  afall_length = 0
+  for i in range(TERRAIN_SIZE):
+    for j in range(fall_length):
+      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
+      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
+      terrain.set_height(i, j, 0.0)
+    terrain.set_height(i, j + 1, 0.92 * terrain.get_height(i, j + 1))
+    if i % 2:
+      fall_length = max(1, fall_length + afall_length)
+      if (fall_length == 1) and (afall_length == -1): afall_length = 0
+      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
+      
+  fall_length  = 2
+  afall_length = 0
+  for i in range(TERRAIN_SIZE):
+    for j in range(TERRAIN_SIZE - 1, TERRAIN_SIZE - fall_length - 1, -1):
+      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
+      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
+      terrain.set_height(i, j, 0.0)
+    terrain.set_height(i, j - 1, 0.92 * terrain.get_height(i, j - 1))
+    if i % 2:
+      fall_length = max(1, fall_length + afall_length)
+      if (fall_length == 1) and (afall_length == -1): afall_length = 0
+      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
+
+  fall_length  = 2
+  afall_length = 0
+  for j in range(TERRAIN_SIZE):
+    for i in range(fall_length):
+      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
+      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
+      terrain.set_height(i, j, 0.0)
+    terrain.set_height(i + 1, j, 0.92 * terrain.get_height(i + 1, j))
+    if j % 2:
+      fall_length = max(1, fall_length + afall_length)
+      if (fall_length == 1) and (afall_length == -1): afall_length = 0
+      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
+      
+  fall_length  = 2
+  afall_length = 0
+  for j in range(TERRAIN_SIZE):
+    for i in range(TERRAIN_SIZE - 1, TERRAIN_SIZE - fall_length - 1, -1):
+      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
+      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
+      terrain.set_height(i, j, 0.0)
+    terrain.set_height(i - 1, j, 0.92 * terrain.get_height(i - 1, j))
+    if j % 2:
+      fall_length = max(1, fall_length + afall_length)
+      if (fall_length == 1) and (afall_length == -1): afall_length = 0
+      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
+
+
+
 class GameApp3d( soya.World ):
     """
     The main game class which manages all other processes
@@ -62,6 +119,7 @@ class GameApp3d( soya.World ):
 
         self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
 
+        self.m_Camera.back = 40
         soya.set_root_widget( self.m_Camera )
 
         soya.set_root_widget( soya.widget.Group() )
@@ -126,12 +184,16 @@ class GameApp3d( soya.World ):
         # floor terrain
         terrain_size = 129
         self.terrain = soya.Terrain( self, terrain_size, terrain_size )
+        random_terrain_border( self.terrain )
+		  
+		  
         grass = soya.Material.get( "grass" )
 
         self.terrain.set_material_layer( grass, 0.0, 1.0 )
         self.terrain.patch_size = 10.0
         self.terrain.texture_factor = 0.50
-
+        
+        
 
         self.AssetManager = AssetManager( self, "environment/manifests/default.man", self.DATA_PATH )
 
@@ -144,7 +206,8 @@ class GameApp3d( soya.World ):
         self.chair.set_xyz( 10, 1.72, 20 )
         
         region = Region( self, 50, 50 )
-        
+        region_model = region.to_model()
+        soya.Body( self, region_model )
         region.y = 0.1
 
     def begin_round( self ):

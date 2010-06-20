@@ -238,11 +238,11 @@ class RegionQuad( BoundingBox3d ):
                 obj.Draw()
     
     
-class Region( soya.Terrain ):
+class Region( soya.World ):
     '''
     A region of terrain
     '''
-    def __init__( self, * args ):
+    def __init__( self, a_Scene, a_Width, a_Height ):
         '''
         Create a Region
         @param a_X Float : the bottom left x coord of the region
@@ -254,30 +254,32 @@ class Region( soya.Terrain ):
         @param a_Colour Float : the overall colour of the rendered RegionQuads
         '''
         
-        soya.Terrain.__init__( self, * args )
+        soya.World.__init__( self )
         self.quads = []; qadd = self.quads.append
         self.quadIDS = []; iadd = self.quadIDS.append
         
-##        self.m_Width = a_Width
-##        self.m_Height = a_Height
-##        self.m_Size = a_Size
+        self.m_Width = a_Width
+        self.m_Height = a_Height
+        self.m_Size = a_Size = 1
         
-##        self.textureID = 0
-##        self.wallTextureID = 0
-##        
-##        for z in xrange( a_Height ):
-##            for x in xrange( a_Width ):
-##                rq = RegionQuad( a_X + ( float( x ) * a_Size ), 
-##                                  a_Y, 
-##                                  a_Z + ( float( z ) * a_Size ),
-##                                  a_Size ) 
-##                
-##        self.mode = REGION_NORMAL
-##        
-##        self.selected_quads = []
-##        
-##        self.m_ObjectType = OBJECT_3D_MESH
-##        self.listID = None
+        
+        
+        self.textureID = 0
+        self.wallTextureID = 0
+        
+        for z in xrange( a_Height ):
+            for x in xrange( a_Width ):
+                rq = RegionQuad( ( float( x ) * a_Size ), 
+                                  2, 
+                                  ( float( z ) * a_Size ),
+                                  a_Size ) 
+                rq.CreateQuad( self, 2 )
+        self.mode = REGION_NORMAL
+        
+        self.selected_quads = []
+        
+        self.m_ObjectType = OBJECT_3D_MESH
+        self.listID = None
 ##        
     def compile_list( self ):
         self.listID = glGenLists( 1 )
