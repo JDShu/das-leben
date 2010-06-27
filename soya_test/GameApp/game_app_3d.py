@@ -205,10 +205,41 @@ class GameApp3d( soya.World ):
         self.chair = soya.Body( self, chair_model )
         self.chair.set_xyz( 10, 1.72, 20 )
         
-        region = Region( self, 50, 50 )
-        region_model = region.to_model()
-        soya.Body( self, region_model )
-        region.y = 0.1
+##        region = Region( self, 50, 50 )
+##        region_model = region.to_model()
+##        soya.Body( self, region_model )
+##        region.y = 0.1
+        
+        box = soya.World()
+        
+        HEIGHT = 1.62 * 3
+        WIDTH = 1.0 * 3
+        DEPTH = 0.2
+        
+        fbl = soya.Vertex( box,  0.0, 0.0, 0.0 )
+        fbr = soya.Vertex( box,  WIDTH, 0.0, 0.0 )
+        ftr = soya.Vertex( box,  WIDTH, HEIGHT, 0.0 )
+        ftl = soya.Vertex( box,  0.0, HEIGHT, 0.0 )
+        
+        bbl = soya.Vertex( box,  0.0, 0.0, DEPTH )
+        bbr = soya.Vertex( box,  WIDTH, 0.0, DEPTH )
+        btr = soya.Vertex( box,  WIDTH, HEIGHT, DEPTH )
+        btl = soya.Vertex( box,  0.0, HEIGHT, DEPTH )
+        
+        f = soya.Face( box, [ fbr, fbl, ftl, ftr ] )
+        f = soya.Face( box, [ bbl, bbr, btr, btl ] )
+        f = soya.Face( box, [ btl, btr, ftr, ftl ] )
+        f = soya.Face( box, [ btl, ftl, fbl, bbl ] )
+        
+##        model_builder = soya.SimpleModelBuilder()
+##        model_builder.shadow = 1
+##        
+##        box.model_builder = model_builder
+        
+        b = soya.Body( self, box.to_model() )
+        b.y = 0.5
+        b.z = 5
+        
 
     def begin_round( self ):
         soya.World.begin_round( self )
