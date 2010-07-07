@@ -197,3 +197,61 @@ class Floor:
         for item in self.m_Objects:
             item.Draw()
             
+            
+WALL_CLOSED = 1
+WALL_OPEN = 2
+WALL_CORNER = 3
+
+class Wall:
+    def __init__( self, x=0.0, z=0.0, world=None,  wall_type=WALL_OPEN ):
+
+        HEIGHT = 1.62 * 3
+        WIDTH = 1.0 * 3
+        DEPTH = 0.2
+        
+        self.WIDTH = WIDTH
+        self.HEIGHT = HEIGHT
+        self.DEPTH = DEPTH
+        
+        if wall_type == WALL_OPEN or wall_type == WALL_CLOSED:
+            fbl = soya.Vertex( world,  x, 0.0, z )
+            fbr = soya.Vertex( world,  x + WIDTH, 0.0, z )
+            ftr = soya.Vertex( world,  x + WIDTH, HEIGHT, z )
+            ftl = soya.Vertex( world,  x , HEIGHT, z )
+            
+            bbl = soya.Vertex( world,  x , 0.0, z + DEPTH )
+            bbr = soya.Vertex( world,  x + WIDTH, 0.0, z + DEPTH )
+            btr = soya.Vertex( world,  x + WIDTH, HEIGHT, z + DEPTH )
+            btl = soya.Vertex( world,  x , HEIGHT, z + DEPTH )
+            
+            # front wall
+            f = soya.Face( world, [ fbr, fbl, ftl, ftr ] )
+            # back wall
+            f = soya.Face( world, [ bbl, bbr, btr, btl ] )
+            # top of wall
+            f = soya.Face( world, [ btl, btr, ftr, ftl ] )
+            # bottom of wall
+            f = soya.Face( world, [ btl, ftl, fbl, bbl ] )
+            
+            if wall_type == WALL_CLOSED:
+                # make side faces
+                f = soya.Face( world, [ fbl, ftl, btl, bbl ] )
+                
+                f = soya.Face( world, [ fbr, bbr, btr, ftr ] )
+        else:
+            fbl = soya.Vertex( world,  x, 0.0, z )
+            fbr = soya.Vertex( world,  x + WIDTH, 0.0, z )
+            ftr = soya.Vertex( world,  x + WIDTH, HEIGHT, z )
+            ftl = soya.Vertex( world,  x , HEIGHT, z )
+            
+            bbl = soya.Vertex( world,  x , 0.0, z + DEPTH )
+            bbr = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z + DEPTH )
+            btr = soya.Vertex( world,  x + WIDTH - DEPTH, HEIGHT, z + DEPTH )
+            btl = soya.Vertex( world,  x , HEIGHT, z + DEPTH )
+            
+            far_fbr = soya.Vertex( world,  x + WIDTH, 0.0, z + WIDTH )
+            far_ftr = soya.Vertex( world,  x + WIDTH, HEIGHT, z + WIDTH )
+            far_fbr = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z + WIDTH )
+            far_ftr = soya.Vertex( world,  x + WIDTH - DEPTH, HEIGHT, z + WIDTH )
+            
+        

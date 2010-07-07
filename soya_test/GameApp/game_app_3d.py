@@ -26,6 +26,7 @@ from os import getcwd, path
 from constants import *
 from misc_ui import *
 from game_assets import *
+from buildings import *
 import soya, soya.widget
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -209,34 +210,17 @@ class GameApp3d( soya.World ):
 ##        region_model = region.to_model()
 ##        soya.Body( self, region_model )
 ##        region.y = 0.1
+        w = soya.World()
         
-        box = soya.World()
+        wall = Wall( 10, 10, w )
+        wall = Wall( 10 + wall.WIDTH , 10, w )
         
-        HEIGHT = 1.62 * 3
-        WIDTH = 1.0 * 3
-        DEPTH = 0.2
+        model_builder = soya.SimpleModelBuilder()
+        model_builder.shadow = 1
         
-        fbl = soya.Vertex( box,  0.0, 0.0, 0.0 )
-        fbr = soya.Vertex( box,  WIDTH, 0.0, 0.0 )
-        ftr = soya.Vertex( box,  WIDTH, HEIGHT, 0.0 )
-        ftl = soya.Vertex( box,  0.0, HEIGHT, 0.0 )
+        w.model_builder = model_builder
         
-        bbl = soya.Vertex( box,  0.0, 0.0, DEPTH )
-        bbr = soya.Vertex( box,  WIDTH, 0.0, DEPTH )
-        btr = soya.Vertex( box,  WIDTH, HEIGHT, DEPTH )
-        btl = soya.Vertex( box,  0.0, HEIGHT, DEPTH )
-        
-        f = soya.Face( box, [ fbr, fbl, ftl, ftr ] )
-        f = soya.Face( box, [ bbl, bbr, btr, btl ] )
-        f = soya.Face( box, [ btl, btr, ftr, ftl ] )
-        f = soya.Face( box, [ btl, ftl, fbl, bbl ] )
-        
-##        model_builder = soya.SimpleModelBuilder()
-##        model_builder.shadow = 1
-##        
-##        box.model_builder = model_builder
-        
-        b = soya.Body( self, box.to_model() )
+        b = soya.Body( self, w.to_model() )
         b.y = 0.5
         b.z = 5
         
