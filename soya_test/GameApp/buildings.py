@@ -203,41 +203,47 @@ WALL_OPEN = 2
 WALL_CORNER = 3
 
 class Wall:
-    def __init__( self, x=0.0, z=0.0, world=None,  wall_type=WALL_OPEN ):
+    def __init__( self, x=0.0, z=0.0, world=None,  wall_type=WALL_OPEN, front_material=None, back_material=None ):
 
         HEIGHT = 1.62 * 3
         WIDTH = 1.0 * 3
         DEPTH = 0.2
         
+        if not front_material:
+            front_material = self.MakeDefaultMaterial()
+            
+        if not back_material:
+            back_material = self.MakeDefaultMaterial()
+            
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
         self.DEPTH = DEPTH
         
         if wall_type == WALL_OPEN or wall_type == WALL_CLOSED:
-            fbl = soya.Vertex( world,  x, 0.0, z, diffuse = (1.0, 1.0, 1.0, 1.0) )
-            fbr = soya.Vertex( world,  x + WIDTH, 0.0, z, diffuse = (1.0, 1.0, 1.0, 1.0) )
-            ftr = soya.Vertex( world,  x + WIDTH, HEIGHT, z, diffuse = (1.0, 1.0, 1.0, 1.0) )
-            ftl = soya.Vertex( world,  x , HEIGHT, z, diffuse = (1.0, 1.0, 1.0, 1.0) )
+            fbl = soya.Vertex( world,  x, 0.0, z, 0.0, 0.0 )
+            fbr = soya.Vertex( world,  x + WIDTH, 0.0, z, 1.0, 0.0 )
+            ftr = soya.Vertex( world,  x + WIDTH, HEIGHT, z, 1.0, 1.0 )
+            ftl = soya.Vertex( world,  x , HEIGHT, z, 0.0, 1.0 )
             
-            bbl = soya.Vertex( world,  x , 0.0, z + DEPTH, diffuse = (1.0, 1.0, 1.0, 1.0) )
-            bbr = soya.Vertex( world,  x + WIDTH, 0.0, z + DEPTH, diffuse = (1.0, 1.0, 1.0, 1.0) )
-            btr = soya.Vertex( world,  x + WIDTH, HEIGHT, z + DEPTH, diffuse = (1.0, 1.0, 1.0, 1.0) )
-            btl = soya.Vertex( world,  x , HEIGHT, z + DEPTH, diffuse = (1.0, 1.0, 1.0, 1.0) )
+            bbl = soya.Vertex( world,  x , 0.0, z + DEPTH, 0.0, 0.0 )
+            bbr = soya.Vertex( world,  x + WIDTH, 0.0, z + DEPTH, 1.0, 0.0 )
+            btr = soya.Vertex( world,  x + WIDTH, HEIGHT, z + DEPTH, 1.0, 1.0 )
+            btl = soya.Vertex( world,  x , HEIGHT, z + DEPTH, 0.0, 1.0 )
             
             # front wall
-            f = soya.Face( world, [ fbr, fbl, ftl, ftr ] )
+            f = soya.Face( world, [ fbr, fbl, ftl, ftr ], front_material )
             # back wall
-            f = soya.Face( world, [ bbl, bbr, btr, btl ] )
+            f = soya.Face( world, [ bbl, bbr, btr, btl ], back_material )
             # top of wall
             f = soya.Face( world, [ btl, btr, ftr, ftl ] )
             # bottom of wall
-            f = soya.Face( world, [ btl, ftl, fbl, bbl ] )
+            
             
             if wall_type == WALL_CLOSED:
                 # make side faces
-                f = soya.Face( world, [ fbl, ftl, btl, bbl ] )
+                f = soya.Face( world, [ fbr, ftr, btr, bbr ] )
                 
-                f = soya.Face( world, [ fbr, bbr, btr, ftr ] )
+                f = soya.Face( world, [ btl, ftl, fbl, bbl ] )
         else:
             fbl = soya.Vertex( world,  x, 0.0, z, diffuse = (1.0, 1.0, 1.0, 1.0) )
             fbr = soya.Vertex( world,  x + WIDTH, 0.0, z, diffuse = (1.0, 1.0, 1.0, 1.0) )
@@ -254,4 +260,12 @@ class Wall:
             far_fbr = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z + WIDTH, diffuse = (1.0, 1.0, 1.0, 1.0) )
             far_ftr = soya.Vertex( world,  x + WIDTH - DEPTH, HEIGHT, z + WIDTH, diffuse = (1.0, 1.0, 1.0, 1.0) )
             
-        
+    def MakeDefaultMaterial( self ):
+        material = soya.Material()
+        material.diffuse = (1.0, 1.0, 1.0, 1.0)
+        material.shininess = 0.5
+        material.specular = (0.5, 0.5, 0.5, 1.0)
+        material.separate_specular = 1
+
+        return material
+    

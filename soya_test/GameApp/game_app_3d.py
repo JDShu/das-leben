@@ -212,8 +212,12 @@ class GameApp3d( soya.World ):
 ##        region.y = 0.1
         w = soya.World()
         
-        wall = Wall( 10, 10, w )
-        wall = Wall( 10 + wall.WIDTH , 10, w )
+        tex1 = soya.Material( soya.Image.get( "grass.png" ) )
+        
+        tex2 = soya.Material( soya.Image.get( "water.png" ) )
+        
+        wall = Wall( 10, 10, w, front_material=tex1, back_material=tex2 )
+        wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
         
 ##        model_builder = soya.SimpleModelBuilder()
 ##        model_builder.shadow = 1
