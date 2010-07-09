@@ -219,8 +219,8 @@ class GameApp3d( soya.World ):
         wall = Wall( 10, 10, w, front_material=tex1, back_material=tex2 )
         wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
         
-##        model_builder = soya.SimpleModelBuilder()
-##        model_builder.shadow = 1
+        model_builder = soya.SimpleModelBuilder()
+        model_builder.shadow = 1
         
 ##     w.model_builder = model_builder
         
