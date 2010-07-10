@@ -212,80 +212,39 @@ class GameApp3d( soya.World ):
 ##        region.y = 0.1
         w = soya.World()
         
-        tex1 = soya.Material( soya.Image.get( "grass.png" ) )
+        tex1 = soya.Material( soya.Image.get( "knife.png" ) )
         
         tex2 = soya.Material( soya.Image.get( "water.png" ) )
         
-        wall = Wall( 10, 10, w, front_material=tex1, back_material=tex2 )
-        wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
+        wall = Wall( 10, 10 + WALL_WIDTH, w, 
+                     wall_position_extras=WALL_INNER_TOP_LEFT, 
+                     front_material=tex1, back_material=tex2 )
         
-        model_builder = soya.SimpleModelBuilder()
-        model_builder.shadow = 1
+        wall = Wall( 10, 10 + WALL_WIDTH, w, 
+                     wall_position=WALL_BACK,
+                     wall_position_extras=WALL_INNER_BOTTOM_RIGHT, 
+                     front_material=tex1, back_material=tex2 )
+               
+##        wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
         
-##     w.model_builder = model_builder
+        wall = Wall( 10 + wall.WIDTH , 10, w, 
+                     wall_position_extras=WALL_INNER_TOP_RIGHT,
+                     wall_position=WALL_LEFT, 
+                     front_material=tex1, back_material=tex2 )
+        
+        wall = Wall( 10 + wall.WIDTH , 10, w, 
+                     wall_position_extras=WALL_INNER_TOP_LEFT,
+                     wall_position=WALL_RIGHT, 
+                     front_material=tex1, back_material=tex2 )
+
+##        model_builder = soya.SimpleModelBuilder()
+##        model_builder.shadow = 1
+##        
+##        w.model_builder = model_builder
         
         b = soya.Body( self, w.to_model() )
-        b.y = 0.5
         b.z = 5
-        
-        pyramid = soya.World(self)
-
-        # Creates the first face, the quad base of the pyramid.
-        # The first argument of the Face constructor is the parent World (the pyramid),
-        # the second is the list of vertices and the third is the material.
-        # The number of vertices determines the Face's nature:
-        #  - 1: a plot
-        #  - 2: a line
-        #  - 3: a triangle
-        #  - 4: a quad
-        #  - +: a polygon
-        
-        # The vertices is a list of Vertex object. A Vertex is a subclass of Point that can have
-        # some modeling attributes like colors or texture coordinates (we'll see them is further
-        # lessons) The first argument of the constructor is (again) the parent, and the three
-        # following one are the x, y and z coordinates.
-        
-        # As 3D object, Point, Vector or Vertex have a parent too, though they are not
-        # considered as "children". The parent is used for automatic coordinates
-        # conversion, which will be detailed in a further lesson. Here, the coordinates
-        # are defined in the pyramid coordinate system.
-        
-        # The order of the vertices in the list determines which side of the face is
-        # visible (for triangles, quads and polygons); you can get both side visible
-        # by setting the "double_sided" attribute to 1.
-        
-        soya.Face(pyramid, [soya.Vertex(pyramid,  0.5, -0.5,  0.5),
-                                                                                        soya.Vertex(pyramid, -0.5, -0.5,  0.5),
-                                                                                        soya.Vertex(pyramid, -0.5, -0.5, -0.5),
-                                                                                        soya.Vertex(pyramid,  0.5, -0.5, -0.5),
-                                                                                        ])
-        
-        # Similarly, creates the 4 triangles.
-        # Here, we create different vertices ; you can also use the same vertex when 2 vertices
-        # have the same coordinates and attributes. Both yields the same final result (including
-        # in performance).
-        
-        soya.Face(pyramid, [soya.Vertex(pyramid, -0.5, -0.5,  0.5),
-                                                                                        soya.Vertex(pyramid,  0.5, -0.5,  0.5),
-                                                                                        soya.Vertex(pyramid,  0.0,  0.5,  0.0),
-                                                                                        ])
-        
-        soya.Face(pyramid, [soya.Vertex(pyramid,  0.5, -0.5, -0.5),
-                                                                                        soya.Vertex(pyramid, -0.5, -0.5, -0.5),
-                                                                                        soya.Vertex(pyramid,  0.0,  0.5,  0.0),
-                                                                                        ])
-        
-        soya.Face(pyramid, [soya.Vertex(pyramid,  0.5, -0.5,  0.5),
-                                                                                        soya.Vertex(pyramid,  0.5, -0.5, -0.5),
-                                                                                        soya.Vertex(pyramid,  0.0,  0.5,  0.0),
-                                                                                        ])
-        
-        soya.Face(pyramid, [soya.Vertex(pyramid, -0.5, -0.5, -0.5),
-                                                                                        soya.Vertex(pyramid, -0.5, -0.5,  0.5),
-                                                                                        soya.Vertex(pyramid,  0.0,  0.5,  0.0),
-                                                                                        ])
-
-        
+                
 
     def begin_round( self ):
         soya.World.begin_round( self )
