@@ -28,27 +28,34 @@ class oglCamera( soya.Camera ):
         self.speed = soya.Vector( self )
         self.rot_y = 0.0
         self.rot_x = 0.0
+	self.rot_z = 0.0
 
     def begin_round( self ):
         soya.Camera.begin_round( self )
 
     def advance_time( self, proportion ):
-        self.add_xyz( self.speed.x * proportion,
-                      self.speed.y * proportion,
-                      self.speed.z * proportion )
-        self.rotate_y( self.rot_y * proportion )
-        self.rotate_x( self.rot_x * proportion )
+        matrix = list(self.matrix)
+	xaxis = matrix[0:4]
+	yaxis = matrix[4:8]
+	zaxis = matrix[8:12]
+	#print "%.2f\t%.2f\t%.2f" % (zaxis[0],zaxis[1],zaxis[2])
+	mult = abs(zaxis[1]) # * 90 -> maximum effect. Mult reduces the effect when is not needed.
+        self.turn_z( (self.rot_z-xaxis[1]*90.0*mult) * proportion )
+		
+        self.add_mul_vector(proportion, self.speed)
+	
+        self.turn_y( self.rot_y * proportion )
+        self.turn_x( self.rot_x * proportion )
 
-    def Fly ( self, relative_y_angle, relative_x_angle, speed, multiyplier ):
-        pass
-##        x, y, z, w = self.GetPosition()
-##        roh = radians(self.m_YRot.GetAngle() + relative_y_angle)
-##        theta = radians(relative_x_angle)
-##        x -= speed * cos(theta) * sin(roh)
-##        z += speed * cos(theta) * cos(roh)
-##        y += speed * sin(theta)
-##
-##        self.SetPosition( x, y, z, w )
+
+    def Fly ( self, relative_y_angle, relative_x_angle, speed ):
+        roh = radians(self.rot_y + relative_y_angle)
+        theta = radians(relative_x_angle)
+        self.x -= speed * cos(theta) * sin(roh)
+        self.z += speed * cos(theta) * cos(roh)
+        self.y += speed * sin(theta)
+
+
 
 
 
