@@ -222,19 +222,19 @@ class GameApp3d( soya.World ):
         
         wall = Wall( 10, 10 + WALL_WIDTH, w, 
                      wall_position=WALL_BACK,
-                     wall_position_extras=WALL_INNER_BOTTOM_RIGHT, 
+                     wall_position_extras=WALL_INNER_TOP_RIGHT, 
                      front_material=tex1, back_material=tex2 )
                
 ##        wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
         
         wall = Wall( 10 + wall.WIDTH , 10, w, 
-                     wall_position_extras=WALL_INNER_TOP_RIGHT,
-                     wall_position=WALL_LEFT, 
+                     wall_position=WALL_LEFT,
+                     wall_position_extras=WALL_INNER_TOP_LEFT,                      
                      front_material=tex1, back_material=tex2 )
         
         wall = Wall( 10 + wall.WIDTH , 10, w, 
-                     wall_position_extras=WALL_INNER_TOP_LEFT,
                      wall_position=WALL_RIGHT, 
+                     wall_position_extras=WALL_INNER_BOTTOM_RIGHT,
                      front_material=tex1, back_material=tex2 )
 
 ##        model_builder = soya.SimpleModelBuilder()

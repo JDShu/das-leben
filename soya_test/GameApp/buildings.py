@@ -284,7 +284,7 @@ class Wall:
                 bbr.x = x + WIDTH + DEPTH
                 btr.x = x + WIDTH + DEPTH 
 
-        elif wall_position == WALL_LEFT:
+        elif wall_position == WALL_RIGHT:
             bbl = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z, 0.0, 0.0 )
             bbr = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z + WIDTH, 1.0, 0.0 )
             btr = soya.Vertex( world,  x + WIDTH - DEPTH, HEIGHT, z + WIDTH, 1.0, 1.0 )
@@ -300,13 +300,13 @@ class Wall:
             top_face = [ btl, btr, ftr, ftl ]
             
             if wall_position_extras == WALL_INNER_TOP_RIGHT:
-                bbr.z = z + WIDTH + DEPTH
-                btr.z = z + WIDTH + DEPTH
+                fbr.z = z + WIDTH - DEPTH
+                ftr.z = z + WIDTH - DEPTH
             elif wall_position_extras == WALL_INNER_BOTTOM_RIGHT:          
-                bbr.x = x + WIDTH + DEPTH
-                btr.x = x + WIDTH + DEPTH 
+                fbl.z = z + DEPTH
+                ftl.z = z + DEPTH 
             
-        elif wall_position == WALL_RIGHT:
+        elif wall_position == WALL_LEFT:
             fbl = soya.Vertex( world,  x, 0.0, z, 0.0, 0.0 )
             fbr = soya.Vertex( world,  x, 0.0, z + WIDTH, 1.0, 0.0 )
             ftr = soya.Vertex( world,  x, HEIGHT, z + WIDTH, 1.0, 1.0 )
@@ -321,13 +321,12 @@ class Wall:
             back_face = [ bbr, bbl, btl, btr ]
             top_face = [ btl, ftl, ftr, btr ]
             
-            if wall_position_extras == WALL_INNER_TOP_RIGHT:
-                bbl.x = x - DEPTH
-                btl.x = x - DEPTH
-            elif wall_position_extras == WALL_INNER_BOTTOM_RIGHT:          
-                bbr.x = x + WIDTH + DEPTH
-                btr.x = x + WIDTH + DEPTH 
-            
+            if wall_position_extras == WALL_INNER_TOP_LEFT:
+                bbr.z = z + WIDTH + DEPTH
+                btr.z = z + WIDTH + DEPTH
+            elif wall_position_extras == WALL_INNER_BOTTOM_LEFT:          
+                bbl.z = z - DEPTH
+                btl.z = z - DEPTH
         
         if wall_type == WALL_OPEN or wall_type == WALL_CLOSED:
             
