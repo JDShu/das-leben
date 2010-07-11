@@ -590,7 +590,7 @@ class LoadableRegion( Region ):
                 altitude = -0.41
                 
             wall_front_material = self.AssetManager.GetTexture( "DEFAULT_WALL" )
-            wall_back_material = self.AssetManager.GetTexture( "DEFAULT_WALL" )
+            wall_back_material = self.AssetManager.GetTexture( "LIGHT_WALL_PAPER" )
                 
             for i in xrange( 1, len( self.quads ) ):
                 quad = self.quads[ i ]

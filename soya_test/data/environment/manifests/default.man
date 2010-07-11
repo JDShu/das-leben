@@ -18,6 +18,6 @@ TEXTURE:floor_wood_1.png:DEFAULT_FLOOR
 TEXTURE:grass.png:GRASS
 TEXTURE:floor_tiles_0.png:CHEQERED_FLOOR_TILES
 TEXTURE:wall_concret_0.png:DEFAULT_WALL
-#TEXTURE:environment/manmade/walls/wall_tiles_1.png:LIGHT_BLUE_WALL_TILES
+TEXTURE:wall_wallpaper_1.png:LIGHT_WALL_PAPER
 #TEXTURE:environment/manmade/walls/wall_tiles_2.png:BLUE_WALL_TILES
 
