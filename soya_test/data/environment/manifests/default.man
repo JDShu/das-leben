@@ -9,15 +9,13 @@
 # ---------------------------------------------------------------------
 
 OBJECT:kitchen_chair_orange:CHAIR:5.0,0.0,6.0:0.25
-OBJECT:oven:DEFAULT_OVEN:10.0,0.0,6.0:0.25 
-#OBJECT:environment/manmade/walls/wall.obj:WALL0:0.0,0.0,0.0:0.25 
-#OBJECT:environment/manmade/walls/wall_plus_90degrees.obj:WALL90:0.0,0.0,0.0:0.25 
+OBJECT:oven:DEFAULT_OVEN:10.0,0.0,6.0:0.25
 FLOOR:environment/floors/first.flr:10.0,0.0,10.0
 #FLOOR:environment/floors/first.flr:10.0,1.0,10.0
 TEXTURE:knife.png:KNIFE_WALL
 TEXTURE:water.png:WATER
 TEXTURE:floor_wood_1.png:DEFAULT_FLOOR
-#TEXTURE:environment/manmade/walls/wall_tiles_0.png:RED_WALL_TILES
+#TEXTURE:floor_tiles_0.png:CHEQERED_FLOOR_TILES
 #TEXTURE:environment/manmade/walls/wall_tiles_1.png:LIGHT_BLUE_WALL_TILES
 #TEXTURE:environment/manmade/walls/wall_tiles_2.png:BLUE_WALL_TILES
 

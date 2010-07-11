@@ -189,7 +189,7 @@ class GameApp3d( soya.World ):
 		  
 		  
         grass = soya.Material.get( "grass" )
-
+        grass.mip_map = 1
         self.terrain.set_material_layer( grass, 0.0, 1.0 )
         self.terrain.patch_size = 10.0
         self.terrain.texture_factor = 0.50
@@ -200,19 +200,7 @@ class GameApp3d( soya.World ):
 
         r = LoadableRegion( self, a_AssetManager=self.AssetManager )
         r.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
-##        oven_model = self.AssetManager.GetObjectModel( "oven" )
-##        self.oven = soya.Body( self, oven_model )
-##        self.oven.set_xyz( 10, 1, 10 )
-##
-##        chair_model = self.AssetManager.GetObjectModel( "kitchen_chair_orange" )
-##        self.chair = soya.Body( self, chair_model )
-##        self.chair.set_xyz( 10, 1.72, 20 )
-        
-        
-##        region = Region( self, 50, 50 )
-##        region_model = region.to_model()
-##        soya.Body( self, region_model )
-##        region.y = 0.1
+
 ##        w = soya.World()
 ##        
 ##        tex1 = soya.Material( soya.Image.get( "knife.png" ) )
@@ -246,7 +234,7 @@ class GameApp3d( soya.World ):
         r.model_builder = model_builder
 ##        
         b = soya.Body( self, r.to_model() )
-        b.y = 0.6 
+        b.y = 0.01 
         
 
     def begin_round( self ):
