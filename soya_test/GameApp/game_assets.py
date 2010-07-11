@@ -107,7 +107,7 @@ class AssetManager:
                 
             elif item.startswith( "TEXTURE:" ):
                 parts = item.split( ":" )
-                surf = soya.Image.get( path.join( self.data_path, parts[ 1 ] ) )
+                surf = soya.Image.get( parts[ 1 ] )
                 material = soya.Material( surf )
                 
                 self.AddTexture( parts[ 2 ].replace( "\n", "" ) , material )

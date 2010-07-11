@@ -246,7 +246,8 @@ class GameApp3d( soya.World ):
         r.model_builder = model_builder
 ##        
         b = soya.Body( self, r.to_model() )
-        b.y = 0.6                
+        b.y = 0.6 
+        
 
     def begin_round( self ):
         soya.World.begin_round( self )
