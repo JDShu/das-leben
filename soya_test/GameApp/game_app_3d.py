@@ -198,53 +198,55 @@ class GameApp3d( soya.World ):
 
         self.AssetManager = AssetManager( self, "environment/manifests/default.man", self.DATA_PATH )
 
-        oven_model = self.AssetManager.GetObjectModel( "oven" )
-        self.oven = soya.Body( self, oven_model )
-        self.oven.set_xyz( 10, 1, 10 )
-
-        chair_model = self.AssetManager.GetObjectModel( "kitchen_chair_orange" )
-        self.chair = soya.Body( self, chair_model )
-        self.chair.set_xyz( 10, 1.72, 20 )
+        r = LoadableRegion( self, a_AssetManager=self.AssetManager )
+        r.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+##        oven_model = self.AssetManager.GetObjectModel( "oven" )
+##        self.oven = soya.Body( self, oven_model )
+##        self.oven.set_xyz( 10, 1, 10 )
+##
+##        chair_model = self.AssetManager.GetObjectModel( "kitchen_chair_orange" )
+##        self.chair = soya.Body( self, chair_model )
+##        self.chair.set_xyz( 10, 1.72, 20 )
+        
         
 ##        region = Region( self, 50, 50 )
 ##        region_model = region.to_model()
 ##        soya.Body( self, region_model )
 ##        region.y = 0.1
-        w = soya.World()
-        
-        tex1 = soya.Material( soya.Image.get( "knife.png" ) )
-        
-        tex2 = soya.Material( soya.Image.get( "water.png" ) )
-        
-        wall = Wall( 10, 10 + WALL_WIDTH, w, 
-                     wall_position_extras=WALL_INNER_TOP_LEFT, 
-                     front_material=tex1, back_material=tex2 )
-        
-        wall = Wall( 10, 10 + WALL_WIDTH, w, 
-                     wall_position=WALL_BACK,
-                     wall_position_extras=WALL_INNER_TOP_RIGHT, 
-                     front_material=tex1, back_material=tex2 )
-               
-##        wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
-        
-        wall = Wall( 10 + wall.WIDTH , 10, w, 
-                     wall_position=WALL_LEFT,
-                     wall_position_extras=WALL_INNER_TOP_LEFT,                      
-                     front_material=tex1, back_material=tex2 )
-        
-        wall = Wall( 10 + wall.WIDTH , 10, w, 
-                     wall_position=WALL_RIGHT, 
-                     wall_position_extras=WALL_INNER_BOTTOM_RIGHT,
-                     front_material=tex1, back_material=tex2 )
-
-##        model_builder = soya.SimpleModelBuilder()
-##        model_builder.shadow = 1
+##        w = soya.World()
 ##        
-##        w.model_builder = model_builder
+##        tex1 = soya.Material( soya.Image.get( "knife.png" ) )
+##        
+##        tex2 = soya.Material( soya.Image.get( "water.png" ) )
+##        
+##        wall = Wall( 10, 10 + WALL_WIDTH, w, 
+##                     wall_position_extras=WALL_INNER_TOP_LEFT, 
+##                     front_material=tex1, back_material=tex2 )
+##        
+##        wall = Wall( 10, 10 + WALL_WIDTH, w, 
+##                     wall_position=WALL_BACK,
+##                     wall_position_extras=WALL_INNER_TOP_RIGHT, 
+##                     front_material=tex1, back_material=tex2 )
+##               
+####        wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
+##        
+##        wall = Wall( 10 + wall.WIDTH , 10, w, 
+##                     wall_position=WALL_LEFT,
+##                     wall_position_extras=WALL_INNER_TOP_LEFT,                      
+##                     front_material=tex1, back_material=tex2 )
+##        
+##        wall = Wall( 10 + wall.WIDTH , 10, w, 
+##                     wall_position=WALL_RIGHT, 
+##                     wall_position_extras=WALL_INNER_BOTTOM_RIGHT,
+##                     front_material=tex1, back_material=tex2 )
+
+        model_builder = soya.SimpleModelBuilder()
+        model_builder.shadow = 1
         
-        b = soya.Body( self, w.to_model() )
-        b.z = 5
-                
+        r.model_builder = model_builder
+##        
+        b = soya.Body( self, r.to_model() )
+        b.y = 0.6                
 
     def begin_round( self ):
         soya.World.begin_round( self )

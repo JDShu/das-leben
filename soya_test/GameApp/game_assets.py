@@ -105,25 +105,20 @@ class AssetManager:
                 obj.scale = scale
                 self.AddObject( obj )
                 
-##            elif item.startswith( "TEXTURE:" ):
-##                parts = item.split( ":" )
-##                surf = pygame.image.load( path.join( self.data_path, parts[ 1 ] ) )
-##                image = pygame.image.tostring( surf, 'RGBA', 1 )
-##                ix, iy = surf.get_rect().size
-##                texid = glGenTextures( 1 )
-##                glBindTexture( GL_TEXTURE_2D, texid )
-##                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR )
-##                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR )
-##                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image )
-##                self.AddTexture( parts[ 2 ].replace( "\n", "" ) , texid )
+            elif item.startswith( "TEXTURE:" ):
+                parts = item.split( ":" )
+                surf = soya.Image.get( path.join( self.data_path, parts[ 1 ] ) )
+                material = soya.Material( surf )
+                
+                self.AddTexture( parts[ 2 ].replace( "\n", "" ) , material )
 
-    def AddTexture( self, a_Name, a_TextureID ):
+    def AddTexture( self, a_Name, a_Material ):
         '''
         Add a texture to the asset manager
         @param a_Name String : the name of this texture
         @param a_TextureID Integer : OpenGL texture ID        
         '''
-        self.textures.append( { a_Name: a_TextureID } )
+        self.textures.append( { a_Name: a_Material } )
         
         
     def ReplaceTexture( self, a_Name, a_TextureID ):
