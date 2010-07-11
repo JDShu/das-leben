@@ -237,8 +237,7 @@ class Wall:
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
         self.DEPTH = DEPTH
-        
-        
+       
         
         if wall_position == WALL_FRONT:
             fbl = soya.Vertex( world,  x, 0.0, z, 0.0, 0.0 )
@@ -337,7 +336,9 @@ class Wall:
             # top of wall
             f = soya.Face( world, top_face )
             # bottom of wall
-            
+            f = soya.Face( world, [ fbr, ftr, btr, bbr ], front_material )
+                
+            f = soya.Face( world, [ btl, ftl, fbl, bbl ], front_material )
             
             if wall_type == WALL_CLOSED:
                 # make side faces

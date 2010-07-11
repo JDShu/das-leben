@@ -228,10 +228,6 @@ class GameApp3d( soya.World ):
 ##                     wall_position_extras=WALL_INNER_BOTTOM_RIGHT,
 ##                     front_material=tex1, back_material=tex2 )
 
-        model_builder = soya.SimpleModelBuilder()
-        model_builder.shadow = 1
-        
-        r.model_builder = model_builder
 ##        
         b = soya.Body( self, r.to_model() )
         b.y = 0.01 

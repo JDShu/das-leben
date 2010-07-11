@@ -32,22 +32,6 @@ from buildings import *
 REGION_NORMAL = 1
 REGION_EDITING = 2
 
-# ====================================================================
-# RegionQuad Constants
-# ====================================================================
-WALL_BOTTOM_LEFT = 1
-WALL_BOTTOM_RIGHT = 2
-WALL_BOTTOM = 3
-WALL_TOP_LEFT = 4
-WALL_TOP_RIGHT = 5
-WALL_TOP = 6
-WALL_BOTTOM_LEFT_ANGLED = 7
-WALL_BOTTOM_RIGHT_ANGLED = 8
-WALL_TOP_LEFT_ANGLED = 9
-WALL_TOP_RIGHT_ANGLED = 10
-WALL_RIGHT = 11
-WALL_LEFT = 12
-
 QUAD_FLOOR_SQUARE = 50
 QUAD_FLOOR_NONE = 51
 
@@ -262,7 +246,7 @@ class Region( soya.World ):
         
         self.m_Width = a_Width
         self.m_Height = a_Height
-        self.m_Size = a_Size = 3
+        self.m_Size = a_Size = WALL_WIDTH
         
         
         
@@ -605,28 +589,41 @@ class LoadableRegion( Region ):
             else:
                 altitude = -0.41
                 
+            wall_front_material = self.AssetManager.GetTexture( "DEFAULT_WALL" )
+            wall_back_material = self.AssetManager.GetTexture( "DEFAULT_WALL" )
+                
             for i in xrange( 1, len( self.quads ) ):
                 quad = self.quads[ i ]
                 if quad.quadType == "a":
-                    if hasattr( self, "walls"):
-##                        ConcatenateObject( quad + Vector3d( 0.005, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-##                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                        w = Wall( quad.GetX() , quad.GetZ(), self.Scene, 
-                                  wall_position_extras=WALL_INNER_TOP_LEFT )
-                    else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.005, altitude, -0.225 ) )
-##                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              front_material=wall_front_material,
+                              back_material=wall_back_material )
+                                        
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              wall_position=WALL_LEFT,
+                              
+                              front_material=wall_front_material,
+                              back_material=wall_back_material)
+
+                    
                 elif quad.quadType == "b":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad + Vector3d( -0.01, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-##                        ConcatenateObject( quad + Vector3d( 0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              front_material=wall_front_material,
+                              back_material=wall_back_material )
+                                        
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              wall_position=WALL_RIGHT,
+                              
+                              front_material=wall_front_material,
+                              back_material=wall_back_material)
                 elif quad.quadType == "c":
                     if hasattr( self, "walls"):
                         pass
@@ -680,37 +677,38 @@ class LoadableRegion( Region ):
 ##                        x, y, z, w_pos = self.GetPosition()
 ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                 elif quad.quadType == "L":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad + Vector3d( 0.225, altitude, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              wall_position=WALL_RIGHT,
+                              
+                              front_material=wall_front_material,
+                              back_material=wall_back_material)
+                    
                 elif quad.quadType == "R":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              wall_position=WALL_LEFT,
+                              
+                              front_material=wall_front_material,
+                              back_material=wall_back_material)
+                    
                 elif quad.quadType == "l":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad + Vector3d( 0.0, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, altitude, -0.225 ) )
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              front_material=wall_front_material,
+                              back_material=wall_back_material )
+                    
                 elif quad.quadType == "h":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad + Vector3d( 0.0, altitude, 0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                        pass
+                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                              quad.GetZ() - ( quad.size / 1.75 ), 
+                              self.Scene,
+                              wall_position=WALL_BACK,
+                              
+                              front_material=wall_front_material,
+                              back_material=wall_back_material)
 ##            x, y, z, w = self.GetPosition()
 ##            self.walls.SetPosition( x, y, z )
 ##            
