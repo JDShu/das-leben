@@ -109,7 +109,7 @@ class AssetManager:
                 parts = item.split( ":" )
                 surf = soya.Image.get( parts[ 1 ] )
                 material = soya.Material( surf )
-                
+                material.mip_map = 1
                 self.AddTexture( parts[ 2 ].replace( "\n", "" ) , material )
 
     def AddTexture( self, a_Name, a_Material ):
