@@ -239,13 +239,14 @@ class GameApp3d( soya.World ):
         b = soya.Body( self, s.to_model() )
         b.y = 5.0 
 
-        sorcerer_model = soya.AnimatedModel.get("MoCap3")
+        sorcerer_model = soya.AnimatedModel.get("balazar")
+        tex = soya.Material( soya.Image.get( "balazar.png" ) )
+        sorcerer_model.material = tex
         sorcerer = soya.Body(self, sorcerer_model)
-        #sorcerer.animate_blend_cycle("Action")
-        sorcerer.rotate_x( 90 )
-        sorcerer.y = 10
-        sorcerer.x = 10
-        sorcerer.z = 10
+        sorcerer.animate_blend_cycle("marche")
+        sorcerer.y = 5
+        sorcerer.x = 60
+        sorcerer.z = 60
 
     def begin_round( self ):
         soya.World.begin_round( self )
