@@ -229,9 +229,17 @@ class GameApp3d( soya.World ):
 ##                     front_material=tex1, back_material=tex2 )
 
 ##        
+        
         b = soya.Body( self, r.to_model() )
         b.y = 0.01 
-        
+
+        sorcerer_model = soya.AnimatedModel.get("MoCap3")
+        sorcerer = soya.Body(self, sorcerer_model)
+        sorcerer.animate_blend_cycle("Action")
+        sorcerer.rotate_x( 90 )
+        sorcerer.y = 10
+        sorcerer.x = 10
+        sorcerer.z = 10
 
     def begin_round( self ):
         soya.World.begin_round( self )
