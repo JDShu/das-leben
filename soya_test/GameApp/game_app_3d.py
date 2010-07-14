@@ -120,7 +120,7 @@ class GameApp3d( soya.World ):
 
         self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
 
-        self.m_Camera.back = 40
+        self.m_Camera.back = 100
         soya.set_root_widget( self.m_Camera )
 
         soya.set_root_widget( soya.widget.Group() )
@@ -163,8 +163,8 @@ class GameApp3d( soya.World ):
         '''       
         self.atmosphere = soya.Atmosphere()
         self.atmosphere.fog = 1
-        self.atmosphere.fog_start = 30.0
-        self.atmosphere.fog_end = 40.0
+        self.atmosphere.fog_start = 70.0
+        self.atmosphere.fog_end = 100.0
         self.atmosphere.fog_color = ( 0.7, 0.7, 1.0, 1.0 )
         self.atmosphere.bg_color= ( 0.7, 0.7, 1.0, 1.0 )
         self.atmosphere.ambient = ( 0.3, 0.3, 0.3, 1.0 )
@@ -183,7 +183,7 @@ class GameApp3d( soya.World ):
         self.objects = []; oadd = self.objects.append
 
         # floor terrain
-        terrain_size = 129
+        terrain_size = 256
         self.terrain = soya.Terrain( self, terrain_size, terrain_size )
         random_terrain_border( self.terrain )
 		  
@@ -198,8 +198,11 @@ class GameApp3d( soya.World ):
 
         self.AssetManager = AssetManager( self, "environment/manifests/default.man", self.DATA_PATH )
 
-        r = LoadableRegion( self, a_AssetManager=self.AssetManager )
-        r.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+        f = LoadableRegion( self, a_AssetManager=self.AssetManager )
+        f.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+        
+        s = LoadableRegion( self, a_AssetManager=self.AssetManager )
+        s.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
 
 ##        w = soya.World()
 ##        
@@ -230,12 +233,15 @@ class GameApp3d( soya.World ):
 
 ##        
         
-        b = soya.Body( self, r.to_model() )
+        b = soya.Body( self, f.to_model() )
         b.y = 0.01 
+        
+        b = soya.Body( self, s.to_model() )
+        b.y = 5.0 
 
         sorcerer_model = soya.AnimatedModel.get("MoCap3")
         sorcerer = soya.Body(self, sorcerer_model)
-        sorcerer.animate_blend_cycle("Action")
+        #sorcerer.animate_blend_cycle("Action")
         sorcerer.rotate_x( 90 )
         sorcerer.y = 10
         sorcerer.x = 10
