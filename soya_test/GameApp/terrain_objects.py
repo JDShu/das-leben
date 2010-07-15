@@ -593,135 +593,177 @@ class LoadableRegion( Region ):
             wall_front_material = self.AssetManager.GetTexture( "DEFAULT_WALL" )
             wall_back_material = self.AssetManager.GetTexture( "LIGHT_WALL_PAPER" )
                 
-            for i in xrange( 1, len( self.quads ) ):
-                quad = self.quads[ i ]
-                if quad.quadType == "a":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              front_material=wall_front_material,
-                              back_material=wall_back_material )
-                                        
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_LEFT,
-                              
-                              front_material=wall_front_material,
-                              back_material=wall_back_material)
-
+            for z in xrange( self.m_Height ):
+                for x in xrange( self.m_Width ):
                     
-                elif quad.quadType == "b":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              front_material=wall_front_material,
-                              back_material=wall_back_material )
-                                        
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_RIGHT,
-                              
-                              front_material=wall_front_material,
-                              back_material=wall_back_material)
-                elif quad.quadType == "c":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_BACK,
-                              front_material=wall_front_material,
-                              back_material=wall_back_material )
-                                        
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_RIGHT,
-                              
-                              front_material=wall_front_material,
-                              back_material=wall_back_material)
-                elif quad.quadType == "d":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_BACK,
-                              front_material=wall_front_material,
-                              back_material=wall_back_material )
-                                        
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_LEFT,
-                              
-                              front_material=wall_front_material,
-                              back_material=wall_back_material)
-                elif quad.quadType == "A":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                    quad = self.quads[ ( z * self.m_Height ) + x ]
+                    z_plus_one = z + 1 
+                    z_minus_one = z - 1
+                    if z_plus_one < self.m_Height:
+                        quad_above = self.quads[ ( z_plus_one * self.m_Height ) + x ]
                     else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "B":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                        quad_above = None
+                        
+                    if z_minus_one > -1:
+                        quad_below = self.quads[ ( z_minus_one * self.m_Height ) + x ]
                     else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "C":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        x, y, z, w_pos = self.GetPosition()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "D":
-                    if hasattr( self, "walls"):
-                        pass
-##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        pass
-##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-##                        x, y, z, w_pos = self.GetPosition()
-##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "L":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_RIGHT,
-                              
-                              front_material=wall_front_material,
-                              back_material=wall_back_material)
-                    
-                elif quad.quadType == "R":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_LEFT,
-                              
-                              front_material=wall_front_material,
-                              back_material=wall_back_material)
-                    
-                elif quad.quadType == "l":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              front_material=wall_front_material,
-                              back_material=wall_back_material )
-                    
-                elif quad.quadType == "h":
-                    w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
-                              quad.GetZ() - ( quad.size / 1.75 ), 
-                              self,
-                              wall_position=WALL_BACK,
-                              
-                              front_material=wall_front_material,
-                              back_material=wall_back_material)
+                        quad_below = None
+                        
+                    if quad.quadType == "a":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_LEFT,
+                                  
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+    
+                        
+                    elif quad.quadType == "b":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_RIGHT,
+                                  
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                    elif quad.quadType == "c":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_BACK,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_RIGHT,
+                                  
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                    elif quad.quadType == "d":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_BACK,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_LEFT,
+                                  
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                    elif quad.quadType == "A":
+                        if hasattr( self, "walls"):
+                            pass
+    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                        else:
+                            pass
+    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
+                    elif quad.quadType == "B":
+                        if hasattr( self, "walls"):
+                            pass
+    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                        else:
+                            pass
+    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
+                    elif quad.quadType == "C":
+                        if hasattr( self, "walls"):
+                            pass
+    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                        else:
+                            pass
+    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+    ##                        x, y, z, w_pos = self.GetPosition()
+    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
+                    elif quad.quadType == "D":
+                        if hasattr( self, "walls"):
+                            pass
+    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
+                        else:
+                            pass
+    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
+    ##                        x, y, z, w_pos = self.GetPosition()
+    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
+                    elif quad.quadType == "L":
+                        extras = None
+                        if quad_above:
+                            if quad_below.quadType == "#":
+                                quad_left = self.quads[ ( ( z - 1 ) * self.m_Height ) + x + 1 ]
+                                if quad_left.quadType == "h":
+                                    extras = WALL_INNER_BOTTOM_RIGHT
+                                    
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_RIGHT,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                        
+                    elif quad.quadType == "R":
+                        extras = None
+                        if quad_above:
+                            if quad_above.quadType == "#":
+                                quad_left = self.quads[ ( ( z + 1 ) * self.m_Height ) + x - 1 ]
+                                if quad_left.quadType == "l":
+                                    extras = WALL_INNER_TOP_LEFT
+                                
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_LEFT,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                        
+                    elif quad.quadType == "l":
+                        extras = None
+                        if quad_below:
+                            if quad_below.quadType == "?":
+                                quad_left = self.quads[ ( ( z - 1 ) * self.m_Height ) + x + 1 ]
+                                if quad_left.quadType == "R":
+                                    extras = WALL_INNER_TOP_LEFT
+                                    
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                        
+                    elif quad.quadType == "h":
+                        extras = None
+                        if quad_above:
+                            if quad_above.quadType == "?":
+                                quad_left = self.quads[ ( ( z + 1 ) * self.m_Height ) + x - 1 ]
+                                if quad_left.quadType == "L":
+                                    extras = WALL_INNER_BOTTOM_RIGHT
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_BACK,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
 ##            x, y, z, w = self.GetPosition()
 ##            self.walls.SetPosition( x, y, z )
 ##            
