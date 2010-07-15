@@ -299,11 +299,11 @@ class Wall:
             top_face = [ btl, btr, ftr, ftl ]
             
             if wall_position_extras == WALL_INNER_TOP_RIGHT:
-                fbr.z = z + WIDTH - DEPTH
-                ftr.z = z + WIDTH - DEPTH
+                bbr.z = z + WIDTH + DEPTH
+                btr.z = z + WIDTH + DEPTH
             elif wall_position_extras == WALL_INNER_BOTTOM_RIGHT:          
-                fbl.z = z + DEPTH
-                ftl.z = z + DEPTH 
+                bbl.z = z - DEPTH
+                btl.z = z - DEPTH 
             
         elif wall_position == WALL_LEFT:
             fbl = soya.Vertex( world,  x, 0.0, z, 0.0, 0.0 )

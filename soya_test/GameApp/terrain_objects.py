@@ -705,11 +705,18 @@ class LoadableRegion( Region ):
     ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                     elif quad.quadType == "L":
                         extras = None
-                        if quad_above:
+                        if quad_below:
                             if quad_below.quadType == "#":
                                 quad_left = self.quads[ ( ( z - 1 ) * self.m_Height ) + x + 1 ]
                                 if quad_left.quadType == "h":
                                     extras = WALL_INNER_BOTTOM_RIGHT
+                                    
+                        if quad_above:
+                            if quad_above.quadType == "#":
+                                quad_left = self.quads[ ( ( z + 1 ) * self.m_Height ) + x + 1 ]
+                                if quad_left.quadType == "l":
+                                    extras = WALL_INNER_TOP_RIGHT        
+                                
                                     
                         w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
                                   quad.GetZ() - ( quad.size / 1.75 ), 
@@ -742,6 +749,9 @@ class LoadableRegion( Region ):
                                 quad_left = self.quads[ ( ( z - 1 ) * self.m_Height ) + x + 1 ]
                                 if quad_left.quadType == "R":
                                     extras = WALL_INNER_TOP_LEFT
+                                quad_right = self.quads[ ( ( z + 1 ) * self.m_Height ) + x + 1 ]
+                                if quad_right.quadType == "L":
+                                    extras = WALL_INNER_TOP_RIGHT
                                     
                         w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
                                   quad.GetZ() - ( quad.size / 1.75 ), 
