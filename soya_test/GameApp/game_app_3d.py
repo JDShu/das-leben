@@ -243,7 +243,7 @@ class GameApp3d( soya.World ):
         tex = soya.Material( soya.Image.get( "balazar.png" ) )
         sorcerer_model.material = tex
         sorcerer = soya.Body(self, sorcerer_model)
-        sorcerer.animate_blend_cycle("marche")
+        sorcerer.animate_blend_cycle("attente")
         sorcerer.y = 5
         sorcerer.x = 60
         sorcerer.z = 60
