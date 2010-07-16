@@ -279,7 +279,7 @@ class Wall:
             if wall_position_extras == WALL_INNER_BOTTOM_RIGHT:
                 bbl.x = x - DEPTH
                 btl.x = x - DEPTH
-            elif wall_position_extras == WALL_INNER_BOTTOM_LEFT:          
+            elif wall_position_extras == WALL_INNER_TOP_RIGHT:          
                 bbr.x = x + WIDTH + DEPTH
                 btr.x = x + WIDTH + DEPTH 
 

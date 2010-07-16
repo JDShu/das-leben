@@ -730,9 +730,13 @@ class LoadableRegion( Region ):
                         extras = None
                         if quad_above:
                             if quad_above.quadType == "#":
-                                quad_left = self.quads[ ( ( z + 1 ) * self.m_Height ) + x - 1 ]
+                                quad_left = self.quads[ ( ( z_plus_one ) * self.m_Height ) + x - 1 ]
                                 if quad_left.quadType == "l":
                                     extras = WALL_INNER_TOP_LEFT
+                            if quad_below.quadType == "#":   
+                                quad_right = self.quads[ ( z_minus_one * self.m_Height ) + x - 1 ]
+                                if quad_right.quadType == "h":
+                                    extras = WALL_INNER_BOTTOM_LEFT
                                 
                         w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
                                   quad.GetZ() - ( quad.size / 1.75 ), 
@@ -749,7 +753,7 @@ class LoadableRegion( Region ):
                                 quad_left = self.quads[ ( ( z - 1 ) * self.m_Height ) + x + 1 ]
                                 if quad_left.quadType == "R":
                                     extras = WALL_INNER_TOP_LEFT
-                                quad_right = self.quads[ ( ( z + 1 ) * self.m_Height ) + x + 1 ]
+                                quad_right = self.quads[ ( ( z - 1 ) * self.m_Height ) + x - 1 ]
                                 if quad_right.quadType == "L":
                                     extras = WALL_INNER_TOP_RIGHT
                                     
@@ -764,9 +768,13 @@ class LoadableRegion( Region ):
                         extras = None
                         if quad_above:
                             if quad_above.quadType == "?":
-                                quad_left = self.quads[ ( ( z + 1 ) * self.m_Height ) + x - 1 ]
+                                quad_left = self.quads[ ( z_minus_one * self.m_Height ) + x - 1 ]
                                 if quad_left.quadType == "L":
                                     extras = WALL_INNER_BOTTOM_RIGHT
+                                quad_right = self.quads[ ( z_plus_one * self.m_Height ) + x + 1 ]
+                                if quad_right.quadType == "R":
+                                    extras = WALL_INNER_TOP_RIGHT
+                                    
                         w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
                                   quad.GetZ() - ( quad.size / 1.75 ), 
                                   self,
