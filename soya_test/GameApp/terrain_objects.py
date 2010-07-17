@@ -651,7 +651,7 @@ class LoadableRegion( Region ):
                                   quad.GetZ() - ( quad.size / 1.75 ), 
                                   self,
                                   wall_position=WALL_RIGHT,
-                                  
+                                  wall_position_extras=WALL_OUTER_TOP_LEFT,
                                   front_material=wall_front_material,
                                   back_material=wall_back_material)
                     elif quad.quadType == "d":
@@ -666,43 +666,9 @@ class LoadableRegion( Region ):
                                   quad.GetZ() - ( quad.size / 1.75 ), 
                                   self,
                                   wall_position=WALL_LEFT,
-                                  
+                                  wall_position_extras=WALL_OUTER_TOP_RIGHT,
                                   front_material=wall_front_material,
                                   back_material=wall_back_material)
-                    elif quad.quadType == "A":
-                        if hasattr( self, "walls"):
-                            pass
-    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                        else:
-                            pass
-    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                    elif quad.quadType == "B":
-                        if hasattr( self, "walls"):
-                            pass
-    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                        else:
-                            pass
-    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                    elif quad.quadType == "C":
-                        if hasattr( self, "walls"):
-                            pass
-    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                        else:
-                            pass
-    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-    ##                        x, y, z, w_pos = self.GetPosition()
-    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                    elif quad.quadType == "D":
-                        if hasattr( self, "walls"):
-                            pass
-    ##                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                        else:
-                            pass
-    ##                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-    ##                        x, y, z, w_pos = self.GetPosition()
-    ##                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
                     elif quad.quadType == "L":
                         extras = None
                         if quad_below:
@@ -768,7 +734,7 @@ class LoadableRegion( Region ):
                         extras = None
                         if quad_above:
                             if quad_above.quadType == "?":
-                                quad_left = self.quads[ ( z_minus_one * self.m_Height ) + x - 1 ]
+                                quad_left = self.quads[ ( z_minus_one * self.m_Height ) + x + 1 ]
                                 if quad_left.quadType == "L":
                                     extras = WALL_INNER_BOTTOM_RIGHT
                                 quad_right = self.quads[ ( z_plus_one * self.m_Height ) + x + 1 ]
