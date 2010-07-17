@@ -198,45 +198,20 @@ class GameApp3d( soya.World ):
 
         self.AssetManager = AssetManager( self, "environment/manifests/default.man", self.DATA_PATH )
 
-        f = LoadableRegion( self, a_AssetManager=self.AssetManager )
-        f.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+##        f = LoadableRegion( self, a_AssetManager=self.AssetManager )
+##        f.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+        #f.Save( "%s/environment/floors/first.pkl" % self.DATA_PATH )
+        pickle_file = open( "%s/environment/floors/first.pkl" % self.DATA_PATH, "r" )
+        f = pickle.load( pickle_file )
+        pickle_file.close()
         
-        s = LoadableRegion( self, a_AssetManager=self.AssetManager )
-        s.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
+        # s = LoadableRegion( self, a_AssetManager=self.AssetManager )
+        pickle_file = open( "%s/environment/floors/first.pkl" % self.DATA_PATH, "r" )
+        s = pickle.load( pickle_file )
+        pickle_file.close()
+        # s.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
 
-##        w = soya.World()
-##        
-##        tex1 = soya.Material( soya.Image.get( "knife.png" ) )
-##        
-##        tex2 = soya.Material( soya.Image.get( "water.png" ) )
-##        
-##        wall = Wall( 10, 10 + WALL_WIDTH, w, 
-##                     wall_position_extras=WALL_INNER_TOP_LEFT, 
-##                     front_material=tex1, back_material=tex2 )
-##        
-##        wall = Wall( 10, 10 + WALL_WIDTH, w, 
-##                     wall_position=WALL_BACK,
-##                     wall_position_extras=WALL_INNER_TOP_RIGHT, 
-##                     front_material=tex1, back_material=tex2 )
-##               
-####        wall = Wall( 10 + wall.WIDTH , 10, w, front_material=tex1, back_material=tex2 )
-##        
-##        wall = Wall( 10 + wall.WIDTH , 10, w, 
-##                     wall_position=WALL_LEFT,
-##                     wall_position_extras=WALL_INNER_TOP_LEFT,                      
-##                     front_material=tex1, back_material=tex2 )
-##        
-##        wall = Wall( 10 + wall.WIDTH , 10, w, 
-##                     wall_position=WALL_RIGHT, 
-##                     wall_position_extras=WALL_INNER_BOTTOM_RIGHT,
-##                     front_material=tex1, back_material=tex2 )
-
-##        
-        
-
-
-
-        
+       
         model_builder = soya.SimpleModelBuilder()
         model_builder.shadow = 1
         

@@ -32,7 +32,7 @@ class AttachedItem:
         self.instance = a_Instance
 
 class Avatar( soya.World ):
-    def __init__( self, a_Scene, a_Type, a_AssetManager ):
+    def __init__( self, a_Scene, a_Type=DUDE, a_AssetManager=None ):
         soya.World.__init__( self, a_Scene )
         if a_Type == DUDE:
             avatar_filename = "dude" 

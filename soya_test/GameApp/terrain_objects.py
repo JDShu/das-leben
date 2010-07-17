@@ -29,6 +29,8 @@ from ctypes import *
 from numpy import array
 from buildings import *
 
+import pickle
+
 REGION_NORMAL = 1
 REGION_EDITING = 2
 
@@ -50,12 +52,7 @@ class RegionQuad( BoundingBox3d ):
         '''
         BoundingBox3d.__init__( self, a_X + (a_Size / 2.0), a_Y, a_Z + (a_Size / 2.0), a_Size )
         
-        # y values for quad
-        self.ul = None
-        self.ur = None
-        self.ll = None
-        self.lr = None
-        
+       
         # a type of quad for working with floorplanns
         self.quadType = a_Type
         
@@ -63,6 +60,7 @@ class RegionQuad( BoundingBox3d ):
         self.va_index = 0
         self.i = 0
         
+        self.name = "rq-%d-%d.pkl" % ( int( a_X / a_Size ), int( a_Y / a_Size ) )
         # quad size
         self.size = a_Size
         
@@ -88,140 +86,10 @@ class RegionQuad( BoundingBox3d ):
                      soya.Vertex( model, x - radius, altitude, z - radius, 0.0, 1.0 ) ], 
                    material )
                      
-    def CreateNormals( self, normals, offset, altitude ):
-        normals[ offset ][ 0 ] = 0.0
-        normals[ offset ][ 1 ] = 1.0
-        normals[ offset ][ 2 ] = 0.0
-        
-        normals[ offset + 1 ][ 0 ] = 0.0
-        normals[ offset + 1 ][ 1 ] = 1.0
-        normals[ offset + 1 ][ 2 ] = 0.0
-        
-        normals[ offset + 2 ][ 0 ] = 0.0
-        normals[ offset + 2 ][ 1 ] = 1.0
-        normals[ offset + 2 ][ 2 ] = 0.0
-        
-        normals[ offset + 3 ][ 0 ] = 0.0
-        normals[ offset + 3 ][ 1 ] = 1.0
-        normals[ offset + 3 ][ 2 ] = 0.0
-        
-    def CreateTexCoords( self, texCoords, offset, altitude ):
-        texCoords[ offset ][ 0 ] = 0.0
-        texCoords[ offset ][ 1 ] = 0.0
-        
-        texCoords[ offset + 1 ][ 0 ] = 1.0
-        texCoords[ offset + 1 ][ 1 ] = 0.0
-        
-        texCoords[ offset + 2 ][ 0 ] = 1.0
-        texCoords[ offset + 2 ][ 1 ] = 1.0
-                
-        texCoords[ offset + 3 ][ 0 ] = 0.0
-        texCoords[ offset + 3 ][ 1 ] = 1.0
-
-    def CreateLBQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x 
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z 
-        
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
-    def CreateRBQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
-        
-        vertexes[ offset + 1 ][ 0 ] = x 
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z 
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
-    def CreateRTQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
-        
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x 
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z 
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
-    def CreateLTQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
-        
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z
-        
-    def SetAsObject( self, a_Object3d ):
-        '''
-        make this quad a 3d object 
-        @param a_Object3d Object3d : instance of Object3d
-        '''
-        self.ObjectToRender = a_Object3d
-        self.ObjectToRender.SetPosition( self.GetX(), self.GetY(), self.GetY() )
-        
-    def GetGLName( self ):
-        '''
-        Return the GLName of this object
-        @return GLName Integer : a OpenGL ID to assist in picking objects
-        '''
-        return self.ObjectToRender.GetGLName()
-        
-    def Draw( self ):
-        '''
-        render the contents of this quad
-        '''
-        if self.obj:
-            self.obj.Draw()
-        if len( self.extra ) > 0:
-            for obj in self.extra:
-                obj.Draw()
+    def Save( self, a_Path ):
+        f = open( os.path.join( a_Path, self.name ), "wb" )
+        pickle.dump( self, f )
+        f.close()
     
     
 class Region( soya.World ):
@@ -581,6 +449,11 @@ class LoadableRegion( Region ):
             self.ShowWalls = True
             self.FirstFloor = a_FirstFloor
             self.Scene = a_Scene
+            
+        def Save( self, a_Filename ):
+            f = open( a_Filename, "w" )
+            pickle.dump( self, f )
+            f.close()
             
         def Load( self, a_Filename ):
             Region.Load( self, a_Filename, self.AssetManager )

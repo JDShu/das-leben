@@ -10,6 +10,7 @@
 
 OBJECT:kitchen_chair_orange:CHAIR:5.0,0.0,6.0:0.25
 OBJECT:oven:DEFAULT_OVEN:10.0,0.0,6.0:0.25
+AVATAR:balazar:60.0,5.0,60.0:1.0
 FLOOR:environment/floors/first.flr:10.0,0.0,10.0
 #FLOOR:environment/floors/first.flr:10.0,1.0,10.0
 TEXTURE:knife.png:KNIFE_WALL
