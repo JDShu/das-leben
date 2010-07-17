@@ -233,11 +233,20 @@ class GameApp3d( soya.World ):
 
 ##        
         
+
+
+
+        
+        model_builder = soya.SimpleModelBuilder()
+        model_builder.shadow = 1
+        
+        f.model_builder = model_builder
         b = soya.Body( self, f.to_model() )
         b.y = 0.01 
         
+        s.model_builder = model_builder
         b = soya.Body( self, s.to_model() )
-        b.y = 5.0 
+        b.y = 4.85 
 
         sorcerer_model = soya.AnimatedModel.get("balazar")
         tex = soya.Material( soya.Image.get( "balazar.png" ) )

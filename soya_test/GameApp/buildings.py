@@ -262,10 +262,10 @@ class Wall:
                 btl.x = x - DEPTH
             
         elif wall_position == WALL_BACK:
-            fbl = soya.Vertex( world,  x, 0.0, z + WIDTH, 0.0, 0.0 )
-            fbr = soya.Vertex( world,  x + WIDTH, 0.0, z + WIDTH, 1.0, 0.0 )
-            ftr = soya.Vertex( world,  x + WIDTH, HEIGHT, z + WIDTH, 1.0, 1.0 )
-            ftl = soya.Vertex( world,  x , HEIGHT, z + WIDTH, 0.0, 1.0 )
+            fbl = soya.Vertex( world,  x, 0.0, z + WIDTH + DEPTH, 0.0, 0.0 )
+            fbr = soya.Vertex( world,  x + WIDTH, 0.0, z + WIDTH + DEPTH , 1.0, 0.0 )
+            ftr = soya.Vertex( world,  x + WIDTH, HEIGHT, z + WIDTH + DEPTH, 1.0, 1.0 )
+            ftl = soya.Vertex( world,  x , HEIGHT, z + WIDTH + DEPTH, 0.0, 1.0 )
             
             bbl = soya.Vertex( world,  x , 0.0, z + WIDTH - DEPTH, 0.0, 0.0 )
             bbr = soya.Vertex( world,  x + WIDTH, 0.0, z + WIDTH - DEPTH, 1.0, 0.0 )
@@ -285,8 +285,8 @@ class Wall:
 
         elif wall_position == WALL_RIGHT:
             bbl = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z, 0.0, 0.0 )
-            bbr = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z + WIDTH, 1.0, 0.0 )
-            btr = soya.Vertex( world,  x + WIDTH - DEPTH, HEIGHT, z + WIDTH, 1.0, 1.0 )
+            bbr = soya.Vertex( world,  x + WIDTH - DEPTH, 0.0, z + WIDTH + DEPTH, 1.0, 0.0 )
+            btr = soya.Vertex( world,  x + WIDTH - DEPTH, HEIGHT, z + WIDTH + DEPTH, 1.0, 1.0 )
             btl = soya.Vertex( world,  x + WIDTH - DEPTH, HEIGHT, z, 0.0, 1.0 )
             
             fbl = soya.Vertex( world,  x + WIDTH, 0.0, z , 0.0, 0.0 )
