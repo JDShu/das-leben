@@ -644,6 +644,9 @@ class LoadableRegion( Region ):
                     if quad.quadType == "l":
                         for j in xrange( PATHFINDER_RESOLUTION ):
                             g.insert_block( x + j, z )
+                            
+            return g
+        
         def ToggleWalls( self ):
             self.ShowWalls = not self.ShowWalls
         

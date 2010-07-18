@@ -27,6 +27,7 @@ from constants import *
 from misc_ui import *
 from game_assets import *
 from buildings import *
+from system import *
 import soya, soya.widget
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -205,10 +206,17 @@ class GameApp3d( soya.World ):
         f = pickle.load( pickle_file )
         pickle_file.close()
         
+        g = f.CreateGrid()
+        
+        p = PathFinder( g, ( 10, 10 ), ( 90, 90 ) )
+        
+        path = p.Draw( self, 3, 1.0 )
+        
+        
         # s = LoadableRegion( self, a_AssetManager=self.AssetManager )
-        pickle_file = open( "%s/environment/floors/first.pkl" % self.DATA_PATH, "r" )
-        s = pickle.load( pickle_file )
-        pickle_file.close()
+##        pickle_file = open( "%s/environment/floors/first.pkl" % self.DATA_PATH, "r" )
+##        s = pickle.load( pickle_file )
+##        pickle_file.close()
         # s.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
 
        

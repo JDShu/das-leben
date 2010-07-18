@@ -1,5 +1,6 @@
 import pygame
 from heapq import heappush, heappop
+import soya
 
 MOUSE = 1
 TIME = 2
@@ -94,7 +95,7 @@ class Grid():
         self.print_grid()
 
 #generates list of grid coordinates leading from goal to start according to a simple A* algorithm
-class Path():
+class PathFinder():
     def __init__( self, input_grid, start, goal ):
         self.start = start
         self.goal = goal
@@ -165,7 +166,21 @@ class Path():
        
         return path
     
-    def Draw( self, a_Scale, a_Altitude ):
+    def Draw( self, a_Scene, a_Scale, a_Altitude ):
+        w = soya.World()
         last = self.path[ 0 ]
         for point in self.path:
-            
+            if not last == point:
+                x1 = last[ 0 ] * a_Scale
+                z1 = last[ 1 ] * a_Scale
+                x2 = point[ 0 ] * a_Scale
+                z2 = point[ 1 ] * a_Scale
+                
+                p1 = soya.Vector( w, x1, a_Altitude, z1 )
+                p2 = soya.Vector( w, x2, a_Altitude, z2 )
+                
+                f = soya.Face( w, [ p1, p1 ] )
+                
+                
+        return soys.Body( a_Scale, w.to_model() )
+                
