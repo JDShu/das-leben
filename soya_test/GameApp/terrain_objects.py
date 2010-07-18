@@ -28,6 +28,7 @@ import random
 from ctypes import *
 from numpy import array
 from buildings import *
+from system import * 
 
 import pickle
 
@@ -626,11 +627,23 @@ class LoadableRegion( Region ):
 ##            
 ##            if self.wallTextureID: self.walls.SetTexture( self.wallTextureID )
                            
-        def Draw( self ):
-            self._draw()
-            if self.ShowWalls:
-                self.walls.Draw()
-                
+        def CreateGrid( self, a_GroundFloor=True ):
+            g = Grid( self.m_Width * PATHFINDER_RESOLUTION, self.m_Height * PATHFINDER_RESOLUTION )
+            for z in xrange( self.m_Height ):
+                for x in xrange( self.m_Width ):
+                    quad = self.quads[ ( z * self.m_Width ) + x ]
+                    if not a_GroundFloor:
+                        if quad.quadType == "?":
+                            for j in xrange( PATHFINDER_RESOLUTION ):
+                                for k in xrange( PATHFINDER_RESOLUTION ):
+                                    g.insert_block( x + j, z )
+                                    
+                    if quad.quadType == "l":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( x + j, z )
+                    if quad.quadType == "l":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( x + j, z )
         def ToggleWalls( self ):
             self.ShowWalls = not self.ShowWalls
         
