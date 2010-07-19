@@ -208,9 +208,11 @@ class GameApp3d( soya.World ):
         
         g = f.CreateGrid()
         
-        p = PathFinder( g, ( 10, 10 ), ( 90, 90 ) )
+        g.print_grid()
         
-        path = p.Draw( self, 3, 1.0 )
+        p = PathFinder( g, ( 40, 10 ), [( 50, 50 )] )
+        
+        path = p.Draw( self, PATHFINDER_RESOLUTION / 3 , 4.0 )
         
         
         # s = LoadableRegion( self, a_AssetManager=self.AssetManager )
@@ -226,8 +228,8 @@ class GameApp3d( soya.World ):
         b = soya.Body( self, f.to_model() )
         b.y = 0.01 
         
-        b = soya.Body( self, s.to_model() )
-        b.y = 4.85 
+##        b = soya.Body( self, s.to_model() )
+##        b.y = 4.85 
 
         sorcerer_model = soya.AnimatedModel.get("balazar")
         tex = soya.Material( soya.Image.get( "balazar.png" ) )

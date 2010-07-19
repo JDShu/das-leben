@@ -176,11 +176,16 @@ class PathFinder():
                 x2 = point[ 0 ] * a_Scale
                 z2 = point[ 1 ] * a_Scale
                 
-                p1 = soya.Vector( w, x1, a_Altitude, z1 )
-                p2 = soya.Vector( w, x2, a_Altitude, z2 )
+                p1 = soya.Vertex( a_Scene, x1, a_Altitude, z1 )
+                p2 = soya.Vertex( a_Scene, x2, a_Altitude, z2 )
                 
-                f = soya.Face( w, [ p1, p1 ] )
+                f = soya.Face( a_Scene, [ p1, p2 ] )
                 
+                last = point
+##               
+##        # 
+##        b = soya.Body( a_Scene, w.to_model() )
+        
                 
-        return soys.Body( a_Scale, w.to_model() )
+##        return b
                 
