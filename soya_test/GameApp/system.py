@@ -4,7 +4,7 @@ import soya
 
 MOUSE = 1
 TIME = 2
-PATHFINDER_RESOLUTION = 8
+PATHFINDER_RESOLUTION = 1
 
 class Event():
     def __init__( self, category ):

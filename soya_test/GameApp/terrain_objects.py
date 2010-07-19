@@ -629,10 +629,11 @@ class LoadableRegion( Region ):
                            
         def CreateGrid( self, a_GroundFloor=True ):
             g = Grid( self.m_Width * PATHFINDER_RESOLUTION, self.m_Height * PATHFINDER_RESOLUTION )
-            for z in xrange( self.m_Height ):
-                zoff = z * PATHFINDER_RESOLUTION
-                for x in xrange( self.m_Width ):
-                    xoff = ( x * PATHFINDER_RESOLUTION )
+            for x in xrange( self.m_Height ):
+                xoff = ( x * PATHFINDER_RESOLUTION )
+                
+                for z in xrange( self.m_Width ):
+                    zoff = z * PATHFINDER_RESOLUTION
                     quad = self.quads[ ( z * self.m_Width ) + x ]
                     if not a_GroundFloor:
                         if quad.quadType == "?":
@@ -645,13 +646,13 @@ class LoadableRegion( Region ):
                             g.insert_block( xoff + j, zoff )
                     if quad.quadType == "h":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff , zoff + j )
+                            g.insert_block( xoff + PATHFINDER_RESOLUTION + j, zoff + PATHFINDER_RESOLUTION  )
                     if quad.quadType == "R":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff + j, zoff )
+                            g.insert_block( xoff , zoff + PATHFINDER_RESOLUTION + j )
                     if quad.quadType == "L":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff + j, zoff )
+                            g.insert_block( xoff + PATHFINDER_RESOLUTION  , zoff + PATHFINDER_RESOLUTION + j )
                             
             return g
         
