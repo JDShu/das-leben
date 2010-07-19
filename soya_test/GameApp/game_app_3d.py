@@ -214,6 +214,7 @@ class GameApp3d( soya.World ):
         
         path = p.Draw( self, PATHFINDER_RESOLUTION / 3 , 4.0 )
         
+        g.save_file( "%s/map.txt" % self.DATA_PATH, p.path )
         
         # s = LoadableRegion( self, a_AssetManager=self.AssetManager )
 ##        pickle_file = open( "%s/environment/floors/first.pkl" % self.DATA_PATH, "r" )

@@ -89,6 +89,28 @@ class Grid():
                     print "?",
             print " "
             
+    def save_file( self, filename, path ):
+        for sq in path:
+            self.grid[sq[0]][sq[1]] = "X"
+            
+        f = open( filename, "w" )
+        
+        for y in xrange(self.width):
+            line = ""
+            for x in xrange(self.height):
+                if self.grid[y][x] == None:
+                    line += "0"
+                elif self.grid[y][x] == "X":
+                    line += "X"
+                elif self.grid[y][x] == 1:
+                    line += "W"
+                else:
+                    line += "?"
+            line += "\n"
+            f.write( line )
+        
+        f.close()
+        
     def draw_path( self, path ):
         for sq in path:
             self.grid[sq[0]][sq[1]] = "X"
