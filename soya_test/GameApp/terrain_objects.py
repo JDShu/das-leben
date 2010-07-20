@@ -639,20 +639,20 @@ class LoadableRegion( Region ):
                         if quad.quadType == "?":
                             for j in xrange( PATHFINDER_RESOLUTION ):
                                 for k in xrange( PATHFINDER_RESOLUTION ):
-                                    g.insert_block( ( x * PATHFINDER_RESOLUTION ) + j, ( z * PATHFINDER_RESOLUTION ) + k )
+                                    g.insert_block( x + j, z + k )
                                     
                     if quad.quadType == "l":
                         for j in xrange( PATHFINDER_RESOLUTION ):
                             g.insert_block( xoff + j, zoff )
                     if quad.quadType == "h":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff + PATHFINDER_RESOLUTION + j, zoff + PATHFINDER_RESOLUTION  )
+                            g.insert_block( xoff + j, zoff   )
                     if quad.quadType == "R":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff , zoff + PATHFINDER_RESOLUTION + j )
+                            g.insert_block( xoff , zoff + j )
                     if quad.quadType == "L":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff + PATHFINDER_RESOLUTION  , zoff + PATHFINDER_RESOLUTION + j )
+                            g.insert_block( xoff  , zoff + j )
                             
                     if quad.quadType == "a":
                         for j in xrange( PATHFINDER_RESOLUTION ):
@@ -661,13 +661,15 @@ class LoadableRegion( Region ):
                             g.insert_block( xoff, zoff + j )
                     if quad.quadType == "b":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff + PATHFINDER_RESOLUTION + j, zoff + PATHFINDER_RESOLUTION  )
+                            g.insert_block( xoff + j, zoff   )
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff , zoff + j )
                     if quad.quadType == "c":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff , zoff + PATHFINDER_RESOLUTION + j )
+                            g.insert_block( xoff , zoff + j )
                     if quad.quadType == "d":
                         for j in xrange( PATHFINDER_RESOLUTION ):
-                            g.insert_block( xoff + PATHFINDER_RESOLUTION  , zoff + PATHFINDER_RESOLUTION + j )
+                            g.insert_block( xoff , zoff + j )
             return g
         
         def ToggleWalls( self ):

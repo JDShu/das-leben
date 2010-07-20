@@ -210,9 +210,9 @@ class GameApp3d( soya.World ):
         
         g.print_grid()
         
-        p = PathFinder( g, ( 20, 10 ), [( 30, 30 )] )
+        p = PathFinder( g, ( 25, 37 ), [( 30, 30 )] )
         
-        path = p.Draw( self, 3 , 4.0 )
+        path = p.Draw( self, 3 , 4.0, 1.5 )
         
         g.save_file( "%s/map.txt" % self.DATA_PATH, p.path )
         

@@ -188,15 +188,15 @@ class PathFinder():
        
         return path
     
-    def Draw( self, a_Scene, a_Scale, a_Altitude ):
+    def Draw( self, a_Scene, a_Scale, a_Altitude, a_Offset=0 ):
         w = soya.World()
         last = self.path[ 0 ]
         for point in self.path:
             if not last == point:
-                x1 = last[ 0 ] * a_Scale
-                z1 = last[ 1 ] * a_Scale
-                x2 = point[ 0 ] * a_Scale
-                z2 = point[ 1 ] * a_Scale
+                x1 = ( last[ 0 ] * a_Scale ) + a_Offset
+                z1 = ( last[ 1 ] * a_Scale ) + a_Offset
+                x2 = ( point[ 0 ] * a_Scale ) + a_Offset
+                z2 = ( point[ 1 ] * a_Scale ) + a_Offset
                 
                 p1 = soya.Vertex( a_Scene, x1, a_Altitude, z1 )
                 p2 = soya.Vertex( a_Scene, x2, a_Altitude, z2 )
