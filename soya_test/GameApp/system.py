@@ -64,9 +64,9 @@ class Grid():
         self.grid = []
         self.width = width
         self.height = height
-        for x in xrange(width):
+        for y in xrange(height):
             line = []
-            for y in xrange(height):
+            for x in xrange(width):
                 line.append( None )
             self.grid.append( line )
 
@@ -98,14 +98,14 @@ class Grid():
         for y in xrange(self.width):
             line = ""
             for x in xrange(self.height):
-                if self.grid[y][x] == None:
-                    line += "0"
-                elif self.grid[y][x] == "X":
+                if self.grid[x][y] == None:
+                    line += "_"
+                elif self.grid[x][y] == "X":
                     line += "X"
-                elif self.grid[y][x] == 1:
+                elif self.grid[x][y] == 1:
                     line += "W"
                 else:
-                    line += "?"
+                    line += "_"
             line += "\n"
             f.write( line )
         

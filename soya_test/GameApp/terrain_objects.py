@@ -629,11 +629,11 @@ class LoadableRegion( Region ):
                            
         def CreateGrid( self, a_GroundFloor=True ):
             g = Grid( self.m_Width * PATHFINDER_RESOLUTION, self.m_Height * PATHFINDER_RESOLUTION )
-            for x in xrange( self.m_Height ):
-                xoff = ( x * PATHFINDER_RESOLUTION )
+            for z in xrange( self.m_Height ):
+                zoff = z * PATHFINDER_RESOLUTION
                 
-                for z in xrange( self.m_Width ):
-                    zoff = z * PATHFINDER_RESOLUTION
+                for x in xrange( self.m_Width ):
+                    xoff = ( x * PATHFINDER_RESOLUTION )
                     quad = self.quads[ ( z * self.m_Width ) + x ]
                     if not a_GroundFloor:
                         if quad.quadType == "?":
@@ -654,6 +654,20 @@ class LoadableRegion( Region ):
                         for j in xrange( PATHFINDER_RESOLUTION ):
                             g.insert_block( xoff + PATHFINDER_RESOLUTION  , zoff + PATHFINDER_RESOLUTION + j )
                             
+                    if quad.quadType == "a":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff + j, zoff )
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff, zoff + j )
+                    if quad.quadType == "b":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff + PATHFINDER_RESOLUTION + j, zoff + PATHFINDER_RESOLUTION  )
+                    if quad.quadType == "c":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff , zoff + PATHFINDER_RESOLUTION + j )
+                    if quad.quadType == "d":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff + PATHFINDER_RESOLUTION  , zoff + PATHFINDER_RESOLUTION + j )
             return g
         
         def ToggleWalls( self ):

@@ -210,7 +210,7 @@ class GameApp3d( soya.World ):
         
         g.print_grid()
         
-        p = PathFinder( g, ( 10, 10 ), [( 40, 30 )] )
+        p = PathFinder( g, ( 20, 10 ), [( 30, 30 )] )
         
         path = p.Draw( self, 3 , 4.0 )
         
