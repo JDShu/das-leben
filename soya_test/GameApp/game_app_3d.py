@@ -212,9 +212,9 @@ class GameApp3d( soya.World ):
         
         p = PathFinder( g, ( 25, 37 ), [( 30, 30 )] )
         
-        path = p.Draw( self, 3 , 4.0, 1.5 )
+        path = p.Draw( self, 3 , 2.0, 1.5 )
         
-        g.save_file( "%s/map.txt" % self.DATA_PATH, p.path )
+        # g.save_file( "%s/map.txt" % self.DATA_PATH, p.path )
         
         # s = LoadableRegion( self, a_AssetManager=self.AssetManager )
 ##        pickle_file = open( "%s/environment/floors/first.pkl" % self.DATA_PATH, "r" )
@@ -238,12 +238,12 @@ class GameApp3d( soya.World ):
         sorcerer_model.shadow = 1
         sorcerer = soya.Body(self, sorcerer_model)
         sorcerer.animate_blend_cycle("attente")
-        sorcerer.y = 5
-        sorcerer.x = 60
-        sorcerer.z = 60
+        # sorcerer.y = 5
+        sorcerer.x = ( 25 * 3 ) + 1.5
+        sorcerer.z = ( 36 * 3 ) + 1.5
 
     def begin_round( self ):
-        soya.World.begin_round( self )
+        soya.Body.begin_round( self )
         self.ProcessEvents()
         self.ProccessKeys()
 
