@@ -116,7 +116,7 @@ class GameApp3d( soya.World ):
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
         self.m_Camera = oglCamera( self )
-        self.m_Camera.set_xyz( 16.0, 6.0, 0.0 )
+        self.m_Camera.set_xyz( 37.0, 10.0, 0.0 )
         self.m_Camera.look_at( soya.Point( self, 16.0, -6.0, 10.0) )
 
         self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
@@ -208,7 +208,7 @@ class GameApp3d( soya.World ):
         
         g = f.CreateGrid()
         
-        g.print_grid()
+        #g.print_grid()
         
         p = PathFinder( g, ( 25, 37 ), [( 30, 30 )] )
         
@@ -232,15 +232,20 @@ class GameApp3d( soya.World ):
 ##        b = soya.Body( self, s.to_model() )
 ##        b.y = 4.85 
 
-        sorcerer_model = soya.AnimatedModel.get("balazar")
-        tex = soya.Material( soya.Image.get( "balazar.png" ) )
-        sorcerer_model.material = tex
-        sorcerer_model.shadow = 1
-        sorcerer = soya.Body(self, sorcerer_model)
-        sorcerer.animate_blend_cycle("attente")
+##        sorcerer_model = soya.AnimatedModel.get("balazar")
+##        tex = soya.Material( soya.Image.get( "balazar.png" ) )
+##        sorcerer_model.material = tex
+##        sorcerer_model.shadow = 1
+##        sorcerer = soya.Body(self, sorcerer_model)
+##        sorcerer.animate_blend_cycle("attente")
         # sorcerer.y = 5
+        sorcerer = Avatar( self, DUDE, self.AssetManager )
+        
         sorcerer.x = ( 25 * 3 ) + 1.5
-        sorcerer.z = ( 36 * 3 ) + 1.5
+        sorcerer.z = ( 37 * 3 ) + 1.5
+        sorcerer.UseWaypoints( p.path )
+        
+        self.m_Camera.look_at( sorcerer )
 
     def begin_round( self ):
         soya.Body.begin_round( self )

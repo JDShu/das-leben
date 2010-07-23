@@ -450,6 +450,8 @@ class LoadableRegion( Region ):
             self.ShowWalls = True
             self.FirstFloor = a_FirstFloor
             self.Scene = a_Scene
+            self.solid = 1
+            
             
         def Save( self, a_Filename ):
             f = open( a_Filename, "w" )
