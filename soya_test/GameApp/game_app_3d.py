@@ -207,45 +207,21 @@ class GameApp3d( soya.World ):
         pickle_file.close()
         
         self.grid = g = f.CreateGrid()
-        
-        #g.print_grid()
-        
-        
-        
-        # g.save_file( "%s/map.txt" % self.DATA_PATH, p.path )
-        
-        # s = LoadableRegion( self, a_AssetManager=self.AssetManager )
-##        pickle_file = open( "%s/environment/floors/first.pkl" % self.DATA_PATH, "r" )
-##        s = pickle.load( pickle_file )
-##        pickle_file.close()
-        # s.Load( "%s/environment/floors/first.flr" % self.DATA_PATH )
-
-       
+             
         model_builder = soya.SimpleModelBuilder()
         model_builder.shadow = 1
         
         b = soya.Body( self, f.to_model() )
         b.y = 0.01 
         
-##        b = soya.Body( self, s.to_model() )
-##        b.y = 4.85 
 
-##        sorcerer_model = soya.AnimatedModel.get("balazar")
-##        tex = soya.Material( soya.Image.get( "balazar.png" ) )
-##        sorcerer_model.material = tex
-##        sorcerer_model.shadow = 1
-##        sorcerer = soya.Body(self, sorcerer_model)
-##        sorcerer.animate_blend_cycle("attente")
-        # sorcerer.y = 5
         self.sorcerer = Avatar( self, DUDE, self.AssetManager )
         
         self.sorcerer.x = ( 25 * 3 ) + 1.5
         self.sorcerer.z = ( 37 * 3 ) + 1.5
         
         p = PathFinder( g, g.GridSpaceCoords( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH, 1.5 ) , [( 30, 30 )] )
-        
-        path = p.Draw( self, 3 , 2.0, 1.5 )
-        
+               
         self.sorcerer.UseWaypoints( p.path )
         
         self.m_Camera.look_at( self.sorcerer )
@@ -280,8 +256,8 @@ class GameApp3d( soya.World ):
               impact, normal = result
               g = self.grid
               g_coord = g.GridSpaceCoords
-              p = PathFinder( g, g_coord( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH, 1.5 ),
-                              [ g_coord( impact.x, impact.z, WALL_WIDTH, 1.5 ) ] )
+              p = PathFinder( g, g_coord( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH ),
+                              [ g_coord( impact.x, impact.z, WALL_WIDTH ) ] )
               
               self.sorcerer.UseWaypoints( p.path )
               

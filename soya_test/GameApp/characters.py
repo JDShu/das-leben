@@ -145,9 +145,10 @@ class Avatar( soya.World ):
         self.speed /= 10.0
         
         del self.path[ len( self.path ) - 1 ]
+        self.look_at( soya.Point( self.m_Scene, self.destination_x, 0.0, self.destination_z ) )
 
     def Arrived( self ):
-        THRESHOLD = 0.5
+        THRESHOLD = 0.1
     
         if self.x >= ( self.destination_x - THRESHOLD ) and self.x <= ( self.destination_x + THRESHOLD ):
             if self.z >= ( self.destination_z - THRESHOLD ) and self.z <= ( self.destination_z + THRESHOLD ):
