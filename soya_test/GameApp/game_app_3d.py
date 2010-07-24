@@ -275,10 +275,13 @@ class GameApp3d( soya.World ):
               self.move( self.mouse_pos )
             elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
               mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
+              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
+              
+              impact, normal = result
               g = self.grid
               g_coord = g.GridSpaceCoords
               p = PathFinder( g, g_coord( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH, 1.5 ),
-                              [ g_coord( mouse.x, mouse.z, WALL_WIDTH, 1.5 ) ] )
+                              [ g_coord( impact.x, impact.z, WALL_WIDTH, 1.5 ) ] )
               
               self.sorcerer.UseWaypoints( p.path )
               

@@ -152,7 +152,7 @@ class PathFinder():
                     pass
                 elif node.open and cost < node.g:
                     node.close_node()
-            print current
+            #print current
             current = heappop(heap)[1]
             for g in goal:
                 if current == g:
