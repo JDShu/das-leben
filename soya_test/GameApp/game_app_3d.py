@@ -116,7 +116,7 @@ class GameApp3d( soya.World ):
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
 
         self.m_Camera = oglCamera( self )
-        self.m_Camera.set_xyz( 37.0, 10.0, 0.0 )
+        self.m_Camera.set_xyz( 37.0, 10.0, 23.0 )
         self.m_Camera.look_at( soya.Point( self, 16.0, -6.0, 10.0) )
 
         self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
@@ -237,18 +237,18 @@ class GameApp3d( soya.World ):
 ##        sorcerer = soya.Body(self, sorcerer_model)
 ##        sorcerer.animate_blend_cycle("attente")
         # sorcerer.y = 5
-        sorcerer = Avatar( self, DUDE, self.AssetManager )
+        self.sorcerer = Avatar( self, DUDE, self.AssetManager )
         
-        sorcerer.x = ( 25 * 3 ) + 1.5
-        sorcerer.z = ( 37 * 3 ) + 1.5
+        self.sorcerer.x = ( 25 * 3 ) + 1.5
+        self.sorcerer.z = ( 37 * 3 ) + 1.5
         
-        p = PathFinder( g, g.GridSpaceCoords( sorcerer.x, sorcerer.z, WALL_WIDTH, 1.5 ) , [( 30, 30 )] )
+        p = PathFinder( g, g.GridSpaceCoords( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH, 1.5 ) , [( 30, 30 )] )
         
         path = p.Draw( self, 3 , 2.0, 1.5 )
         
-        sorcerer.UseWaypoints( p.path )
+        self.sorcerer.UseWaypoints( p.path )
         
-        self.m_Camera.look_at( sorcerer )
+        self.m_Camera.look_at( self.sorcerer )
 
     def begin_round( self ):
         soya.Body.begin_round( self )
@@ -262,19 +262,27 @@ class GameApp3d( soya.World ):
 
         for event in soya.MAIN_LOOP.events:
             if event[ 0 ] == soya.sdlconst.KEYDOWN:
-                self.m_KeyBuffer[ event[ 1 ] ] = True
+              self.m_KeyBuffer[ event[ 1 ] ] = True
 
             elif event[0] == soya.sdlconst.KEYUP:
-                self.m_KeyBuffer[ event[ 1 ] ] = False
+              self.m_KeyBuffer[ event[ 1 ] ] = False
 
             elif event[ 0 ] == soya.sdlconst.QUIT:
-                soya.MAIN_LOOP.stop()
+              soya.MAIN_LOOP.stop()
 
             elif event[0] == soya.sdlconst.MOUSEMOTION:
-                self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
-                self.move( self.mouse_pos )
-
-
+              self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
+              self.move( self.mouse_pos )
+            elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
+              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
+              g = self.grid
+              g_coord = g.GridSpaceCoords
+              p = PathFinder( g, g_coord( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH, 1.5 ),
+                              [ g_coord( mouse.x, mouse.z, WALL_WIDTH, 1.5 ) ] )
+              
+              self.sorcerer.UseWaypoints( p.path )
+              
+              
             '''elif event.type == MOUSEBUTTONDOWN:
                 l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
                 if event.button == LEFT_MOUSE:
