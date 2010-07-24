@@ -29,6 +29,7 @@ from game_assets import *
 from buildings import *
 from system import *
 import soya, soya.widget
+import soya.pudding as pudding
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -107,9 +108,9 @@ class GameApp3d( soya.World ):
         @param a_DataPath String: The path to the data directory
         @return returns a GameApp3d instance
         '''
-
+        
         soya.init( a_AppName, a_ViewPortWidth, a_ViewPortHeight, a_Fullscreen )
-        #soya.set_quality( 1 )
+        pudding.init()
 
         soya.World.__init__( self )
 
@@ -184,7 +185,8 @@ class GameApp3d( soya.World ):
         self.objects = []; oadd = self.objects.append
 
         # floor terrain
-        terrain_size = 256
+        terrain_size = 50 * 3
+        
         self.terrain = soya.Terrain( self, terrain_size, terrain_size )
         random_terrain_border( self.terrain )
 		  
