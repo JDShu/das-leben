@@ -115,6 +115,9 @@ class Grid():
         for sq in path:
             self.grid[sq[0]][sq[1]] = "X"
         self.print_grid()
+        
+    def GridSpaceCoords( self, x, y, tile_width=1, tile_offset=0 ):
+        return ( int( ( x - tile_offset ) / tile_width ), int( ( y - tile_offset ) / tile_width ) )
 
 #generates list of grid coordinates leading from goal to start according to a simple A* algorithm
 class PathFinder():

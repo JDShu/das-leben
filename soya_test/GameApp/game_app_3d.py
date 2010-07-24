@@ -206,13 +206,11 @@ class GameApp3d( soya.World ):
         f = pickle.load( pickle_file )
         pickle_file.close()
         
-        g = f.CreateGrid()
+        self.grid = g = f.CreateGrid()
         
         #g.print_grid()
         
-        p = PathFinder( g, ( 25, 37 ), [( 30, 30 )] )
         
-        path = p.Draw( self, 3 , 2.0, 1.5 )
         
         # g.save_file( "%s/map.txt" % self.DATA_PATH, p.path )
         
@@ -243,6 +241,11 @@ class GameApp3d( soya.World ):
         
         sorcerer.x = ( 25 * 3 ) + 1.5
         sorcerer.z = ( 37 * 3 ) + 1.5
+        
+        p = PathFinder( g, g.GridSpaceCoords( sorcerer.x, sorcerer.z, WALL_WIDTH, 1.5 ) , [( 30, 30 )] )
+        
+        path = p.Draw( self, 3 , 2.0, 1.5 )
+        
         sorcerer.UseWaypoints( p.path )
         
         self.m_Camera.look_at( sorcerer )
