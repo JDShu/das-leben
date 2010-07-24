@@ -72,10 +72,17 @@ class Grid():
 
     def insert_block( self, x, y ):
         self.grid[x][y] = BLOCKED
+        
+    def clear_nodes( self ):
+        for y in xrange(self.width):
+            for x in xrange(self.height):
+                if isinstance( self.grid[y][x], Node ):
+                    self.grid[y][x] = None
 
     def insert_node( self, x, y, node):
         self.grid[x][y] = node
         
+                    
     def print_grid( self ):
         for y in xrange(self.width):
             for x in xrange(self.height):
@@ -125,6 +132,7 @@ class PathFinder():
         self.start = start
         self.goal = goal
         self.grid = input_grid
+        self.grid.clear_nodes()
         start_node = Node(*start)
         start_node.set_g(0)
         self.grid.insert_node(start[0], start[1], start_node)
