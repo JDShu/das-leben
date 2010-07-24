@@ -140,6 +140,8 @@ class PathFinder():
         heappush( heap, (0,start) )
         current = heappop(heap)[1]
         reached_goal = False
+        if start in goal:
+            reached_goal = True
         while not reached_goal:
             c_x, c_y = current
             current_node = self.grid.grid[c_x][c_y]
@@ -189,6 +191,8 @@ class PathFinder():
         return node.g + 1.001*node.h_function( goal )
 
     def _construct_path( self, goal ):
+        if self.start == goal:
+            return [goal]
         path = []
         current = goal
         x, y = current
