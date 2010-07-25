@@ -14,18 +14,67 @@
  *
 '''
 
-import OpenGL
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
-import pygame
-import sys
+import soya, soya.gui
 
-class LoadingScreen:
-    ''' A screen to display the title screen and progress bar'''
-    def __init__(self, a_ScreenWidth, a_ScreenHieght):
-        self.m_Width = a_ScreenWidth
-        self.m_Height = a_ScreenHieght
+class LaVidaMenuStyle( soya.gui.style.Style ):
+    def __init__( self ):
+        soya.gui.style.Style.__init__( self )
         
-    def Draw(self):
-        '''Draw the loading screen'''
+        self.materials[0].diffuse = (0.8, 0.0, 0.0, 1.0) # Base
+	self.materials[1].diffuse = (1.0, 0.2, 0.2, 1.0) # Selected
+	self.materials[2].diffuse = (0.8, 0.0, 0.0, 1.0) # Window title
+	self.materials[3].diffuse = (1.0, 0.0, 0.0, 1.0) # Selected window title
+	self.materials[4].diffuse = (1.0, 1.0, 1.0, 0.9) # Window background
+	self.corner_colors = [
+                (0.0, 0.0, 0.0, 1.0), # Base
+                (0.0, 0.0, 0.0, 1.0), # Selected
+                (0.0, 0.0, 0.0, 1.0), # Window title
+                (0.0, 0.0, 0.0, 1.0), # Selected window title
+                (0.5, 0.5, 0.5, 0.5), # Window background
+                ]
+	self.line_colors = [
+                (0.0, 0.0, 0.0, 1.0), # Base
+                (0.0, 0.0, 0.0, 1.0), # Selected
+                (0.0, 0.0, 0.0, 1.0), # Window title
+                (0.0, 0.0, 0.0, 1.0), # Selected window title
+                (0.0, 0.0, 0.0, 1.0), # Window background
+                ]
+	self.text_colors = [
+                (0.0, 0.0, 0.0, 1.0), # Base
+                (0.0, 0.2, 0.0, 1.0), # Selected
+                (1.0, 1.0, 1.0, 1.0), # Window title
+                ]
+	self.line_width = 1
+	
+	
+	self.materials[0].diffuse = (1.0, 0.9, 0.4, 1.0) # Base
+	self.materials[1].diffuse = (1.0, 1.0, 0.7, 1.0) # Selected
+	self.materials[2].diffuse = (1.0, 0.9, 0.4, 1.0) # Window title
+	self.materials[3].diffuse = (1.0, 1.0, 0.5, 1.0) # Selected window title
+	
+	self.materials[2].diffuse = (1.0, 0.7, 0.2, 1.0) # Window title
+	self.materials[3].diffuse = (1.0, 0.9, 0.4, 1.0) # Selected window title
+	self.materials[4].diffuse = (1.0, 1.0, 1.0, 0.9) # Window background
+	b  = (0.9, 0.6, 0.0, 1.0)
+	b2 = (0.9, 0.5, 0.0, 1.0)
+	self.corner_colors = [
+                b, # Base
+                b, # Selected
+                b2, # Window title
+                b2, # Selected window title
+                (1.0, 0.9, 0.4, 0.9), # Window background
+                ]
+	self.line_colors = [
+                b, # Base
+                b, # Selected
+                b2, # Window title
+                b2, # Selected window title
+                b, # Window background
+                ]
+	self.text_colors = [
+                (0.0, 0.0, 0.0, 1.0), # Base
+                #(0.0, 0.2, 0.0, 1.0), # Selected
+                (0.4, 0.4, 0.0, 1.0), # Selected
+                (0.7, 0.4, 0.0, 1.0), # Window title
+                ]
+	self.line_width = 1

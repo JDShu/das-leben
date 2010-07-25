@@ -28,8 +28,10 @@ from misc_ui import *
 from game_assets import *
 from buildings import *
 from system import *
+from lavida_gui import * 
 import soya, soya.widget
 import soya.pudding as pudding
+import soya.gui
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -110,7 +112,9 @@ class GameApp3d( soya.World ):
         '''
         
         soya.init( a_AppName, a_ViewPortWidth, a_ViewPortHeight, a_Fullscreen )
-        pudding.init()
+        root = soya.gui.RootLayer( None )
+	style = LaVidaMenuStyle()
+	soya.gui.set_style( style )
 
         soya.World.__init__( self )
 
@@ -123,11 +127,21 @@ class GameApp3d( soya.World ):
         self.m_Camera.add_vector( soya.Vector( None, 10.0, 0.0, 0.0 ) )
 
         self.m_Camera.back = 100
-        soya.set_root_widget( self.m_Camera )
+        
+        soya.gui.CameraViewport( root, self.m_Camera )
+        soya.set_root_widget( root )
 
-        soya.set_root_widget( soya.widget.Group() )
-        soya.root_widget.add( self.m_Camera )
-        soya.root_widget.add( soya.widget.FPSLabel() )
+        soya.root_widget.add( soya.gui.FPSLabel() )
+
+	window = soya.gui.Window(root)
+	table = soya.gui.VTable(window, 2)
+	table.row_pad = 20
+	soya.gui.Label(table, u"Fullscreen")
+	soya.gui.CheckBox(table, u"bla bla", 1)
+	soya.gui.Label(table, u"Quality")
+	soya.gui.HScrollBar(table, 0, 9, 1, 1, 1)
+	soya.gui.CancelButton(table)
+	soya.gui.ValidateButton(table)
 
 
         self.m_SelectedObject = None
@@ -251,17 +265,17 @@ class GameApp3d( soya.World ):
             elif event[0] == soya.sdlconst.MOUSEMOTION:
               self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
               self.move( self.mouse_pos )
-            elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
-              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
-              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
-              
-              impact, normal = result
-              g = self.grid
-              g_coord = g.GridSpaceCoords
-              p = PathFinder( g, g_coord( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH ),
-                              [ g_coord( impact.x, impact.z, WALL_WIDTH ) ] )
-              
-              self.sorcerer.UseWaypoints( p.path )
+##            elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
+##              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
+##              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
+##              
+##              impact, normal = result
+##              g = self.grid
+##              g_coord = g.GridSpaceCoords
+##              p = PathFinder( g, g_coord( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH ),
+##                              [ g_coord( impact.x, impact.z, WALL_WIDTH ) ] )
+##              
+##              self.sorcerer.UseWaypoints( p.path )
               
               
             '''elif event.type == MOUSEBUTTONDOWN:
