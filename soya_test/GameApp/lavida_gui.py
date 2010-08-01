@@ -15,66 +15,72 @@
 '''
 
 import soya, soya.gui
+import soya.opengl as opengl
 
 class LaVidaMenuStyle( soya.gui.style.Style ):
     def __init__( self ):
         soya.gui.style.Style.__init__( self )
+
+        self.materials[0].diffuse = (0.5, 0.5, 0.8, 1.0) # Button background
+        self.materials[1].diffuse = (0.5, 0.5, 0.9, 1.0) # Selected
+        self.materials[3].diffuse = (1.0, 1.0, 0.8, 1.0) # Selected window title
+
+        self.materials[2].diffuse = (0.4, 0.4, 0.8, 1.0) # Window title background
+        self.materials[3].diffuse = (0.5, 0.5, 0.8, 1.0) # Selected window title
+        self.materials[4].diffuse = (1.0, 1.0, 1.0, 0.9) # Window background
+        b  = (0.0, 0.6, 0.8, 1.0)
+        b2 = (0.0, 0.5, 0.8, 1.0)
+        self.corner_colors = [
+            b, # Base
+            b, # Selected
+            b2, # Window title
+            b2, # Selected window title
+            (0.4, 0.9, 1.0, 0.9), # Window background
+        ]
+        self.line_colors = [
+            b, # Base
+            b, # Selected
+            b2, # Window title
+            b2, # Selected window title
+            b, # Window background
+        ]
+        self.text_colors = [
+            (0.0, 0.0, 0.0, 1.0), # Base
+            #(0.0, 0.2, 0.0, 1.0), # Selected
+            (0.7, 0.7, 1.0, 1.0), # Selected
+            (1, 1, 1, 1.0), # Window title
+        ]
+        self.line_width = 1
         
-        self.materials[0].diffuse = (0.8, 0.0, 0.0, 1.0) # Base
-	self.materials[1].diffuse = (1.0, 0.2, 0.2, 1.0) # Selected
-	self.materials[2].diffuse = (0.8, 0.0, 0.0, 1.0) # Window title
-	self.materials[3].diffuse = (1.0, 0.0, 0.0, 1.0) # Selected window title
-	self.materials[4].diffuse = (1.0, 1.0, 1.0, 0.9) # Window background
-	self.corner_colors = [
-                (0.0, 0.0, 0.0, 1.0), # Base
-                (0.0, 0.0, 0.0, 1.0), # Selected
-                (0.0, 0.0, 0.0, 1.0), # Window title
-                (0.0, 0.0, 0.0, 1.0), # Selected window title
-                (0.5, 0.5, 0.5, 0.5), # Window background
-                ]
-	self.line_colors = [
-                (0.0, 0.0, 0.0, 1.0), # Base
-                (0.0, 0.0, 0.0, 1.0), # Selected
-                (0.0, 0.0, 0.0, 1.0), # Window title
-                (0.0, 0.0, 0.0, 1.0), # Selected window title
-                (0.0, 0.0, 0.0, 1.0), # Window background
-                ]
-	self.text_colors = [
-                (0.0, 0.0, 0.0, 1.0), # Base
-                (0.0, 0.2, 0.0, 1.0), # Selected
-                (1.0, 1.0, 1.0, 1.0), # Window title
-                ]
-	self.line_width = 1
-	
-	
-	self.materials[0].diffuse = (1.0, 0.9, 0.4, 1.0) # Base
-	self.materials[1].diffuse = (1.0, 1.0, 0.7, 1.0) # Selected
-	self.materials[2].diffuse = (1.0, 0.9, 0.4, 1.0) # Window title
-	self.materials[3].diffuse = (1.0, 1.0, 0.5, 1.0) # Selected window title
-	
-	self.materials[2].diffuse = (1.0, 0.7, 0.2, 1.0) # Window title
-	self.materials[3].diffuse = (1.0, 0.9, 0.4, 1.0) # Selected window title
-	self.materials[4].diffuse = (1.0, 1.0, 1.0, 0.9) # Window background
-	b  = (0.9, 0.6, 0.0, 1.0)
-	b2 = (0.9, 0.5, 0.0, 1.0)
-	self.corner_colors = [
-                b, # Base
-                b, # Selected
-                b2, # Window title
-                b2, # Selected window title
-                (1.0, 0.9, 0.4, 0.9), # Window background
-                ]
-	self.line_colors = [
-                b, # Base
-                b, # Selected
-                b2, # Window title
-                b2, # Selected window title
-                b, # Window background
-                ]
-	self.text_colors = [
-                (0.0, 0.0, 0.0, 1.0), # Base
-                #(0.0, 0.2, 0.0, 1.0), # Selected
-                (0.4, 0.4, 0.0, 1.0), # Selected
-                (0.7, 0.4, 0.0, 1.0), # Window title
-                ]
-	self.line_width = 1
+class LavidaGameUI( soya.gui.Window ):
+    def __init__( self ):
+        soya.gui.Window( self )
+        
+class LavidaPieMenu( soya.gui.Group ):
+    def __init__( self, parent=None ):
+        soya.gui.Group.__init__( self, parent )
+        self.material = soya.Material( soya.Image.get( "circular_menu.png" ) )
+        
+        self.radius = 128
+        
+	self.x1 = -self.radius
+	self.y1 = -self.radius
+	self.x2 = self.radius
+	self.y2 = self.radius
+        
+    def move( self, x, y ):
+        self.x = x
+	self.y = y
+        
+    def render( self ):
+        if self.material:
+            self.material.activate()
+	    opengl.glEnable( opengl.GL_BLEND )
+            opengl.glBegin   (opengl.GL_QUADS)
+	    opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y1)
+	    opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y2)
+	    opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y2)
+	    opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
+	    opengl.glEnd()
+	    opengl.glDisable( opengl.GL_BLEND )
+            

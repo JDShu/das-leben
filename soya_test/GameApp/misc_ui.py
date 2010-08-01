@@ -24,6 +24,8 @@ import pygame
 import numpy
 from numpy import *
 
+import soya.opengl as opengl
+
 class TexturedRect( Vector3d ):
     '''a textured rectangle'''
     def __init__( self, a_TextureFilename, a_Position, a_Width, a_Height ):
@@ -62,6 +64,9 @@ class TexturedRect( Vector3d ):
         '''
         Render the textured quad
         '''
+        
+        w = gui.Window()
+        
         glEnable( GL_TEXTURE_2D )
         glBindTexture( GL_TEXTURE_2D, self.m_Texture )
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)

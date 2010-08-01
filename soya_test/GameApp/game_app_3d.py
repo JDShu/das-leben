@@ -31,7 +31,8 @@ from system import *
 from lavida_gui import * 
 import soya, soya.widget
 import soya.pudding as pudding
-import soya.gui
+import soya.pudding.ext.fpslabel
+
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -112,10 +113,7 @@ class GameApp3d( soya.World ):
         '''
         
         soya.init( a_AppName, a_ViewPortWidth, a_ViewPortHeight, a_Fullscreen )
-        root = soya.gui.RootLayer( None )
-	style = LaVidaMenuStyle()
-	soya.gui.set_style( style )
-
+        	
         soya.World.__init__( self )
 
         self.DATA_PATH = a_DataPath != None and a_DataPath or path.join( getcwd(), "data" )
@@ -128,21 +126,14 @@ class GameApp3d( soya.World ):
 
         self.m_Camera.back = 100
         
+        root = soya.gui.RootLayer(None)
         soya.gui.CameraViewport( root, self.m_Camera )
+
         soya.set_root_widget( root )
-
-        soya.root_widget.add( soya.gui.FPSLabel() )
-
-	window = soya.gui.Window(root)
-	table = soya.gui.VTable(window, 2)
-	table.row_pad = 20
-	soya.gui.Label(table, u"Fullscreen")
-	soya.gui.CheckBox(table, u"bla bla", 1)
-	soya.gui.Label(table, u"Quality")
-	soya.gui.HScrollBar(table, 0, 9, 1, 1, 1)
-	soya.gui.CancelButton(table)
-	soya.gui.ValidateButton(table)
-
+        
+        self.pie_menu = LavidaPieMenu( root )
+                
+        #pudding.ext.fpslabel.FPSLabel( soya.root_widget, position = pudding.TOP_RIGHT )
 
         self.m_SelectedObject = None
 
@@ -265,6 +256,8 @@ class GameApp3d( soya.World ):
             elif event[0] == soya.sdlconst.MOUSEMOTION:
               self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
               self.move( self.mouse_pos )
+              
+              self.pie_menu.move( event[1], event[2] )
 ##            elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
 ##              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
 ##              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
