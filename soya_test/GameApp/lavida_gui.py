@@ -73,14 +73,15 @@ class LavidaPieMenu( soya.gui.Group ):
 	self.y = y
         
     def render( self ):
-        if self.material:
-            self.material.activate()
-	    opengl.glEnable( opengl.GL_BLEND )
-            opengl.glBegin   (opengl.GL_QUADS)
-	    opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y1)
-	    opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y2)
-	    opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y2)
-	    opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
-	    opengl.glEnd()
-	    opengl.glDisable( opengl.GL_BLEND )
+	if self.visible:
+	    if self.material:
+		self.material.activate()
+		opengl.glEnable( opengl.GL_BLEND )
+		opengl.glBegin   (opengl.GL_QUADS)
+		opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y1)
+		opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y2)
+		opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y2)
+		opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
+		opengl.glEnd()
+		opengl.glDisable( opengl.GL_BLEND )
             

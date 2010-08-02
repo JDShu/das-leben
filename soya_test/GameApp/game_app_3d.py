@@ -39,63 +39,6 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 NORMAL_MODE = 1
 EDIT_MODE = 2
 
-def random_terrain_border(terrain):
-  out_of_map_vertex_options = (1, 1)
-  TERRAIN_SIZE = 129
-  fall_length  = 2
-  afall_length = 0
-  for i in range(TERRAIN_SIZE):
-    for j in range(fall_length):
-      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
-      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
-      terrain.set_height(i, j, 0.0)
-    terrain.set_height(i, j + 1, 0.92 * terrain.get_height(i, j + 1))
-    if i % 2:
-      fall_length = max(1, fall_length + afall_length)
-      if (fall_length == 1) and (afall_length == -1): afall_length = 0
-      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
-      
-  fall_length  = 2
-  afall_length = 0
-  for i in range(TERRAIN_SIZE):
-    for j in range(TERRAIN_SIZE - 1, TERRAIN_SIZE - fall_length - 1, -1):
-      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
-      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
-      terrain.set_height(i, j, 0.0)
-    terrain.set_height(i, j - 1, 0.92 * terrain.get_height(i, j - 1))
-    if i % 2:
-      fall_length = max(1, fall_length + afall_length)
-      if (fall_length == 1) and (afall_length == -1): afall_length = 0
-      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
-
-  fall_length  = 2
-  afall_length = 0
-  for j in range(TERRAIN_SIZE):
-    for i in range(fall_length):
-      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
-      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
-      terrain.set_height(i, j, 0.0)
-    terrain.set_height(i + 1, j, 0.92 * terrain.get_height(i + 1, j))
-    if j % 2:
-      fall_length = max(1, fall_length + afall_length)
-      if (fall_length == 1) and (afall_length == -1): afall_length = 0
-      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
-      
-  fall_length  = 2
-  afall_length = 0
-  for j in range(TERRAIN_SIZE):
-    for i in range(TERRAIN_SIZE - 1, TERRAIN_SIZE - fall_length - 1, -1):
-      terrain.set_vertex_option(i, j, *out_of_map_vertex_options)
-      #terrain.set_vertex_color(i, j, (0.0, 0.0, 0.0, 0.0))
-      terrain.set_height(i, j, 0.0)
-    terrain.set_height(i - 1, j, 0.92 * terrain.get_height(i - 1, j))
-    if j % 2:
-      fall_length = max(1, fall_length + afall_length)
-      if (fall_length == 1) and (afall_length == -1): afall_length = 0
-      else: afall_length = max(-1, min(1, afall_length + random.randint(-1, 1)))
-
-
-
 class GameApp3d( soya.World ):
     """
     The main game class which manages all other processes
@@ -245,20 +188,24 @@ class GameApp3d( soya.World ):
 
         for event in soya.MAIN_LOOP.events:
             if event[ 0 ] == soya.sdlconst.KEYDOWN:
-              self.m_KeyBuffer[ event[ 1 ] ] = True
+                self.m_KeyBuffer[ event[ 1 ] ] = True
 
             elif event[0] == soya.sdlconst.KEYUP:
-              self.m_KeyBuffer[ event[ 1 ] ] = False
+                self.m_KeyBuffer[ event[ 1 ] ] = False
 
             elif event[ 0 ] == soya.sdlconst.QUIT:
-              soya.MAIN_LOOP.stop()
+                soya.MAIN_LOOP.stop()
 
             elif event[0] == soya.sdlconst.MOUSEMOTION:
-              self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
-              self.move( self.mouse_pos )
+                self.mouse_pos = self.m_Camera.coord2d_to_3d( event[1], event[2], -15.0 )
+                self.move( self.mouse_pos )
               
-              self.pie_menu.move( event[1], event[2] )
-##            elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
+            elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
+                if event[1] == soya.sdlconst.BUTTON_LEFT:
+                    self.pie_menu.visible = 0
+                    if event[1] == soya.sdlconst.BUTTON_RIGHT:
+                        self.pie_menu.visible = 1
+                        self.pie_menu.move( event[2], event[3] )
 ##              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
 ##              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
 ##              
@@ -289,7 +236,7 @@ class GameApp3d( soya.World ):
         '''
 
         if self.m_KeyBuffer[ soya.sdlconst.K_ESCAPE ]:
-          soya.MAIN_LOOP.stop()
+            soya.MAIN_LOOP.stop()
 
         if self.m_KeyBuffer[ soya.sdlconst.K_d ]:
             self.m_Camera.speed.x = 1.0
