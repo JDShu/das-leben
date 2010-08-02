@@ -15,7 +15,9 @@
 '''
 
 import soya, soya.gui
+from soya.gui import Group, Widget, HighlightableWidget, Button
 import soya.opengl as opengl
+from logger import *
 
 class LaVidaMenuStyle( soya.gui.style.Style ):
     def __init__( self ):
@@ -51,37 +53,55 @@ class LaVidaMenuStyle( soya.gui.style.Style ):
             (1, 1, 1, 1.0), # Window title
         ]
         self.line_width = 1
-        
-class LavidaGameUI( soya.gui.Window ):
+
+class LavidaGameUI( Group ):
     def __init__( self ):
         soya.gui.Window( self )
-        
-class LavidaPieMenu( soya.gui.Group ):
-    def __init__( self, parent=None ):
-        soya.gui.Group.__init__( self, parent )
-        self.material = soya.Material( soya.Image.get( "circular_menu.png" ) )
-        
-        self.radius = 128
-        
-	self.x1 = -self.radius
-	self.y1 = -self.radius
-	self.x2 = self.radius
-	self.y2 = self.radius
-        
-    def move( self, x, y ):
-        self.x = x
-	self.y = y
-        
+	
+class LavidaActionButton( Button ):
+    def __init__( self, parent, text = u"", on_clicked=None ):
+	Button.__init__( self, parent, text, on_clicked )
+	
     def render( self ):
-	if self.visible:
-	    if self.material:
-		self.material.activate()
-		opengl.glEnable( opengl.GL_BLEND )
-		opengl.glBegin   (opengl.GL_QUADS)
-		opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y1)
-		opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y2)
-		opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y2)
-		opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
-		opengl.glEnd()
-		opengl.glDisable( opengl.GL_BLEND )
-            
+	Button.render( self )
+
+class LavidaPieMenu( Group, HighlightableWidget ):
+    def __init__( self, parent=None ):
+        Group.__init__( self, parent )
+        HighlightableWidget.__init__( self )
+        self.material = soya.Material( soya.Image.get( "circular_menu.png" ) )
+
+        self.radius = 128
+
+        self.x1 = -self.radius
+        self.y1 = -self.radius
+        self.x2 = self.radius
+        self.y2 = self.radius
+	
+	btn = LavidaActionButton( self, "cheese" )
+
+    def move( self, x, y ):
+	Group.move( self, x, y )
+        self.x = x
+        self.y = y
+
+    def render( self ):
+        if self.visible:
+            if self.material:
+                self.material.activate()
+                opengl.glEnable( opengl.GL_BLEND )
+                opengl.glBegin   (opengl.GL_QUADS)
+                opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y1)
+                opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y2)
+                opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y2)
+                opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
+                opengl.glEnd()
+                opengl.glDisable( opengl.GL_BLEND )
+	Group.render(self)
+
+    def on_highlight( self, highlight ):
+        HighlightableWidget.on_highlight( self, highlight )
+        
+    def on_mouse_pressed(self, button, x, y):
+	Group.on_mouse_pressed( self, button, x, y )
+	LOG_DBG( self, "Mouse pressed: %s" % button )

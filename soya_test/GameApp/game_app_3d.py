@@ -135,9 +135,7 @@ class GameApp3d( soya.World ):
         # floor terrain
         terrain_size = 50 * 3
         
-        self.terrain = soya.Terrain( self, terrain_size, terrain_size )
-        random_terrain_border( self.terrain )
-		  
+        self.terrain = soya.Terrain( self, terrain_size, terrain_size )		  
 		  
         grass = soya.Material.get( "grass" )
         grass.mip_map = 1
@@ -203,9 +201,9 @@ class GameApp3d( soya.World ):
             elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
                 if event[1] == soya.sdlconst.BUTTON_LEFT:
                     self.pie_menu.visible = 0
-                    if event[1] == soya.sdlconst.BUTTON_RIGHT:
-                        self.pie_menu.visible = 1
-                        self.pie_menu.move( event[2], event[3] )
+                if event[1] == soya.sdlconst.BUTTON_RIGHT:
+                    self.pie_menu.visible = 1
+                    self.pie_menu.move( event[2], event[3] )
 ##              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
 ##              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
 ##              
