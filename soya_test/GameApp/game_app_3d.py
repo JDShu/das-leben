@@ -74,7 +74,7 @@ class GameApp3d( soya.World ):
 
         soya.set_root_widget( root )
         
-        self.pie_menu = LavidaPieMenu( root )
+        self.pie_menu = StandardActionsMenu( root )
                 
         #pudding.ext.fpslabel.FPSLabel( soya.root_widget, position = pudding.TOP_RIGHT )
 

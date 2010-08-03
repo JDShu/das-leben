@@ -18,6 +18,8 @@ import soya, soya.gui
 from soya.gui import Group, Widget, HighlightableWidget, Button
 import soya.opengl as opengl
 from logger import *
+from angle import Angle
+from math import cos, sin
 
 class LaVidaMenuStyle( soya.gui.style.Style ):
     def __init__( self ):
@@ -58,11 +60,18 @@ class LavidaGameUI( Group ):
     def __init__( self ):
         soya.gui.Window( self )
 
-class LavidaActionButton( Button ):
+class LavidaActionButton( Button, HighlightableWidget ):
     def __init__( self, parent, text = u"", on_clicked=None ):
         Button.__init__( self, parent, text, on_clicked )
         
         self.material = soya.Material()
+        
+        self.radius = 32
+
+        self.x1 = -self.radius
+        self.y1 = -self.radius
+        self.x2 = self.radius
+        self.y2 = self.radius
 
     def render( self ):
         if self.material:
@@ -75,6 +84,10 @@ class LavidaActionButton( Button ):
             opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
             opengl.glEnd()
             opengl.glDisable( opengl.GL_BLEND )
+            
+    def on_highlight( self, highlight ):
+        HighlightableWidget.on_highlight( self, highlight )
+        self.material.diffuse = ( 1.0, 1.0, 1.0, 1.0 )
 
 class LavidaPieMenu( Group, HighlightableWidget ):
     def __init__( self, parent=None ):
@@ -117,27 +130,42 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         LOG_DBG( self, "Mouse pressed: %s" % button )
         
         
-class StandardActions( LavidaPieMenu ):
+class StandardActionsMenu( LavidaPieMenu ):
     def __init__( self, parent ):
-        LavidaPieMenu.__init__( self, parent ):
-            btn = MoveToButton( self )
-            btn = UseStairsButton( self )
-            btn = TalkToAvatar( self )
+        LavidaPieMenu.__init__( self, parent )
+        
+        btn = MoveToButton( self )
+        btn = UseStairsButton( self )
+        btn = TalkToAvatar( self )
+        
+        step = 360 / len( self.widgets ) # step in degrees
+        angle = Angle( step / 2.0 )
+        for i, widget in enumerate( self.widgets ):
+            widget.y = self.radius - 10
+            
+            theta = angle.GetAngleInRadians()
+            widget.x = cos( theta ) * widget.x - sin( theta ) * widget.y
+            widget.y = sin( theta ) * widget.x + cos( theta ) * widget.y
+            
+            angle += step
             
 
 class MoveToButton( LavidaActionButton ):
     def __init__( self, parent ):
         LavidaActionButton.__init__( self, parent )
-        self.material = soya.Material( soya.Image.get( "moveto.png" ) )
+        self.material = soya.Material( soya.Image.get( "go_here.png" ) )
+        #self.material.diffuse = ( 0.8, 0.8, 0.8, 1.0 )
         
 class UseStairsButton( LavidaActionButton ):
     def __init__( self, parent ):
         LavidaActionButton.__init__( self, parent )
         self.material = soya.Material( soya.Image.get( "use_stairs.png" ) )
+        #self.material.diffuse = ( 0.8, 0.8, 0.8, 1.0 )
         
 class TalkToAvatar( LavidaActionButton ):
     def __init__( self, parent ):
         LavidaActionButton.__init__( self, parent )
-        self.material = soya.Material( soya.Image.get( "talk_to_avatar.png" ) )
+        self.material = soya.Material( soya.Image.get( "talk_to.png" ) )
+        #self.material.diffuse = ( 0.8, 0.8, 0.8, 1.0 )
         
         
