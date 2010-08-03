@@ -57,13 +57,24 @@ class LaVidaMenuStyle( soya.gui.style.Style ):
 class LavidaGameUI( Group ):
     def __init__( self ):
         soya.gui.Window( self )
-	
+
 class LavidaActionButton( Button ):
     def __init__( self, parent, text = u"", on_clicked=None ):
-	Button.__init__( self, parent, text, on_clicked )
-	
+        Button.__init__( self, parent, text, on_clicked )
+        
+        self.material = soya.Material()
+
     def render( self ):
-	Button.render( self )
+        if self.material:
+            self.material.activate()
+            opengl.glEnable( opengl.GL_BLEND )
+            opengl.glBegin   (opengl.GL_QUADS)
+            opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y1)
+            opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y2)
+            opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y2)
+            opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
+            opengl.glEnd()
+            opengl.glDisable( opengl.GL_BLEND )
 
 class LavidaPieMenu( Group, HighlightableWidget ):
     def __init__( self, parent=None ):
@@ -77,11 +88,10 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         self.y1 = -self.radius
         self.x2 = self.radius
         self.y2 = self.radius
-	
-	btn = LavidaActionButton( self, "cheese" )
+ 
 
     def move( self, x, y ):
-	Group.move( self, x, y )
+        Group.move( self, x, y )
         self.x = x
         self.y = y
 
@@ -97,11 +107,37 @@ class LavidaPieMenu( Group, HighlightableWidget ):
                 opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
                 opengl.glEnd()
                 opengl.glDisable( opengl.GL_BLEND )
-	Group.render(self)
+        Group.render(self)
 
     def on_highlight( self, highlight ):
         HighlightableWidget.on_highlight( self, highlight )
-        
+
     def on_mouse_pressed(self, button, x, y):
-	Group.on_mouse_pressed( self, button, x, y )
-	LOG_DBG( self, "Mouse pressed: %s" % button )
+        Group.on_mouse_pressed( self, button, x, y )
+        LOG_DBG( self, "Mouse pressed: %s" % button )
+        
+        
+class StandardActions( LavidaPieMenu ):
+    def __init__( self, parent ):
+        LavidaPieMenu.__init__( self, parent ):
+            btn = MoveToButton( self )
+            btn = UseStairsButton( self )
+            btn = TalkToAvatar( self )
+            
+
+class MoveToButton( LavidaActionButton ):
+    def __init__( self, parent ):
+        LavidaActionButton.__init__( self, parent )
+        self.material = soya.Material( soya.Image.get( "moveto.png" ) )
+        
+class UseStairsButton( LavidaActionButton ):
+    def __init__( self, parent ):
+        LavidaActionButton.__init__( self, parent )
+        self.material = soya.Material( soya.Image.get( "use_stairs.png" ) )
+        
+class TalkToAvatar( LavidaActionButton ):
+    def __init__( self, parent ):
+        LavidaActionButton.__init__( self, parent )
+        self.material = soya.Material( soya.Image.get( "talk_to_avatar.png" ) )
+        
+        
