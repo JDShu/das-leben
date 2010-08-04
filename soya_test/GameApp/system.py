@@ -4,7 +4,22 @@ import soya
 
 MOUSE = 1
 TIME = 2
+ACTION = 3
+
 PATHFINDER_RESOLUTION = 1
+
+
+class EventQueue:
+    def __init__( self ):
+        self.events = []
+        
+    def Push( self, event ):
+        self.events.append( event )
+        
+    def Flush( self ):
+        self.events = []
+        
+    
 
 class Event():
     def __init__( self, category ):
@@ -27,6 +42,20 @@ class TimeEvent( Event ):
     def __init__( self, time_type ):
         Event.__init__( self, TIME )
         self.time_type = time_type
+        
+class ActionEvent( Event ):
+    def __init__( self, name ):
+        Event.__init__( self, ACTION )
+        self.name = name
+        self.actions = []
+        
+    def AddAction( self, action ):
+        self.actions.append( action )
+        
+    def GetNextAction( self ):
+        del self.actions[ 0 ]
+        return self.actions[ 0 ]
+    
 
 class Node():
     def __init__( self, x, y ):
@@ -207,7 +236,7 @@ class PathFinder():
         w = soya.World()
         last = self.path[ 0 ]
         for point in self.path:
-            if not last == point:
+            if not last == point:check_box
                 x1 = ( last[ 0 ] * a_Scale ) + a_Offset
                 z1 = ( last[ 1 ] * a_Scale ) + a_Offset
                 x2 = ( point[ 0 ] * a_Scale ) + a_Offset
@@ -225,4 +254,6 @@ class PathFinder():
         
                 
 ##        return b
+
+
                 
