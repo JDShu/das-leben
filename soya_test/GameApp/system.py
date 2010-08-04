@@ -48,14 +48,38 @@ class ActionEvent( Event ):
         Event.__init__( self, ACTION )
         self.name = name
         self.actions = []
+        self.prepared = False
         
     def AddAction( self, action ):
         self.actions.append( action )
         
+    def GetCurrentAction( self ):
+        return self.actions[ 0 ]
+    
     def GetNextAction( self ):
         del self.actions[ 0 ]
         return self.actions[ 0 ]
     
+    def IsPrepared( self ):
+        return self.prepared
+    
+class AvatarAction:
+    def __init__( self, name, action=None ):
+        self.name = name
+        self.data = []
+        if action:
+            self.data.append( action )
+    
+    def AddAction( self, action ):
+        self.data.append( action )
+        
+    def GetNextAction( self ):
+        del self.data[ 0 ]
+        action = self.data[ 0 ]
+        if action:
+            return action
+        
+        return None
 
 class Node():
     def __init__( self, x, y ):
@@ -236,7 +260,7 @@ class PathFinder():
         w = soya.World()
         last = self.path[ 0 ]
         for point in self.path:
-            if not last == point:check_box
+            if not last == point:
                 x1 = ( last[ 0 ] * a_Scale ) + a_Offset
                 z1 = ( last[ 1 ] * a_Scale ) + a_Offset
                 x2 = ( point[ 0 ] * a_Scale ) + a_Offset

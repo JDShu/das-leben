@@ -20,6 +20,7 @@ import soya.opengl as opengl
 from logger import *
 from angle import Angle
 from math import cos, sin
+from system import ActionEvent, AvatarAction
 
 class LaVidaMenuStyle( soya.gui.style.Style ):
     def __init__( self ):
@@ -61,17 +62,20 @@ class LavidaGameUI( Group ):
         soya.gui.Window( self )
 
 class LavidaActionButton( Button, HighlightableWidget ):
-    def __init__( self, parent, text = u"", on_clicked=None ):
+    def __init__( self, parent, text = u"", on_clicked=None, event_queue=None ):
         Button.__init__( self, parent, text, on_clicked )
+        HighlightableWidget.__init__( self )
         
         self.material = soya.Material()
         
-        self.radius = 32
+        self.radius = 64 * 0.5 # width in pixels / 2
 
         self.x1 = -self.radius
         self.y1 = -self.radius
         self.x2 = self.radius
         self.y2 = self.radius
+        
+        self.event_queue = event_queue
 
     def render( self ):
         if self.material:
@@ -126,22 +130,32 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         HighlightableWidget.on_highlight( self, highlight )
 
     def on_mouse_pressed(self, button, x, y):
-        Group.on_mouse_pressed( self, button, x, y )
-        LOG_DBG( self, "Mouse pressed: %s" % button )
+        widget = self.widget_at(x, y)
+        if widget:
+            widget.on_mouse_pressed( button, x, y )
+        
+    def widget_at( self, x, y ):
+        for widget in self.widgets:
+            if x >= ( widget.x - widget.radius ) and x <= ( widget.x + widget.radius ):
+                if y >= ( widget.y - widget.radius ) and y <= ( widget.y + widget.radius ):
+                    return widget
+                
+        return None
         
         
 class StandardActionsMenu( LavidaPieMenu ):
-    def __init__( self, parent ):
+    def __init__( self, parent, event_queue ):
         LavidaPieMenu.__init__( self, parent )
         
-        btn = MoveToButton( self )
-        btn = UseStairsButton( self )
-        btn = TalkToAvatar( self )
+        btn = MoveToButton( self, event_queue )
+        btn = UseStairsButton( self, event_queue )
+        btn = TalkToAvatar( self, event_queue )
         
         step = 360 / len( self.widgets ) # step in degrees
-        angle = Angle( step / 2.0 )
+        angle = Angle( step )
         for i, widget in enumerate( self.widgets ):
-            widget.y = self.radius - 10
+            widget.y = self.radius - 30
+            widget.x = 0
             
             theta = angle.GetAngleInRadians()
             widget.x = cos( theta ) * widget.x - sin( theta ) * widget.y
@@ -151,20 +165,30 @@ class StandardActionsMenu( LavidaPieMenu ):
             
 
 class MoveToButton( LavidaActionButton ):
-    def __init__( self, parent ):
-        LavidaActionButton.__init__( self, parent )
+    def __init__( self, parent, event_queue ):
+        LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "go_here.png" ) )
-        #self.material.diffuse = ( 0.8, 0.8, 0.8, 1.0 )
+        self.event_queue = event_queue
+        
+    def on_mouse_pressed( self, button, x, y ):
+        LOG_DBG( self, "goto button clicked" )
+        
+        event = ActionEvent( "move_to" )
+        actions = AvatarAction( "move_to", [ x, y ] )
+        event.AddAction( actions )
+        
+        self.event_queue.Push( event )
+        
         
 class UseStairsButton( LavidaActionButton ):
-    def __init__( self, parent ):
-        LavidaActionButton.__init__( self, parent )
+    def __init__( self, parent, event_queue ):
+        LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "use_stairs.png" ) )
         #self.material.diffuse = ( 0.8, 0.8, 0.8, 1.0 )
         
 class TalkToAvatar( LavidaActionButton ):
-    def __init__( self, parent ):
-        LavidaActionButton.__init__( self, parent )
+    def __init__( self, parent, event_queue ):
+        LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "talk_to.png" ) )
         #self.material.diffuse = ( 0.8, 0.8, 0.8, 1.0 )
         

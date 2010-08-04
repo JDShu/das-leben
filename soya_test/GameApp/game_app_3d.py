@@ -69,12 +69,10 @@ class GameApp3d( soya.World ):
 
         self.m_Camera.back = 100
         
-        root = soya.gui.RootLayer(None)
-        soya.gui.CameraViewport( root, self.m_Camera )
+        self.root = soya.gui.RootLayer(None)
+        soya.gui.CameraViewport( self.root, self.m_Camera )
 
-        soya.set_root_widget( root )
-        
-        self.pie_menu = StandardActionsMenu( root )
+        soya.set_root_widget( self.root )
                 
         #pudding.ext.fpslabel.FPSLabel( soya.root_widget, position = pudding.TOP_RIGHT )
 
@@ -87,10 +85,20 @@ class GameApp3d( soya.World ):
         self.SetupFog()
 
         self.SetupKeyBuffer()
+        
+        self.SetupEventQueue()
+        
+        self.SetupGUI()
 
         self.LoadObjects()
+        
+        
+    def SetupGUI( self ):
+        self.pie_menu = StandardActionsMenu( self.root, self.m_EventQueue )
 
-
+    def SetupEventQueue( self ):
+        self.m_EventQueue = EventQueue()
+        
     def SetupLighting( self ):
         '''
         Setup OpenGL and some variable relating to lighting
@@ -199,11 +207,18 @@ class GameApp3d( soya.World ):
                 self.move( self.mouse_pos )
               
             elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
+                self.pie_menu.on_mouse_pressed( event[1], event[2], event[3] )
                 if event[1] == soya.sdlconst.BUTTON_LEFT:
                     self.pie_menu.visible = 0
                 if event[1] == soya.sdlconst.BUTTON_RIGHT:
                     self.pie_menu.visible = 1
                     self.pie_menu.move( event[2], event[3] )
+                    
+            
+            for event in self.m_EventQueue.events:
+                if event.category == ACTION:
+                    if not event.prepared:
+                        self.PrepareActionEvent( event )
 ##              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
 ##              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
 ##              
@@ -214,19 +229,17 @@ class GameApp3d( soya.World ):
 ##                              [ g_coord( impact.x, impact.z, WALL_WIDTH ) ] )
 ##              
 ##              self.sorcerer.UseWaypoints( p.path )
-              
-              
-            '''elif event.type == MOUSEBUTTONDOWN:
-                l_Position = self.m_Camera.GetOpenGL3dMouseCoords( l_X, l_Y )
-                if event.button == LEFT_MOUSE:
-                    pass
-
-            elif event.type == MOUSEBUTTONUP:
-                if event.button == LEFT_MOUSE:
-                    pass'''
 
 
 
+
+    def PrepareActionEvent( self, event ):
+        if event.name == "move_to":
+            data = event.GetCurrentAction().data[ 0 ]
+            mouse = self.m_Camera.coord2d_to_3d( data[0], data[0] )
+            impact, normal = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
+            data[ 0 ] = impact
+            event.prepared = True
 
     def ProccessKeys( self ):
         '''
