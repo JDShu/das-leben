@@ -171,8 +171,8 @@ class GameApp3d( soya.World ):
         b.y = 0.01 
         
 
-        self.sorcerer = Avatar( self, DUDE, self.AssetManager )
-        
+        self.sorcerer = Avatar( self, DUDE, self.AssetManager, self.m_EventQueue, [ self.grid ] )
+        self.sorcerer.selected = True
         self.sorcerer.x = ( 25 * 3 ) + 1.5
         self.sorcerer.z = ( 37 * 3 ) + 1.5
         
@@ -236,8 +236,9 @@ class GameApp3d( soya.World ):
     def PrepareActionEvent( self, event ):
         if event.name == "move_to":
             data = event.GetCurrentAction().data[ 0 ]
-            mouse = self.m_Camera.coord2d_to_3d( data[0], data[0] )
-            impact, normal = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
+            mouse = self.m_Camera.coord2d_to_3d( data[0], data[1] )
+            result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
+            impact, normal = result
             data[ 0 ] = impact
             event.prepared = True
 

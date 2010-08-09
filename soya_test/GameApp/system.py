@@ -19,6 +19,13 @@ class EventQueue:
     def Flush( self ):
         self.events = []
         
+    def GetCurrentEvent( self ):
+        return self.events[ 0 ]
+    
+    def ClearCurrentEvent( self ):
+        self.events[ 0 ] = None
+        del self.events[ 0 ]
+        
     
 
 class Event():
@@ -64,11 +71,13 @@ class ActionEvent( Event ):
         return self.prepared
     
 class AvatarAction:
-    def __init__( self, name, action=None ):
+    def __init__( self, name, action=None, target=None ):
         self.name = name
         self.data = []
         if action:
             self.data.append( action )
+        
+        self.target_avatar = target
     
     def AddAction( self, action ):
         self.data.append( action )

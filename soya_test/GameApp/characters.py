@@ -16,6 +16,9 @@
 
 import soya
 from buildings import *
+from system import ActionEvent, ACTION, PathFinder
+
+from logger import LOG_DBG
 
 DUDE = 1
 DUDETTE = 2
@@ -23,9 +26,12 @@ DUDELE = 3
 
 AVATAR_IDLE = 1
 AVATAR_WALKING = 2
-
 AVATAR_EATING = 3
 AVATAR_REACHED_DESTINATION = 4
+AVATAR_CALC_ROUTE = 5
+
+
+
 AVATAR_VELOCITY = 2.0
 
 class AttachedItem:
@@ -34,7 +40,7 @@ class AttachedItem:
         self.instance = a_Instance
 
 class Avatar( soya.World ):
-    def __init__( self, a_Scene, a_Type=DUDE, a_AssetManager=None ):
+    def __init__( self, a_Scene, a_Type=DUDE, a_AssetManager=None, a_EventQueue=None, a_Grids=None ):
         soya.World.__init__( self, a_Scene )
         if a_Type == DUDE:
             avatar_filename = "dude" 
@@ -66,6 +72,13 @@ class Avatar( soya.World ):
         self.m_Scene = a_Scene
         
         self.m_ExecuteQueue = []
+        self.m_EventQueue = a_EventQueue
+        self.m_Grids = a_Grids
+        self.m_CurrentFloor = 0
+        
+        self.selected = False
+        self.action = None
+        self.destination = None
 
     def begin_round( self ):
         soya.Model.begin_round( self )
@@ -94,7 +107,21 @@ class Avatar( soya.World ):
 
         self.DoBehaviours( proportion )
 
-        # self.rotate_y( proportion * self.rotation_speed )
+        for i, event in enumerate( self.m_EventQueue.events ):
+            if event.category == ACTION:
+                action = event.GetCurrentAction()
+                if action.target_avatar == "selected_avatar" and self.selected:
+                    if action.name == "move_to":
+                        self.m_EventQueue.ClearCurrentEvent()
+                        self.action = action
+                        self.destination = self.action.data[ 0 ][ 0 ]
+                        self.m_Behaviour = AVATAR_CALC_ROUTE
+                        
+                    elif action.name == "cancel_action":
+                        self.action = None
+                        self.m_Behaviour = AVATAR_IDLE
+                        self.PlayAnimation( "attente" )
+                
 
 
     def AttachItem( self, a_ItemName, a_BoneName, a_AssetManager ):
@@ -118,7 +145,10 @@ class Avatar( soya.World ):
                 del self.attachments[ i ]
 
     def DoBehaviours(self, proportion ):
-        if self.m_Behaviour == AVATAR_WALKING:
+        if self.m_Behaviour == AVATAR_IDLE:
+            LOG_DBG( self, "avatar idle" )
+              
+        elif self.m_Behaviour == AVATAR_WALKING:
             self.MoveToDestination( proportion )
         elif self.m_Behaviour == AVATAR_REACHED_DESTINATION:
             action = self.GetNextAction()
@@ -127,6 +157,20 @@ class Avatar( soya.World ):
             else:
                 self.m_Behaviour = AVATAR_IDLE
                 self.PlayAnimation( "attente" )
+                
+        elif self.m_Behaviour == AVATAR_CALC_ROUTE:
+            LOG_DBG( self, "calculating route" )
+            
+            g = self.m_Grids[ self.m_CurrentFloor ]
+            p = PathFinder( g, 
+                            g.GridSpaceCoords( 
+                                self.x, 
+                                self.z, WALL_WIDTH, 1.5 ) ,
+                            [ g.GridSpaceCoords( 
+                                self.destination.x, 
+                                self.destination.z, WALL_WIDTH, 1.5 )] )
+            self.UseWaypoints( p.path )
+            
 
     def UseWaypoints( self, path ):
         self.PlayAnimation( "marche" )

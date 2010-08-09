@@ -174,7 +174,7 @@ class MoveToButton( LavidaActionButton ):
         LOG_DBG( self, "goto button clicked" )
         
         event = ActionEvent( "move_to" )
-        actions = AvatarAction( "move_to", [ x, y ] )
+        actions = AvatarAction( "move_to", [ self.parent.x, self.parent.y ], "selected_avatar" )
         event.AddAction( actions )
         
         self.event_queue.Push( event )
