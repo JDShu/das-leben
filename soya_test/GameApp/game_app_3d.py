@@ -95,6 +95,7 @@ class GameApp3d( soya.World ):
         
     def SetupGUI( self ):
         self.pie_menu = StandardActionsMenu( self.root, self.m_EventQueue )
+        self.pie_menu.visible = 0
 
     def SetupEventQueue( self ):
         self.m_EventQueue = EventQueue()
