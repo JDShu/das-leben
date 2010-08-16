@@ -21,10 +21,15 @@ class HouseholdItem( soya.World ):
     def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
         soya.World.__init__( self, parent )
         
-        m = soya.Model.get( self, a_Filename )
+        m = soya.Model.get( a_Filename )
         if model_builder:
             m.model_builder = model_builder
             
+        
+            
+        self.body = soya.Body( self, m )
+        
+        
         self.event_queue = event_queue
         self.menu_root = menu_root
         self.menu = None
@@ -42,6 +47,12 @@ class HouseholdItem( soya.World ):
         return None
             
     def BuildMenu( self ): pass
+    
+    def SetPosition( self, x, y, z ): 
+        self.body.x = x
+        self.body.y = y
+        self.body.z = z
+    
             
         
         

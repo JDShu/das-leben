@@ -29,6 +29,7 @@ from game_assets import *
 from buildings import *
 from system import *
 from lavida_gui import * 
+from Cookers import Oven
 import soya, soya.widget
 import soya.pudding as pudding
 import soya.pudding.ext.fpslabel
@@ -182,6 +183,10 @@ class GameApp3d( soya.World ):
         self.sorcerer.UseWaypoints( p.path )
         
         self.m_Camera.look_at( self.sorcerer )
+        
+        self.oven = Oven( self, self.root , self.m_EventQueue )
+        
+        self.oven.SetPosition( ( 25 * 3 ) + 1.5, 0, ( 25 * 3 ) + 1.5 )
 
     def begin_round( self ):
         soya.Body.begin_round( self )

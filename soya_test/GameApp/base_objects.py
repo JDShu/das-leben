@@ -18,45 +18,45 @@ from household import HouseholdItem
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class CookerBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class SeatBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
         HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class BedBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class PlantBase( HouseholdItem ):
     def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class FeatureBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class ElectricalBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class GameActivityBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class CommunicatorBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )
         
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class InformationBase( HouseholdItem ):
-    def __init__( self, parent, a_Filename, event_queue=None, model_builder=None ):
-        HouseholdItem.__init__( self, parent, a_Filename, event_queue, model_builder )
+    def __init__( self, parent, menu_root, a_Filename, event_queue=None, model_builder=None ):
+        HouseholdItem.__init__( self, parent, menu_root, a_Filename, event_queue, model_builder )

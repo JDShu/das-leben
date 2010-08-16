@@ -152,14 +152,16 @@ class StandardActionsMenu( LavidaPieMenu ):
         btn = TalkToAvatar( self, event_queue )
         
         step = 360 / len( self.widgets ) # step in degrees
+        
         angle = Angle( step )
+        
         for i, widget in enumerate( self.widgets ):
-            widget.y = self.radius - 30
+            widget.y = -80
             widget.x = 0
             
             theta = angle.GetAngleInRadians()
-            widget.x = cos( theta ) * widget.x - sin( theta ) * widget.y
-            widget.y = sin( theta ) * widget.x + cos( theta ) * widget.y
+            widget.x = ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) )
+            widget.y = ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) )
             
             angle += step
             
