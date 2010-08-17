@@ -108,19 +108,20 @@ class Avatar( soya.World ):
         self.DoBehaviours( proportion )
 
         for i, event in enumerate( self.m_EventQueue.events ):
-            if event.category == ACTION:
-                action = event.GetCurrentAction()
-                if action.target_avatar == "selected_avatar" and self.selected:
-                    if action.name == "move_to":
-                        self.m_EventQueue.ClearCurrentEvent()
-                        self.action = action
-                        self.destination = self.action.data[ 0 ][ 0 ]
-                        self.m_Behaviour = AVATAR_CALC_ROUTE
-                        
-                    elif action.name == "cancel_action":
-                        self.action = None
-                        self.m_Behaviour = AVATAR_IDLE
-                        self.PlayAnimation( "attente" )
+            if event.prepared:
+                if event.category == ACTION:
+                    action = event.GetCurrentAction()
+                    if action.target_avatar == "selected_avatar" and self.selected:
+                        if action.name == "move_to":
+                            self.m_EventQueue.ClearCurrentEvent()
+                            self.action = action
+                            self.destination = self.action.data[ 0 ]
+                            self.m_Behaviour = AVATAR_CALC_ROUTE
+                            
+                        elif action.name == "cancel_action":
+                            self.action = None
+                            self.m_Behaviour = AVATAR_IDLE
+                            self.PlayAnimation( "attente" )
                 
 
 

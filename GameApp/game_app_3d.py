@@ -213,7 +213,7 @@ class GameApp3d( soya.World ):
                 self.move( self.mouse_pos )
               
             elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
-                self.pie_menu.on_mouse_pressed( event[1], event[2], event[3] )
+                # self.pie_menu.on_mouse_pressed( event[1], event[2], event[3] )
                 if event[1] == soya.sdlconst.BUTTON_LEFT:
                     self.pie_menu.visible = 0
                 if event[1] == soya.sdlconst.BUTTON_RIGHT:
@@ -245,7 +245,7 @@ class GameApp3d( soya.World ):
             mouse = self.m_Camera.coord2d_to_3d( data[0], data[1] )
             result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
             impact, normal = result
-            data[ 0 ] = impact
+            event.GetCurrentAction().data[ 0 ] = impact
             event.prepared = True
 
     def ProccessKeys( self ):
