@@ -181,6 +181,8 @@ class MoveToButton( LavidaActionButton ):
         
         self.event_queue.Push( event )
         
+        self.parent.visible = 0
+        
         
 class UseStairsButton( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
