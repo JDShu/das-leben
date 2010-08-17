@@ -20,117 +20,45 @@ import pygame
 from pygame.locals import *
 from vector_3d import *
 from angle import *
+import soya
 
-class oglCamera( Vector3d ):
-    def __init__( self, a_ViewportWidth=800, a_ViewportHeight=600 ):
-        Vector3d.__init__( self )
-        self.m_XRot = Angle()
-        self.m_YRot = Angle()
-        self.m_ZRot = Angle()
-        self.m_ViewportWidth = a_ViewportWidth
-        self.m_ViewportHeight = a_ViewportHeight
+class oglCamera( soya.Camera ):
+    def __init__( self, a_Scene ):
+        soya.Camera.__init__( self, a_Scene )
+        self.speed = soya.Vector( self )
+        self.rot_y = 0.0
+        self.rot_x = 0.0
+        self.rot_z = 0.0
 
-    def BeginDrawing( self ):
-        glLoadIdentity()
-        glPushMatrix()
-        glRotatef( self.m_XRot.GetAngle(), 1.0,   0,   0 )
-        glRotatef( self.m_YRot.GetAngle(),   0, 1.0,   0 )
-        glTranslatef( self.m_Values[0], self.m_Values[1], self.m_Values[2] )
+    def begin_round( self ):
+        soya.Camera.begin_round( self )
 
-    def EndDrawing( self ):        
-        glPopMatrix()
+    def advance_time( self, proportion ):
+        matrix = list(self.matrix)
+        xaxis = matrix[0:4]
+        yaxis = matrix[4:8]
+        zaxis = matrix[8:12]
+        #print "%.2f\t%.2f\t%.2f" % (zaxis[0],zaxis[1],zaxis[2])
+        mult = abs(zaxis[1]) # * 90 -> maximum effect. Mult reduces the effect when is not needed.
+        self.turn_z( (self.rot_z-xaxis[1]*90.0*mult) * proportion )
 
-    def Flip( self ):
-        pygame.display.flip()
+        self.add_mul_vector(proportion, self.speed)
 
-    def LookAt(self, a_Point):
-        x, y, z, w = a_Point.GetPosition()
-        gluLookAt(self.m_Values[0], self.m_Values[1], self.m_Values[2],
-                  x, y, z,
-                  0, 1, 0)
+        self.turn_y( self.rot_y * proportion )
+        self.turn_x( self.rot_x * proportion )
 
-    def GetModesList( self ):
-        return pygame.display.list_modes()
-
-    def GetObjectSelected( self, a_X, a_Y, a_Objects ):
-        l_Buffer = glSelectBuffer( 512 )        
-        l_Viewport = glGetIntegerv( GL_VIEWPORT )
-
-        glRenderMode( GL_SELECT )
-        glInitNames()
-        glPushName( 0 )
-        glMatrixMode( GL_PROJECTION )
-        glPushMatrix()
-        glLoadIdentity()
-        gluPickMatrix( a_X, l_Viewport[ 3 ] - a_Y, 1.0, 1.0, l_Viewport )
-        gluPerspective( 45, self.m_ViewportWidth / self.m_ViewportHeight, 0.0001, 100000.0 )
-
-        glMatrixMode( GL_MODELVIEW )
-        glLoadIdentity()
-        glRotatef( self.m_XRot.GetAngle(), 1.0,   0,   0 )
-        glRotatef( self.m_YRot.GetAngle(),   0, 1.0,   0 )
-        glTranslatef( self.m_Values[0], self.m_Values[1], self.m_Values[2] )        
-
-        for Object in a_Objects:
-            if hasattr( Object, "DrawSelectMode" ):
-                Object.DrawSelectMode()
-            else:
-                if hasattr( Object, "GetGLName" ):
-                    glPushName( Object.GetGLName() )
-                Object.Draw()
-                glPopName()
-
-        l_Hits = glRenderMode( GL_RENDER )
-        glMatrixMode( GL_PROJECTION )
-        glPopMatrix()
-        glMatrixMode( GL_MODELVIEW )
-        return l_Hits
-
-    def GetOpenGL3dMouseCoords( self, a_X, a_Y ):
-        '''get the 3d space coords of where the mouse has clicked on the viewport'''
-        l_ModelMatrix = glGetDoublev( GL_MODELVIEW_MATRIX )
-        l_ProjectionMatrix = glGetDoublev( GL_PROJECTION_MATRIX );
-        l_Viewport = glGetIntegerv( GL_VIEWPORT )
-
-        l_WindowX = float( a_X )
-        l_WindowY = float( l_Viewport[ 3 ] ) - float( a_Y )
-        l_WindowZ = glReadPixels( a_X, int( l_WindowY ), 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT )
-        l_Position = gluUnProject( l_WindowX, l_WindowY, l_WindowZ, l_ModelMatrix, l_ProjectionMatrix, l_Viewport )
-
-        l_RetVal = Vector3d()
-        l_RetVal.SetPosition( l_Position[ 0 ], l_Position[ 1 ], l_Position[ 2 ] )
-        return l_RetVal
-    
-    def BeginDrawing2d( self ):
-        glPushMatrix()
-        glDisable(GL_DEPTH_TEST)
-        glMatrixMode( GL_PROJECTION )
-        glPushMatrix()        
-        viewport = glGetIntegerv( GL_VIEWPORT )
-        glOrtho( viewport[0],viewport[2],viewport[1],viewport[3], -1, 1 )
-        glMatrixMode( GL_MODELVIEW )
-        glPushMatrix()
-        glLoadIdentity()
-        
-    def EndDrawing2d( self ):
-        glMatrixMode( GL_PROJECTION )
-        glPopMatrix()
-    
-        glMatrixMode( GL_MODELVIEW )
-        glPopMatrix()
-    
-        glEnable( GL_DEPTH_TEST )
-        glPopMatrix()
 
     def Fly ( self, relative_y_angle, relative_x_angle, speed ):
-        x, y, z, w = self.GetPosition()
-        roh = radians(self.m_YRot.GetAngle() + relative_y_angle)
+        roh = radians(self.rot_y + relative_y_angle)
         theta = radians(relative_x_angle)
-        x -= speed * cos(theta) * sin(roh)
-        z += speed * cos(theta) * cos(roh)
-        y += speed * sin(theta)
+        self.x -= speed * cos(theta) * sin(roh)
+        self.z += speed * cos(theta) * cos(roh)
+        self.y += speed * sin(theta)
 
-        self.SetPosition( x, y, z, w )
+
+
+
+
 
     def MoveForward( self ):
         self.Fly(0,0,1)

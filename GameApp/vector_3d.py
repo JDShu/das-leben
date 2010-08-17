@@ -70,9 +70,9 @@ class Vector3d:
         for i in xrange(4):
             self.m_Values[ i ] *= a_Scale
             
-    def __repr__( self ):
-        return "Setting Position : %s, %s, %s, %s\n" % ( self.m_Values[0], self.m_Values[1], 
-                                                        self.m_Values[2], self.m_Values[3] )
+##    def __repr__( self ):
+##        return "Setting Position : %s, %s, %s, %s\n" % ( self.m_Values[0], self.m_Values[1], 
+##                                                        self.m_Values[2], self.m_Values[3] )
 
     
     def SetPosition(self, a_X, a_Y, a_Z, a_W=1.0):

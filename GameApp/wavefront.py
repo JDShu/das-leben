@@ -20,6 +20,7 @@ from math3D import *
 import pygame
 from numpy import *
 from ogl_va import *
+from ogl_vbo import *
 from vector_3d import Vector3d
 
 def MTL( path, filename ):
@@ -36,7 +37,8 @@ def MTL( path, filename ):
         elif values[0] == 'map_Kd':
             # load the texture referred to by this declaration
             mtl[values[0]] = values[1]
-            surf = pygame.image.load( os.path.join( path, mtl['map_Kd'] ))
+            mtl[ 'texture_path' ] = os.path.join( path, mtl['map_Kd'] )
+            surf = pygame.image.load( mtl[ 'texture_path' ] )
             image = pygame.image.tostring(surf, 'RGBA', 1)
             ix, iy = surf.get_rect().size
             texid = mtl['texture_Kd'] = glGenTextures(1)
@@ -59,6 +61,7 @@ class OBJ( Vector3d ):
         self.normals = []
         self.texcoords = []
         self.faces = []
+        self.texture_path = ""
         self.mtl = None
         self.scale = 1.0
         material = None
@@ -89,6 +92,7 @@ class OBJ( Vector3d ):
                     for name in self.mtl:
                         if 'texture_Kd' in self.mtl[ name ]:
                             use_texture = True
+                            self.texture_path = self.mtl[ name ][ 'texture_path' ]
                 elif values[0] == 'f':
                     face = []
                     texcoords = []
@@ -148,13 +152,14 @@ class OBJ( Vector3d ):
             if self.va_colours == []: self.va_colours = None
             
             self.va = VA( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+            #self.va = VBO( self.va_vertexes, self.va_normals, self.va_texcoords, self.va_colours, False )
         else:
             self.va = None
 
     def Clone( self ):
         clone = OBJ( None, False, False, True )
         clone.textureID = self.textureID
-        clone.va = VA( self.va_vertexes, self.va_normals, None, self.va_texcoords, self.va_colours, False )
+        clone.va = VA( self.va.vertexes, self.va.normals, None, self.va.texCoords, self.va_colours, False )
         return clone
     
     def __repr__(self):
