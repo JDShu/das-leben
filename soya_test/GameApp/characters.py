@@ -47,7 +47,7 @@ class Avatar( soya.World ):
         elif a_Type == DUDETTE:
             avatar_filename = "dudette"
             
-        avatar_filename = "Dude"
+        avatar_filename = "male"
         # model = a_AssetManager.GetAnimatedModel( avatar_filename )
 
         model = soya.AnimatedModel.get( avatar_filename )
