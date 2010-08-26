@@ -106,14 +106,14 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         self.x2 = self.radius
         self.y2 = self.radius
         
+        
+        
     def SetVisible( self, visible=True ):
         self.visible = visible
  
 
     def move( self, x, y ):
         Group.move( self, x, y )
-        self.x = x
-        self.y = y
 
     def render( self ):
         if self.visible:
@@ -150,6 +150,9 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         
         angle = Angle( step )
         
+        self.x = 20
+        self.y = 20
+        
         for widget in self.widgets:
             widget.y = -80
             widget.x = 0
@@ -157,6 +160,7 @@ class LavidaPieMenu( Group, HighlightableWidget ):
             theta = angle.GetAngleInRadians()
             widget.x = ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) )
             widget.y = ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) )
+          
             
             angle += step
         

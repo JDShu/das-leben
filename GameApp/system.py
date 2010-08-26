@@ -1,6 +1,7 @@
 import pygame
 from heapq import heappush, heappop
 import soya
+from buildings import WALL_WIDTH
 
 MOUSE = 1
 TIME = 2
@@ -10,8 +11,9 @@ PATHFINDER_RESOLUTION = 1
 
 
 class EventQueue:
-    def __init__( self ):
+    def __init__( self, parent=None ):
         self.events = []
+        self.parent = parent 
         
     def Push( self, event ):
         self.events.append( event )
@@ -26,7 +28,23 @@ class EventQueue:
         self.events[ 0 ] = None
         del self.events[ 0 ]
         
-    
+    def ProcessEvents( self ):
+        for event in self.events:
+            if event.category == ACTION:
+                if not event.prepared:
+                    self.PrepareActionEvent( event )
+        
+    def PrepareActionEvent( self, event ):
+        if event.name == "move_to":
+            data = event.GetCurrentAction().data[ 0 ]
+            x = ( data[ 0 ] / WALL_WIDTH ) * WALL_WIDTH - WALL_WIDTH
+            y = ( data[ 1 ] / WALL_WIDTH ) * WALL_WIDTH - WALL_WIDTH
+            mouse = self.parent.m_Camera.coord2d_to_3d( x, y )
+            result = self.parent.raypick( self.parent.m_Camera,
+                                          self.parent.m_Camera.vector_to( mouse ) )
+            impact, normal = result
+            event.GetCurrentAction().data[ 0 ] = impact
+            event.prepared = True
 
 class Event():
     def __init__( self, category ):

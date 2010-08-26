@@ -99,7 +99,7 @@ class GameApp3d( soya.World ):
         self.pie_menu.SetVisible( False )
 
     def SetupEventQueue( self ):
-        self.m_EventQueue = EventQueue()
+        self.m_EventQueue = EventQueue( self )
         
     def SetupLighting( self ):
         '''
@@ -219,29 +219,21 @@ class GameApp3d( soya.World ):
                 if event[1] == soya.sdlconst.BUTTON_RIGHT:
                     mouse = self.m_Camera.coord2d_to_3d( event[2], event[3] )
                     result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
-                    impact, normal = result
-                    self.pie_menu.SetVisible( False )
-                    if hasattr( impact.parent.parent, "GetMenu" ):
-                        self.pie_menu = impact.parent.parent.GetMenu()
-                    else:
-                        self.pie_menu = self.default_pie_menu
+                    if result:
+                        impact, normal = result
                         
-                    self.pie_menu.move( event[2], event[3] )
-                    self.pie_menu.SetVisible( True )
+                        self.pie_menu.SetVisible( False )
+                        if hasattr( impact.parent.parent, "GetMenu" ):
+                            self.pie_menu = impact.parent.parent.GetMenu()
+                        else:
+                            self.pie_menu = self.default_pie_menu
+                            
+                        self.pie_menu.move( event[2], event[3] )
+                        self.pie_menu.SetVisible( True )
             
-            for event in self.m_EventQueue.events:
-                if event.category == ACTION:
-                    if not event.prepared:
-                        self.PrepareActionEvent( event )
+            self.m_EventQueue.ProcessEvents()
 
-    def PrepareActionEvent( self, event ):
-        if event.name == "move_to":
-            data = event.GetCurrentAction().data[ 0 ]
-            mouse = self.m_Camera.coord2d_to_3d( data[0], data[1] )
-            result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
-            impact, normal = result
-            event.GetCurrentAction().data[ 0 ] = impact
-            event.prepared = True
+    
 
     def ProccessKeys( self ):
         '''

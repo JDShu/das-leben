@@ -38,10 +38,12 @@ class CookerActionsMenu( LavidaPieMenu ):
         
         btn = UseCookerButton( self, event_queue )
         
-        self.SetupIcons()
+        # self.SetupIcons()
         
 class UseCookerButton( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
         LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "go_here.png" ) )
+        self.x = -80
+        self.y = 0
         
