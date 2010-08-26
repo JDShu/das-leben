@@ -95,8 +95,8 @@ class GameApp3d( soya.World ):
         
         
     def SetupGUI( self ):
-        self.pie_menu = StandardActionsMenu( self.root, self.m_EventQueue )
-        self.pie_menu.visible = 0
+        self.pie_menu = self.default_pie_menu = StandardActionsMenu( self.root, self.m_EventQueue )
+        self.pie_menu.SetVisible( False )
 
     def SetupEventQueue( self ):
         self.m_EventQueue = EventQueue()
@@ -213,31 +213,26 @@ class GameApp3d( soya.World ):
                 self.move( self.mouse_pos )
               
             elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
-                # self.pie_menu.on_mouse_pressed( event[1], event[2], event[3] )
+                
                 if event[1] == soya.sdlconst.BUTTON_LEFT:
-                    self.pie_menu.visible = 0
+                    self.pie_menu.SetVisible( False )
                 if event[1] == soya.sdlconst.BUTTON_RIGHT:
-                    self.pie_menu.visible = 1
+                    mouse = self.m_Camera.coord2d_to_3d( event[2], event[3] )
+                    result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
+                    impact, normal = result
+                    self.pie_menu.SetVisible( False )
+                    if hasattr( impact.parent.parent, "GetMenu" ):
+                        self.pie_menu = impact.parent.parent.GetMenu()
+                    else:
+                        self.pie_menu = self.default_pie_menu
+                        
                     self.pie_menu.move( event[2], event[3] )
-                    
+                    self.pie_menu.SetVisible( True )
             
             for event in self.m_EventQueue.events:
                 if event.category == ACTION:
                     if not event.prepared:
                         self.PrepareActionEvent( event )
-##              mouse = self.m_Camera.coord2d_to_3d(event[2], event[3])
-##              result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
-##              
-##              impact, normal = result
-##              g = self.grid
-##              g_coord = g.GridSpaceCoords
-##              p = PathFinder( g, g_coord( self.sorcerer.x, self.sorcerer.z, WALL_WIDTH ),
-##                              [ g_coord( impact.x, impact.z, WALL_WIDTH ) ] )
-##              
-##              self.sorcerer.UseWaypoints( p.path )
-
-
-
 
     def PrepareActionEvent( self, event ):
         if event.name == "move_to":

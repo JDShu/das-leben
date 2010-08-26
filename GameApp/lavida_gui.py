@@ -105,6 +105,9 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         self.y1 = -self.radius
         self.x2 = self.radius
         self.y2 = self.radius
+        
+    def SetVisible( self, visible=True ):
+        self.visible = visible
  
 
     def move( self, x, y ):
@@ -141,6 +144,21 @@ class LavidaPieMenu( Group, HighlightableWidget ):
                     return widget
                 
         return None
+    
+    def SetupIcons( self ):
+        step = 360 / len( self.widgets ) # step in degrees
+        
+        angle = Angle( step )
+        
+        for widget in self.widgets:
+            widget.y = -80
+            widget.x = 0
+            
+            theta = angle.GetAngleInRadians()
+            widget.x = ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) )
+            widget.y = ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) )
+            
+            angle += step
         
         
 class StandardActionsMenu( LavidaPieMenu ):
@@ -151,27 +169,16 @@ class StandardActionsMenu( LavidaPieMenu ):
         btn = UseStairsButton( self, event_queue )
         btn = TalkToAvatar( self, event_queue )
         
-        step = 360 / len( self.widgets ) # step in degrees
+        self.SetupIcons()
         
-        angle = Angle( step )
-        
-        for i, widget in enumerate( self.widgets ):
-            widget.y = -80
-            widget.x = 0
-            
-            theta = angle.GetAngleInRadians()
-            widget.x = ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) )
-            widget.y = ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) )
-            
-            angle += step
+    
             
 
 class MoveToButton( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
         LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "go_here.png" ) )
-        self.event_queue = event_queue
-        
+                
     def on_mouse_pressed( self, button, x, y ):
         LOG_DBG( self, "goto button clicked" )
         

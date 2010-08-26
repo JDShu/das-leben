@@ -14,6 +14,8 @@
  *
 '''
 from base_objects import CookerBase
+from lavida_gui import LavidaPieMenu, LavidaActionButton
+import soya
 
 class Oven( CookerBase ):
     def __init__( self, parent, menu_root, event_queue=None, model_builder=None ):
@@ -23,3 +25,23 @@ class Oven( CookerBase ):
         
     def SetPosition( self, x, y, z ):
         CookerBase.SetPosition( self, x, y + 1.0, z )
+        
+    def GetMenu( self ):
+        if not self.menu:
+            self.menu = CookerActionsMenu( self.parent.root, self.event_queue )
+            
+        return self.menu
+
+class CookerActionsMenu( LavidaPieMenu ):
+    def __init__( self, parent, event_queue ):
+        LavidaPieMenu.__init__( self, parent )
+        
+        btn = UseCookerButton( self, event_queue )
+        
+        self.SetupIcons()
+        
+class UseCookerButton( LavidaActionButton ):
+    def __init__( self, parent, event_queue ):
+        LavidaActionButton.__init__( self, parent, event_queue=event_queue )
+        self.material = soya.Material( soya.Image.get( "go_here.png" ) )
+        

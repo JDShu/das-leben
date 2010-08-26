@@ -611,9 +611,8 @@ guimgr.overall-gui-state = {'windowing-policy': 'combined-window',
                                {'tree-state': {'file-sort-method': 'by name',
         'list-files-first': False,
         'tree-states': {'deep': {'column-widths': [1.0],
-                                 'expanded-nodes': [(1,),
-        (1,
-         0),
+                                 'expanded-nodes': [(0,),
+        (1,),
         (2,)],
                                  'selected-nodes': [(2,
         3)],
@@ -961,7 +960,7 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 0,
         'selection_end': 0,
         'selection_start': 0},
-                       loc('../../../../../../usr/lib/pymodules/python2.6/soya/__init__.py'): {''\
+                       loc('../../../../../usr/lib/pymodules/python2.6/soya/__init__.py'): {''\
         'attrib-starts': [('SavedInAPath',
                            144),
                           ('SavedInAPath.get',
@@ -972,7 +971,7 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 9918,
         'selection_end': 9918,
         'selection_start': 9918},
-                       loc('../../../../../../usr/lib/pymodules/python2.6/soya/gui/style.py'): {''\
+                       loc('../../../../../usr/lib/pymodules/python2.6/soya/gui/style.py'): {''\
         'attrib-starts': [('Style',
                            23),
                           ('Style.__init__',
@@ -983,7 +982,7 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 1936,
         'selection_end': 3915,
         'selection_start': 1938},
-                       loc('../../../../../../usr/lib/pymodules/python2.6/soya/gui/widgets.py'): {''\
+                       loc('../../../../../usr/lib/pymodules/python2.6/soya/gui/widgets.py'): {''\
         'attrib-starts': [('Widget',
                            33),
                           ('Widget.__init__',
@@ -994,7 +993,7 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 1122,
         'selection_end': 1135,
         'selection_start': 1127},
-                       loc('../../../../../../usr/lib/pymodules/python2.6/soya/pudding/control.py'): {''\
+                       loc('../../../../../usr/lib/pymodules/python2.6/soya/pudding/control.py'): {''\
         'attrib-starts': [('SimpleLabel',
                            89),
                           ('SimpleLabel.__init__',
@@ -1005,7 +1004,7 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 4500,
         'selection_end': 4500,
         'selection_start': 4500},
-                       loc('../../../../../../usr/lib/pymodules/python2.6/soya/pudding/ext/fpslabel.py'): {''\
+                       loc('../../../../../usr/lib/pymodules/python2.6/soya/pudding/ext/fpslabel.py'): {''\
         'attrib-starts': [('FPSLabel',
                            12),
                           ('FPSLabel.__init__',
@@ -1016,7 +1015,7 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 462,
         'selection_end': 462,
         'selection_start': 462},
-                       loc('../../../../../../usr/lib/python2.6/pickle.py'): {''\
+                       loc('../../../../../usr/lib/python2.6/pickle.py'): {''\
         'attrib-starts': [('Unpickler',
                            826),
                           ('Unpickler.load_eof',
@@ -1027,7 +1026,7 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 30414,
         'selection_end': 30414,
         'selection_start': 30414},
-                       loc('../../../../../../usr/lib/wingide3.2/resources/builtin-pi-files/2.6/math.pi'): {''\
+                       loc('../../../../../usr/lib/wingide3.2/resources/builtin-pi-files/2.6/math.pi'): {''\
         'attrib-starts': [('sin',
                            180)],
         'first-line': 168,
@@ -1036,20 +1035,20 @@ guimgr.visual-state = {loc('../../../../../.wingide3/pi-cache/2.6/usr/lib/pymodu
         'sel-line-start': 3432,
         'selection_end': 3439,
         'selection_start': 3436},
-                       loc('unknown:<untitled> #1'): {'attrib-starts': [],
-        'first-line': 0,
-        'folded-linenos': [],
-        'sel-line': 1,
-        'sel-line-start': 132,
-        'selection_end': 225,
-        'selection_start': 199},
                        loc('unknown:<untitled> #2'): {'attrib-starts': [],
         'first-line': 0,
         'folded-linenos': [],
         'sel-line': 0,
         'sel-line-start': 0,
         'selection_end': 225,
-        'selection_start': 0}}
+        'selection_start': 0},
+                       loc('unknown:<untitled> #1'): {'attrib-starts': [],
+        'first-line': 0,
+        'folded-linenos': [],
+        'sel-line': 1,
+        'sel-line-start': 132,
+        'selection_end': 225,
+        'selection_start': 199}}
 proj.env-vars = {loc('GameApp/game_app_3d.py'): ('project',
         ['']),
                  loc('blender-auto-exporter-1.py'): ('project',
@@ -1058,7 +1057,7 @@ proj.env-vars = {loc('GameApp/game_app_3d.py'): ('project',
                                      ['']),
                  loc('main.py'): ('project',
                                   ['']),
-                 loc('../../../../../../usr/lib/pymodules/python2.6/soya/__init__.py'): (''\
+                 loc('../../../../../usr/lib/pymodules/python2.6/soya/__init__.py'): (''\
         'project',
         [''])}
 search.replace-history = [u'self']
