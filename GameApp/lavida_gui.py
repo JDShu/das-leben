@@ -99,7 +99,7 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         HighlightableWidget.__init__( self )
         self.material = soya.Material( soya.Image.get( "circular_menu.png" ) )
 
-        self.radius = 128
+        self.radius = self.width = self.height = 128
 
         self.x1 = -self.radius
         self.y1 = -self.radius
@@ -107,6 +107,7 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         self.y2 = self.radius
         
         
+    def allocate(self, x, y, width, height): pass
         
     def SetVisible( self, visible=True ):
         self.visible = visible
@@ -148,21 +149,27 @@ class LavidaPieMenu( Group, HighlightableWidget ):
     def SetupIcons( self ):
         step = 360 / len( self.widgets ) # step in degrees
         
-        angle = Angle( step )
+        angle = step == 360 and Angle( 0 ) or Angle( step )
         
-        self.x = 20
+##        self.x = 20
         self.y = 20
         
         for widget in self.widgets:
-            widget.y = -80
-            widget.x = 0
-            
-            theta = angle.GetAngleInRadians()
-            widget.x = ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) )
-            widget.y = ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) )
-          
-            
-            angle += step
+            if angle > 0:
+                
+                widget.y = -90
+                widget.x = 0
+                
+                theta = angle.GetAngleInRadians()
+                widget.x = int( ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) ) )
+                widget.y = int( ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) ) )
+              
+                
+                angle += step
+                
+            else:
+                widget.y = -90
+                widget.x = 0
         
         
 class StandardActionsMenu( LavidaPieMenu ):

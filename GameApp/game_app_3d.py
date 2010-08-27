@@ -72,7 +72,7 @@ class GameApp3d( soya.World ):
         
         self.root = soya.gui.RootLayer(None)
         soya.gui.CameraViewport( self.root, self.m_Camera )
-
+        self.root.widgets_needing_resize = set()
         soya.set_root_widget( self.root )
                 
         #pudding.ext.fpslabel.FPSLabel( soya.root_widget, position = pudding.TOP_RIGHT )

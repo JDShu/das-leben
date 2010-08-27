@@ -38,7 +38,7 @@ class CookerActionsMenu( LavidaPieMenu ):
         
         btn = UseCookerButton( self, event_queue )
         
-        # self.SetupIcons()
+        self.SetupIcons()
         
 class UseCookerButton( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
