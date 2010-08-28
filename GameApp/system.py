@@ -1,4 +1,19 @@
-import pygame
+'''
+ * This file is part of La Vida
+ * Copyright (C) 2009 Mike Hibbert
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+'''
+
 from heapq import heappush, heappop
 import soya
 from buildings import WALL_WIDTH
@@ -9,7 +24,7 @@ ACTION = 3
 
 PATHFINDER_RESOLUTION = 1
 
-
+# =====================================================================================
 class EventQueue:
     def __init__( self, parent=None ):
         self.events = []
@@ -35,7 +50,7 @@ class EventQueue:
                     self.PrepareActionEvent( event )
         
     def PrepareActionEvent( self, event ):
-        if event.name == "move_to":
+        if event.name == "move to":
             data = event.GetCurrentAction().data[ 0 ]
             x = ( data[ 0 ] / WALL_WIDTH ) * WALL_WIDTH - WALL_WIDTH
             y = ( data[ 1 ] / WALL_WIDTH ) * WALL_WIDTH - WALL_WIDTH
@@ -46,10 +61,13 @@ class EventQueue:
             event.GetCurrentAction().data[ 0 ] = impact
             event.prepared = True
 
+            
+# =====================================================================================
 class Event():
     def __init__( self, category ):
         self.category = category        
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class MouseEvent( Event ):
     def __init__( self, pygame_event ):
         Event.__init__( self, MOUSE )
@@ -62,13 +80,15 @@ class MouseEvent( Event ):
             self.s_up = True
         if pygame_event.button == 5:
             self.s_down = True
-
+            
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class TimeEvent( Event ):
     def __init__( self, time_type ):
         Event.__init__( self, TIME )
         self.time_type = time_type
         
-class ActionEvent( Event ):
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class ActionEvent( object, Event ):
     def __init__( self, name ):
         Event.__init__( self, ACTION )
         self.name = name
@@ -88,6 +108,9 @@ class ActionEvent( Event ):
     def IsPrepared( self ):
         return self.prepared
     
+    
+    
+# =====================================================================================
 class AvatarAction:
     def __init__( self, name, action=None, target=None ):
         self.name = name
@@ -108,6 +131,7 @@ class AvatarAction:
         
         return None
 
+# =====================================================================================
 class Node():
     def __init__( self, x, y ):
         self.x = x
@@ -136,6 +160,7 @@ class Node():
     def print_coordinates( self ):
         print ( x, y )
 
+# =====================================================================================
 BLOCKED = 1
 #2D list data structure for pathfinding
 class Grid():
@@ -206,7 +231,9 @@ class Grid():
     def GridSpaceCoords( self, x, y, tile_width=1, tile_offset=0 ):
         return ( int( ( x - tile_offset ) / tile_width ), int( ( y - tile_offset ) / tile_width ) )
 
-#generates list of grid coordinates leading from goal to start according to a simple A* algorithm
+# =====================================================================================
+# generates list of grid coordinates leading from goal to start according to a 
+# simple A* algorithm
 class PathFinder():
     def __init__( self, input_grid, start, goal ):
         self.start = start

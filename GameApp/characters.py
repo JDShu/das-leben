@@ -112,13 +112,13 @@ class Avatar( soya.World ):
                 if event.category == ACTION:
                     action = event.GetCurrentAction()
                     if action.target_avatar == "selected_avatar" and self.selected:
-                        if action.name == "move_to":
+                        if action.name == "move to":
                             self.m_EventQueue.ClearCurrentEvent()
                             self.action = action
                             self.destination = self.action.data[ 0 ]
                             self.m_Behaviour = AVATAR_CALC_ROUTE
                             
-                        elif action.name == "cancel_action":
+                        elif action.name == "cancel action":
                             self.action = None
                             self.m_Behaviour = AVATAR_IDLE
                             self.PlayAnimation( "attente" )

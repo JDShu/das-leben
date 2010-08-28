@@ -21,6 +21,7 @@ from logger import *
 from angle import Angle
 from math import cos, sin
 from system import ActionEvent, AvatarAction
+from activities import Activity
 
 class LaVidaMenuStyle( soya.gui.style.Style ):
     def __init__( self ):
@@ -68,10 +69,10 @@ class LavidaActionButton( Button, HighlightableWidget ):
         
         self.material = soya.Material()
         
-        self.radius = 64 * 0.5 # width in pixels / 2
+        self.radius = self.width = self.height = 64  # width in pixels / 2
 
-        self.x1 = -self.radius
-        self.y1 = -self.radius
+        self.x1 = 0
+        self.y1 = 0
         self.x2 = self.radius
         self.y2 = self.radius
         
@@ -93,18 +94,17 @@ class LavidaActionButton( Button, HighlightableWidget ):
         HighlightableWidget.on_highlight( self, highlight )
         self.material.diffuse = ( 1.0, 1.0, 1.0, 1.0 )
 
+    def on_mouse_pressed( self, button, x, y ):
+        self.parent.visible = 0
+        
 class LavidaPieMenu( Group, HighlightableWidget ):
     def __init__( self, parent=None ):
         Group.__init__( self, parent )
         HighlightableWidget.__init__( self )
         self.material = soya.Material( soya.Image.get( "circular_menu.png" ) )
 
-        self.radius = self.width = self.height = 128
+        self.radius = self.width = self.height = 256
 
-        self.x1 = -self.radius
-        self.y1 = -self.radius
-        self.x2 = self.radius
-        self.y2 = self.radius
         
         
     def allocate(self, x, y, width, height): pass
@@ -114,6 +114,8 @@ class LavidaPieMenu( Group, HighlightableWidget ):
  
 
     def move( self, x, y ):
+        x = x - ( self.radius / 2 )
+        y = y - ( self.radius / 2 )
         Group.move( self, x, y )
 
     def render( self ):
@@ -122,10 +124,10 @@ class LavidaPieMenu( Group, HighlightableWidget ):
                 self.material.activate()
                 opengl.glEnable( opengl.GL_BLEND )
                 opengl.glBegin   (opengl.GL_QUADS)
-                opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y1)
-                opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.x1, self.y + self.y2)
-                opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y2)
-                opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.x2, self.y + self.y1)
+                opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x, self.y)
+                opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x + self.width, self.y)
+                opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.width, self.y + self.height)
+                opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x, self.y + self.height)
                 opengl.glEnd()
                 opengl.glDisable( opengl.GL_BLEND )
         Group.render(self)
@@ -140,8 +142,8 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         
     def widget_at( self, x, y ):
         for widget in self.widgets:
-            if x >= ( widget.x - widget.radius ) and x <= ( widget.x + widget.radius ):
-                if y >= ( widget.y - widget.radius ) and y <= ( widget.y + widget.radius ):
+            if x >= widget.x and x <= ( widget.x + widget.radius ):
+                if y >= widget.y and y <= ( widget.y + widget.radius ):
                     return widget
                 
         return None
@@ -152,7 +154,9 @@ class LavidaPieMenu( Group, HighlightableWidget ):
         angle = step == 360 and Angle( 0 ) or Angle( step )
         
 ##        self.x = 20
-        self.y = 20
+        self.y = 64
+        
+        offset = self.radius / 2
         
         for widget in self.widgets:
             if angle > 0:
@@ -164,6 +168,8 @@ class LavidaPieMenu( Group, HighlightableWidget ):
                 widget.x = int( ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) ) )
                 widget.y = int( ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) ) )
               
+                widget.x += offset - ( widget.width / 2 )
+                widget.y += offset - ( widget.height / 2 )
                 
                 angle += step
                 
@@ -191,15 +197,16 @@ class MoveToButton( LavidaActionButton ):
         self.material = soya.Material( soya.Image.get( "go_here.png" ) )
                 
     def on_mouse_pressed( self, button, x, y ):
+        LavidaActionButton.on_mouse_pressed( self, button, x, y )
         LOG_DBG( self, "goto button clicked" )
         
-        event = ActionEvent( "move_to" )
-        actions = AvatarAction( "move_to", [ self.parent.x, self.parent.y ], "selected_avatar" )
-        event.AddAction( actions )
+        event = Activity( "move to", 
+                          x=self.parent.x + ( self.parent.width / 2 ), 
+                          y=self.parent.y + ( self.parent.height / 2 ) )
         
         self.event_queue.Push( event )
         
-        self.parent.visible = 0
+        
         
         
 class UseStairsButton( LavidaActionButton ):

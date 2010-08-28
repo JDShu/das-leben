@@ -15,6 +15,8 @@
 '''
 from base_objects import CookerBase
 from lavida_gui import LavidaPieMenu, LavidaActionButton
+from system import ActionEvent, AvatarAction
+from activities import Activity
 import soya
 
 class Oven( CookerBase ):
@@ -36,14 +38,36 @@ class CookerActionsMenu( LavidaPieMenu ):
     def __init__( self, parent, event_queue ):
         LavidaPieMenu.__init__( self, parent )
         
-        btn = UseCookerButton( self, event_queue )
+        btn = CookMealButton( self, event_queue )
         
         self.SetupIcons()
         
-class UseCookerButton( LavidaActionButton ):
+class CookMealButton( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
         LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "go_here.png" ) )
         self.x = -80
         self.y = 0
+        
+    def on_mouse_pressed( self, button, x, y ):
+        LavidaActionButton.on_mouse_pressed( self, button, x, y )
+        
+        event = Activity( "cook meal", x=self.parent.x, y=self.parent.y )
+        
+        self.event_queue.Push( event )
+        
+class CookMealActivity( ActionEvent ):
+    def __init__( self, **kwargs ):
+        ActionEvent.__init__( self, "cook meal" )
+        # travel to the cooker
+        action = AvatarAction( "move to", [ kwargs[ 'x' ], kwargs[ 'y' ] ], "selected_avatar" )
+        self.AddAction( action )
+        
+        # use the cooker
+        
+        # eat meal
+        
+    @classmethod
+    def IsActivityHandler( self, name ):
+        return name == "cook meal"
         
