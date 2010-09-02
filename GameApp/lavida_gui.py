@@ -167,15 +167,15 @@ class LavidaPieMenu( Group, HighlightableWidget ):
                 theta = angle.GetAngleInRadians()
                 widget.x = int( ( widget.x * cos( theta ) ) - ( widget.y * sin( theta ) ) )
                 widget.y = int( ( widget.x * sin( theta ) ) + ( widget.y * cos( theta ) ) )
-              
-                widget.x += offset - ( widget.width / 2 )
-                widget.y += offset - ( widget.height / 2 )
                 
                 angle += step
                 
             else:
                 widget.y = -90
                 widget.x = 0
+                
+            widget.x += offset - ( widget.width / 2 )
+            widget.y += offset - ( widget.height / 2 )
         
         
 class StandardActionsMenu( LavidaPieMenu ):
