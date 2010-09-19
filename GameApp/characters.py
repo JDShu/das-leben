@@ -168,8 +168,8 @@ class Avatar( soya.World ):
                                 self.x, 
                                 self.z, WALL_WIDTH, 1.5 ) ,
                             [ g.GridSpaceCoords( 
-                                self.destination.x, 
-                                self.destination.z, WALL_WIDTH, 1.5 )] )
+                                self.destination[ 0 ], 
+                                self.destination[ 1 ], WALL_WIDTH, 1.5 )] )
             self.UseWaypoints( p.path )
             
 
@@ -179,8 +179,8 @@ class Avatar( soya.World ):
         self.destination = path[ -1 ]
         self.path = path[ : ]
         
-        self.destination_x = ( self.path[ len( self.path ) - 1 ][ 0 ] * 3 ) + 1.5
-        self.destination_z = ( self.path[ len( self.path ) - 1 ][ 1 ] * 3 ) + 1.5
+        self.destination_x = ( self.path[ len( self.path ) - 1 ][ 0 ] * 3.0 ) + 1.5
+        self.destination_z = ( self.path[ len( self.path ) - 1 ][ 1 ] * 3.0 ) + 1.5
         src = soya.Vector( self.m_Scene,  self.x, 0, self.z ) 
         dest = soya.Vector( self.m_Scene,  self.destination_x, 0, self.destination_z ) 
         

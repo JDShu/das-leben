@@ -198,13 +198,19 @@ class MoveToButton( LavidaActionButton ):
                 
     def on_mouse_pressed( self, button, x, y ):
         LavidaActionButton.on_mouse_pressed( self, button, x, y )
-        LOG_DBG( self, "goto button clicked" )
         
-        event = Activity( "move to", 
-                          x=self.parent.x + ( self.parent.width / 2 ), 
-                          y=self.parent.y + ( self.parent.height / 2 ) )
+        pos_x=self.parent.x + ( self.parent.width / 2 ) 
+        pos_y=self.parent.y + ( self.parent.height / 2 )
         
-        self.event_queue.Push( event )
+        mouse = self.event_queue.parent.m_Camera.coord2d_to_3d( pos_x, pos_y )
+        result = self.event_queue.parent.raypick( self.event_queue.parent.m_Camera,
+                                      self.event_queue.parent.m_Camera.vector_to( mouse ) )
+        
+        if result:
+            impact, normal = result
+            event = Activity( "move to", x=impact.x, y=impact.z )
+            
+            self.event_queue.Push( event )
         
         
         

@@ -50,16 +50,8 @@ class EventQueue:
                     self.PrepareActionEvent( event )
         
     def PrepareActionEvent( self, event ):
-        if event.name == "move to":
-            data = event.GetCurrentAction().data[ 0 ]
-            x = ( data[ 0 ] / WALL_WIDTH ) * WALL_WIDTH - WALL_WIDTH
-            y = ( data[ 1 ] / WALL_WIDTH ) * WALL_WIDTH - WALL_WIDTH
-            mouse = self.parent.m_Camera.coord2d_to_3d( x, y )
-            result = self.parent.raypick( self.parent.m_Camera,
-                                          self.parent.m_Camera.vector_to( mouse ) )
-            impact, normal = result
-            event.GetCurrentAction().data[ 0 ] = impact
-            event.prepared = True
+        
+        event.prepared = True
 
             
 # =====================================================================================
@@ -106,8 +98,7 @@ class ActionEvent( object, Event ):
         return self.actions[ 0 ]
     
     def IsPrepared( self ):
-        return self.prepared
-    
+        return self.prepared 
     
     
 # =====================================================================================
