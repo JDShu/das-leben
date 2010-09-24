@@ -89,14 +89,16 @@ class GameApp3d( soya.World ):
         
         self.SetupEventQueue()
         
-        self.SetupGUI()
+        self.SetupGUI( a_ViewPortWidth, a_ViewPortHeight )
 
         self.LoadObjects()
         
         
-    def SetupGUI( self ):
+    def SetupGUI( self, a_ViewPortWidth, a_ViewPortHeight ):
         self.pie_menu = self.default_pie_menu = StandardActionsMenu( self.root, self.m_EventQueue )
         self.pie_menu.SetVisible( False )
+        
+        self.dashboard = LavidaDashboard( self.root, self.m_EventQueue, a_ViewPortWidth, a_ViewPortHeight )
 
     def SetupEventQueue( self ):
         self.m_EventQueue = EventQueue( self )

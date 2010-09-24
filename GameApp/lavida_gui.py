@@ -23,6 +23,7 @@ from math import cos, sin
 from system import ActionEvent, AvatarAction
 from activities import Activity
 
+# ===============================================================================
 class LaVidaMenuStyle( soya.gui.style.Style ):
     def __init__( self ):
         soya.gui.style.Style.__init__( self )
@@ -57,11 +58,13 @@ class LaVidaMenuStyle( soya.gui.style.Style ):
             (1, 1, 1, 1.0), # Window title
         ]
         self.line_width = 1
-
+        
+# ===============================================================================
 class LavidaGameUI( Group ):
     def __init__( self ):
         soya.gui.Window( self )
 
+# ===============================================================================
 class LavidaActionButton( Button, HighlightableWidget ):
     def __init__( self, parent, text = u"", on_clicked=None, event_queue=None ):
         Button.__init__( self, parent, text, on_clicked )
@@ -97,6 +100,54 @@ class LavidaActionButton( Button, HighlightableWidget ):
     def on_mouse_pressed( self, button, x, y ):
         self.parent.visible = 0
         
+        
+# ===============================================================================
+class LavidaDashboard( Group, HighlightableWidget ):
+    def __init__( self, parent=None, event_queue=None, a_ViewPortWidth=0, a_ViewPortHeight=0 ):
+        Group.__init__( self, parent )
+        HighlightableWidget.__init__( self )
+        self.material = soya.Material( soya.Image.get( "gui-dashboard.png" ) )
+
+        self.radius = self.width = a_ViewPortWidth
+        self.height = 250
+        
+        self.event_queue = event_queue
+        
+        self.x = 0
+        self.y = 525
+        
+        self.visible = True
+        
+    def LoadWidgets( self ):
+        self.health = HealthIndicator( self, self.event_queue )
+        
+        
+    def allocate(self, x, y, width, height): pass
+    
+    def render( self ):
+        if self.visible:
+            if self.material:
+                self.material.activate()
+                opengl.glEnable( opengl.GL_BLEND )
+                opengl.glBegin   (opengl.GL_QUADS)
+                opengl.glTexCoord2f(0.0, 0.0); opengl.glVertex2i(self.x, self.y)
+                opengl.glTexCoord2f(0.0, 1.0); opengl.glVertex2i(self.x, self.y + self.height )
+                opengl.glTexCoord2f(1.0, 1.0); opengl.glVertex2i(self.x + self.width, self.y + self.height)
+                opengl.glTexCoord2f(1.0, 0.0); opengl.glVertex2i(self.x + self.width, self.y )
+                opengl.glEnd()
+                opengl.glDisable( opengl.GL_BLEND )
+        Group.render(self)
+        
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+# ===============================================================================
+class HealthIndicator( LavidaActionButton ):
+    def __init__( self, parent, event_queue ):
+        LavidaActionButton.__init__( self, parent, event_queue=event_queue )
+        self.material = soya.Material( soya.Image.get( "gui-health.png" ) )
+
+    
+        
+# ===============================================================================
 class LavidaPieMenu( Group, HighlightableWidget ):
     def __init__( self, parent=None ):
         Group.__init__( self, parent )
@@ -177,7 +228,7 @@ class LavidaPieMenu( Group, HighlightableWidget ):
             widget.x += offset - ( widget.width / 2 )
             widget.y += offset - ( widget.height / 2 )
         
-        
+# ===============================================================================        
 class StandardActionsMenu( LavidaPieMenu ):
     def __init__( self, parent, event_queue ):
         LavidaPieMenu.__init__( self, parent )
@@ -190,7 +241,7 @@ class StandardActionsMenu( LavidaPieMenu ):
         
     
             
-
+# ===============================================================================
 class MoveToButton( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
         LavidaActionButton.__init__( self, parent, event_queue=event_queue )
@@ -214,13 +265,14 @@ class MoveToButton( LavidaActionButton ):
         
         
         
-        
+# ===============================================================================        
 class UseStairsButton( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
         LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "use_stairs.png" ) )
         #self.material.diffuse = ( 0.8, 0.8, 0.8, 1.0 )
-        
+
+# ===============================================================================
 class TalkToAvatar( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
         LavidaActionButton.__init__( self, parent, event_queue=event_queue )
