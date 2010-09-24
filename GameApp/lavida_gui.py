@@ -118,6 +118,8 @@ class LavidaDashboard( Group, HighlightableWidget ):
         
         self.visible = True
         
+        self.LoadWidgets()
+        
     def LoadWidgets( self ):
         self.health = HealthIndicator( self, self.event_queue )
         
@@ -144,6 +146,12 @@ class HealthIndicator( LavidaActionButton ):
     def __init__( self, parent, event_queue ):
         LavidaActionButton.__init__( self, parent, event_queue=event_queue )
         self.material = soya.Material( soya.Image.get( "gui-health.png" ) )
+        
+        self.x = parent.x + 50
+        self.y = parent.y + 50
+        
+        self.x2 = self.y2 = 96
+        
 
     
         
