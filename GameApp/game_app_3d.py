@@ -96,7 +96,9 @@ class GameApp3d( soya.World ):
         
     def SetupGUI( self, a_ViewPortWidth, a_ViewPortHeight ):
         self.pie_menu = self.default_pie_menu = StandardActionsMenu( self.root, self.m_EventQueue )
+        self.move_mode_pie_menu = MoveModeActionsMenu( self.root, self.m_EventQueue )
         self.pie_menu.SetVisible( False )
+        self.move_mode_pie_menu.SetVisible( False )
         
         self.dashboard = LavidaDashboard( self.root, self.m_EventQueue, a_ViewPortWidth, a_ViewPortHeight )
 
@@ -201,6 +203,7 @@ class GameApp3d( soya.World ):
         '''           
 
         for event in soya.MAIN_LOOP.events:
+            
             if event[ 0 ] == soya.sdlconst.KEYDOWN:
                 self.m_KeyBuffer[ event[ 1 ] ] = True
 
@@ -215,10 +218,7 @@ class GameApp3d( soya.World ):
                 self.move( self.mouse_pos )
               
             elif event[0] == soya.sdlconst.MOUSEBUTTONDOWN:
-                
-                if event[1] == soya.sdlconst.BUTTON_LEFT:
-                    self.pie_menu.SetVisible( False )
-                if event[1] == soya.sdlconst.BUTTON_RIGHT:
+                if MoveMode.is_on:
                     mouse = self.m_Camera.coord2d_to_3d( event[2], event[3] )
                     result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
                     if result:
@@ -228,10 +228,28 @@ class GameApp3d( soya.World ):
                         if hasattr( impact.parent.parent, "GetMenu" ):
                             self.pie_menu = impact.parent.parent.GetMenu()
                         else:
-                            self.pie_menu = self.default_pie_menu
+                            self.pie_menu = self.move_mode_pie_menu
                             
                         self.pie_menu.move( event[2], event[3] )
-                        self.pie_menu.SetVisible( True )
+                        self.pie_menu.move_to_button.on_mouse_pressed(event[0], event[2], event[3])
+                        #self.pie_menu.SetVisible( True )
+                else:
+                    if event[1] == soya.sdlconst.BUTTON_LEFT:
+                        self.pie_menu.SetVisible( False )
+                    if event[1] == soya.sdlconst.BUTTON_RIGHT:
+                        mouse = self.m_Camera.coord2d_to_3d( event[2], event[3] )
+                        result = self.raypick( self.m_Camera, self.m_Camera.vector_to( mouse ) )
+                        if result:
+                            impact, normal = result
+                            
+                            self.pie_menu.SetVisible( False )
+                            if hasattr( impact.parent.parent, "GetMenu" ):
+                                self.pie_menu = impact.parent.parent.GetMenu()
+                            else:
+                                self.pie_menu = self.default_pie_menu
+                                
+                            self.pie_menu.move( event[2], event[3] )
+                            self.pie_menu.SetVisible( True )
             
             self.m_EventQueue.ProcessEvents()
 

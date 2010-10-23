@@ -237,11 +237,25 @@ class LavidaPieMenu( Group, HighlightableWidget ):
             widget.y += offset - ( widget.height / 2 )
         
 # ===============================================================================        
+class MoveModeActionsMenu( LavidaPieMenu ):
+    def __init__( self, parent, event_queue ):
+        LavidaPieMenu.__init__( self, parent )
+        
+        self.move_to_button = MoveToButton( self, event_queue )
+        
+        self.SetupIcons()
+        
+    
+# ===============================================================================
+class MoveMode:
+    is_on = False
+
+# ===============================================================================        
 class StandardActionsMenu( LavidaPieMenu ):
     def __init__( self, parent, event_queue ):
         LavidaPieMenu.__init__( self, parent )
         
-        btn = MoveToButton( self, event_queue )
+        btn = MoveButton( self, event_queue )
         btn = UseStairsButton( self, event_queue )
         btn = TalkToAvatar( self, event_queue )
         
@@ -256,6 +270,7 @@ class MoveToButton( LavidaActionButton ):
         self.material = soya.Material( soya.Image.get( "go_here.png" ) )
                 
     def on_mouse_pressed( self, button, x, y ):
+        MoveMode.is_on = False
         LavidaActionButton.on_mouse_pressed( self, button, x, y )
         
         pos_x=self.parent.x + ( self.parent.width / 2 ) 
@@ -271,7 +286,16 @@ class MoveToButton( LavidaActionButton ):
             
             self.event_queue.Push( event )
         
-        
+# ===============================================================================
+class MoveButton( LavidaActionButton ):
+    def __init__( self, parent, event_queue ):
+        LavidaActionButton.__init__( self, parent, event_queue=event_queue )
+        self.material = soya.Material( soya.Image.get( "go_here.png" ) )
+                
+    def on_mouse_pressed( self, button, x, y ):
+        LavidaActionButton.on_mouse_pressed( self, button, x, y )
+        print "MoveMode ON"
+        MoveMode.is_on = True
         
 # ===============================================================================        
 class UseStairsButton( LavidaActionButton ):
