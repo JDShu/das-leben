@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<HEADER MAGIC="XMF" VERSION="1200"/>
+<MESH NUMSUBMESH="1">
+  <SUBMESH
+    NUMVERTICES="0"
+    NUMFACES="0"
+    MATERIAL="7"
+    NUMLODSTEPS="0"
+    NUMSPRINGS="0"
+    NUMTEXCOORDS="0"
+  >
+  </SUBMESH>
+</MESH>
+

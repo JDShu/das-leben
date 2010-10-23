@@ -1,13 +1,65 @@
-import pygame
+'''
+ * This file is part of La Vida
+ * Copyright (C) 2009 Mike Hibbert
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation; either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+'''
+
 from heapq import heappush, heappop
+import soya
+from buildings import WALL_WIDTH
 
 MOUSE = 1
 TIME = 2
+ACTION = 3
 
+PATHFINDER_RESOLUTION = 1
+
+# =====================================================================================
+class EventQueue:
+    def __init__( self, parent=None ):
+        self.events = []
+        self.parent = parent 
+        
+    def Push( self, event ):
+        self.events.append( event )
+        
+    def Flush( self ):
+        self.events = []
+        
+    def GetCurrentEvent( self ):
+        return self.events[ 0 ]
+    
+    def ClearCurrentEvent( self ):
+        self.events[ 0 ] = None
+        del self.events[ 0 ]
+        
+    def ProcessEvents( self ):
+        for event in self.events:
+            if event.category == ACTION:
+                if not event.prepared:
+                    self.PrepareActionEvent( event )
+        
+    def PrepareActionEvent( self, event ):
+        
+        event.prepared = True
+
+            
+# =====================================================================================
 class Event():
     def __init__( self, category ):
         self.category = category        
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class MouseEvent( Event ):
     def __init__( self, pygame_event ):
         Event.__init__( self, MOUSE )
@@ -20,12 +72,57 @@ class MouseEvent( Event ):
             self.s_up = True
         if pygame_event.button == 5:
             self.s_down = True
-
+            
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 class TimeEvent( Event ):
     def __init__( self, time_type ):
         Event.__init__( self, TIME )
         self.time_type = time_type
+        
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class ActionEvent( object, Event ):
+    def __init__( self, name ):
+        Event.__init__( self, ACTION )
+        self.name = name
+        self.actions = []
+        self.prepared = False
+        
+    def AddAction( self, action ):
+        self.actions.append( action )
+        
+    def GetCurrentAction( self ):
+        return self.actions[ 0 ]
+    
+    def GetNextAction( self ):
+        del self.actions[ 0 ]
+        return self.actions[ 0 ]
+    
+    def IsPrepared( self ):
+        return self.prepared 
+    
+    
+# =====================================================================================
+class AvatarAction:
+    def __init__( self, name, action=None, target=None ):
+        self.name = name
+        self.data = []
+        if action:
+            self.data.append( action )
+        
+        self.target_avatar = target
+    
+    def AddAction( self, action ):
+        self.data.append( action )
+        
+    def GetNextAction( self ):
+        del self.data[ 0 ]
+        action = self.data[ 0 ]
+        if action:
+            return action
+        
+        return None
 
+# =====================================================================================
 class Node():
     def __init__( self, x, y ):
         self.x = x
@@ -54,26 +151,34 @@ class Node():
     def print_coordinates( self ):
         print ( x, y )
 
+# =====================================================================================
 BLOCKED = 1
 #2D list data structure for pathfinding
 class Grid():
-    def __init__( self , width=20, height=20):
+    def __init__( self , width=50, height=50):
 
         self.grid = []
         self.width = width
         self.height = height
-        for x in xrange(width):
+        for y in xrange(height):
             line = []
-            for y in xrange(height):
+            for x in xrange(width):
                 line.append( None )
             self.grid.append( line )
 
     def insert_block( self, x, y ):
         self.grid[x][y] = BLOCKED
+        
+    def clear_nodes( self ):
+        for y in xrange(self.width):
+            for x in xrange(self.height):
+                if isinstance( self.grid[y][x], Node ):
+                    self.grid[y][x] = None
 
     def insert_node( self, x, y, node):
         self.grid[x][y] = node
         
+                    
     def print_grid( self ):
         for y in xrange(self.width):
             for x in xrange(self.height):
@@ -87,17 +192,45 @@ class Grid():
                     print "?",
             print " "
             
+    def save_file( self, filename, path ):
+        for sq in path:
+            self.grid[sq[0]][sq[1]] = "X"
+            
+        f = open( filename, "w" )
+        
+        for y in xrange(self.width):
+            line = ""
+            for x in xrange(self.height):
+                if self.grid[x][y] == None:
+                    line += "_"
+                elif self.grid[x][y] == "X":
+                    line += "X"
+                elif self.grid[x][y] == 1:
+                    line += "W"
+                else:
+                    line += "_"
+            line += "\n"
+            f.write( line )
+        
+        f.close()
+        
     def draw_path( self, path ):
         for sq in path:
             self.grid[sq[0]][sq[1]] = "X"
         self.print_grid()
+        
+    def GridSpaceCoords( self, x, y, tile_width=1, tile_offset=0 ):
+        return ( int( ( x - tile_offset ) / tile_width ), int( ( y - tile_offset ) / tile_width ) )
 
-#generates list of grid coordinates leading from goal to start according to a simple A* algorithm
-class Path():
+# =====================================================================================
+# generates list of grid coordinates leading from goal to start according to a 
+# simple A* algorithm
+class PathFinder():
     def __init__( self, input_grid, start, goal ):
         self.start = start
         self.goal = goal
         self.grid = input_grid
+        self.grid.clear_nodes()
         start_node = Node(*start)
         start_node.set_g(0)
         self.grid.insert_node(start[0], start[1], start_node)
@@ -105,6 +238,8 @@ class Path():
         heappush( heap, (0,start) )
         current = heappop(heap)[1]
         reached_goal = False
+        if start in goal:
+            reached_goal = True
         while not reached_goal:
             c_x, c_y = current
             current_node = self.grid.grid[c_x][c_y]
@@ -125,7 +260,7 @@ class Path():
                     pass
                 elif node.open and cost < node.g:
                     node.close_node()
-            print current
+            #print current
             current = heappop(heap)[1]
             for g in goal:
                 if current == g:
@@ -154,6 +289,8 @@ class Path():
         return node.g + 1.001*node.h_function( goal )
 
     def _construct_path( self, goal ):
+        if self.start == goal:
+            return [goal]
         path = []
         current = goal
         x, y = current
@@ -163,3 +300,29 @@ class Path():
             x, y = current
        
         return path
+    
+    def Draw( self, a_Scene, a_Scale, a_Altitude, a_Offset=0 ):
+        w = soya.World()
+        last = self.path[ 0 ]
+        for point in self.path:
+            if not last == point:
+                x1 = ( last[ 0 ] * a_Scale ) + a_Offset
+                z1 = ( last[ 1 ] * a_Scale ) + a_Offset
+                x2 = ( point[ 0 ] * a_Scale ) + a_Offset
+                z2 = ( point[ 1 ] * a_Scale ) + a_Offset
+                
+                p1 = soya.Vertex( a_Scene, x1, a_Altitude, z1 )
+                p2 = soya.Vertex( a_Scene, x2, a_Altitude, z2 )
+                
+                f = soya.Face( a_Scene, [ p1, p2 ] )
+                
+                last = point
+##               
+##        # 
+##        b = soya.Body( a_Scene, w.to_model() )
+        
+                
+##        return b
+
+
+                

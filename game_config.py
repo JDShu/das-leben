@@ -45,9 +45,12 @@ class GameConfig:
 		self.music_volume = float( self.config_parser.get("Audio", "volume") )
 
 	def ScreenResolution( self ):
-		return ( self.screen_resolution_x, self.screen_resolution_y )
+		return ( int( self.screen_resolution_x ), int( self.screen_resolution_y ) )
 
 	def ScreenMode( self ):
-		return self.screen_mode
+		retVal = 1
+		if self.fullscreen == False:
+			retVal = 0
+		return retVal
 
 	

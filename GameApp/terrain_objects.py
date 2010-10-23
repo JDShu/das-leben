@@ -27,25 +27,13 @@ from collisions import BoundingBox3d
 import random
 from ctypes import *
 from numpy import array
+from buildings import *
+from system import * 
+
+import pickle
 
 REGION_NORMAL = 1
 REGION_EDITING = 2
-
-# ====================================================================
-# RegionQuad Constants
-# ====================================================================
-WALL_BOTTOM_LEFT = 1
-WALL_BOTTOM_RIGHT = 2
-WALL_BOTTOM = 3
-WALL_TOP_LEFT = 4
-WALL_TOP_RIGHT = 5
-WALL_TOP = 6
-WALL_BOTTOM_LEFT_ANGLED = 7
-WALL_BOTTOM_RIGHT_ANGLED = 8
-WALL_TOP_LEFT_ANGLED = 9
-WALL_TOP_RIGHT_ANGLED = 10
-WALL_RIGHT = 11
-WALL_LEFT = 12
 
 QUAD_FLOOR_SQUARE = 50
 QUAD_FLOOR_NONE = 51
@@ -65,12 +53,7 @@ class RegionQuad( BoundingBox3d ):
         '''
         BoundingBox3d.__init__( self, a_X + (a_Size / 2.0), a_Y, a_Z + (a_Size / 2.0), a_Size )
         
-        # y values for quad
-        self.ul = None
-        self.ur = None
-        self.ll = None
-        self.lr = None
-        
+       
         # a type of quad for working with floorplanns
         self.quadType = a_Type
         
@@ -78,6 +61,7 @@ class RegionQuad( BoundingBox3d ):
         self.va_index = 0
         self.i = 0
         
+        self.name = "rq-%d-%d.pkl" % ( int( a_X / a_Size ), int( a_Y / a_Size ) )
         # quad size
         self.size = a_Size
         
@@ -91,167 +75,29 @@ class RegionQuad( BoundingBox3d ):
         
         self.colour_adjust = random.random()
         
-    def CreateQuad( self, vertexes, offset, altitude ):
+       
+    def CreateQuad( self, model, altitude, material=None ):
         radius = self.size / 2.0
         x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
         
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
-    def CreateNormals( self, normals, offset, altitude ):
-        normals[ offset ][ 0 ] = 0.0
-        normals[ offset ][ 1 ] = 1.0
-        normals[ offset ][ 2 ] = 0.0
-        
-        normals[ offset + 1 ][ 0 ] = 0.0
-        normals[ offset + 1 ][ 1 ] = 1.0
-        normals[ offset + 1 ][ 2 ] = 0.0
-        
-        normals[ offset + 2 ][ 0 ] = 0.0
-        normals[ offset + 2 ][ 1 ] = 1.0
-        normals[ offset + 2 ][ 2 ] = 0.0
-        
-        normals[ offset + 3 ][ 0 ] = 0.0
-        normals[ offset + 3 ][ 1 ] = 1.0
-        normals[ offset + 3 ][ 2 ] = 0.0
-        
-    def CreateTexCoords( self, texCoords, offset, altitude ):
-        texCoords[ offset ][ 0 ] = 0.0
-        texCoords[ offset ][ 1 ] = 0.0
-        
-        texCoords[ offset + 1 ][ 0 ] = 1.0
-        texCoords[ offset + 1 ][ 1 ] = 0.0
-        
-        texCoords[ offset + 2 ][ 0 ] = 1.0
-        texCoords[ offset + 2 ][ 1 ] = 1.0
-                
-        texCoords[ offset + 3 ][ 0 ] = 0.0
-        texCoords[ offset + 3 ][ 1 ] = 1.0
-
-    def CreateLBQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x 
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z 
-        
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
-    def CreateRBQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
-        
-        vertexes[ offset + 1 ][ 0 ] = x 
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z 
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
-    def CreateRTQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
-        
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x 
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z 
-        
-        vertexes[ offset + 3 ][ 0 ] = x - radius
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z + radius
-        
-    def CreateLTQuad( self, vertexes, offset, altitude ):
-        radius = self.size / 2.0
-        x, y, z, w = self.GetPosition()
-
-        vertexes[ offset ][ 0 ] = x - radius
-        vertexes[ offset ][ 1 ] = altitude
-        vertexes[ offset ][ 2 ] = z - radius
-        
-        vertexes[ offset + 1 ][ 0 ] = x + radius
-        vertexes[ offset + 1 ][ 1 ] = altitude
-        vertexes[ offset + 1 ][ 2 ] = z - radius
-        
-        vertexes[ offset + 2 ][ 0 ] = x + radius
-        vertexes[ offset + 2 ][ 1 ] = altitude
-        vertexes[ offset + 2 ][ 2 ] = z + radius
-        
-        vertexes[ offset + 3 ][ 0 ] = x
-        vertexes[ offset + 3 ][ 1 ] = altitude
-        vertexes[ offset + 3 ][ 2 ] = z
-        
-    def SetAsObject( self, a_Object3d ):
-        '''
-        make this quad a 3d object 
-        @param a_Object3d Object3d : instance of Object3d
-        '''
-        self.ObjectToRender = a_Object3d
-        self.ObjectToRender.SetPosition( self.GetX(), self.GetY(), self.GetY() )
-        
-    def GetGLName( self ):
-        '''
-        Return the GLName of this object
-        @return GLName Integer : a OpenGL ID to assist in picking objects
-        '''
-        return self.ObjectToRender.GetGLName()
-        
-    def Draw( self ):
-        '''
-        render the contents of this quad
-        '''
-        if self.obj:
-            self.obj.Draw()
-        if len( self.extra ) > 0:
-            for obj in self.extra:
-                obj.Draw()
+        soya.Face( model, 
+                   [ soya.Vertex( model, x - radius, altitude, z + radius, 0.0, 0.0 ),
+                     soya.Vertex( model, x + radius, altitude, z + radius, 1.0, 0.0 ),
+                     soya.Vertex( model, x + radius, altitude, z - radius, 1.0, 1.0 ),
+                     soya.Vertex( model, x - radius, altitude, z - radius, 0.0, 1.0 ) ], 
+                   material )
+                     
+    def Save( self, a_Path ):
+        f = open( os.path.join( a_Path, self.name ), "wb" )
+        pickle.dump( self, f )
+        f.close()
     
     
-class Region( Vector3d ):
+class Region( soya.World ):
     '''
     A region of terrain
     '''
-    def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_Width=50, a_Height=50, a_Size=0.5, a_Colour=0.5 ):
+    def __init__( self, a_Scene, a_Width, a_Height ):
         '''
         Create a Region
         @param a_X Float : the bottom left x coord of the region
@@ -262,100 +108,34 @@ class Region( Vector3d ):
         @param a_Size Float : the width and height of each square, ( RegionQuad )
         @param a_Colour Float : the overall colour of the rendered RegionQuads
         '''
-        Vector3d.__init__( self, a_X, a_Y, a_Z )
+        
+        soya.World.__init__( self )
         self.quads = []; qadd = self.quads.append
         self.quadIDS = []; iadd = self.quadIDS.append
         
         self.m_Width = a_Width
         self.m_Height = a_Height
-        self.m_Size = a_Size
+        self.m_Size = a_Size = WALL_WIDTH
+        
+        
         
         self.textureID = 0
         self.wallTextureID = 0
         
-        for z in xrange( a_Height ):
-            for x in xrange( a_Width ):
-                rq = RegionQuad( a_X + ( float( x ) * a_Size ), 
-                                  a_Y, 
-                                  a_Z + ( float( z ) * a_Size ),
-                                  a_Size ) 
-                rq.SetAsObject( Object3d() )
-                
-                # rq.compile_list()
-                
-                qadd( rq )
-                iadd( rq.listID )
-                
-        self.vertexes = []; vadd = self.vertexes.append
-        colours = []; cadd = colours.append
-        normals = []; nadd = normals.append
-        indexes = []; ixadd = indexes.append
-        
-        for z in xrange( a_Height + 1 ):
-            for x in xrange( a_Width + 1):
-                extra_light = random.uniform( 0.25, 0.4 )
-                vadd( Vector3d( float( x ) * a_Size, a_Y, float( z ) * a_Size ) )
-                nadd( Vector3d( 0.0, .737, 0.0 ) )
-                if a_Colour < 1.0:
-                    cadd( [ a_Colour - extra_light, a_Colour, a_Colour - extra_light ] )
-                else:
-                    cadd( [ a_Colour, a_Colour, a_Colour ] )
-                if x < a_Width and z < a_Height:
-                    ixadd( int( ( z * ( a_Width + 1 ) ) + x ) )
-                    ixadd( int( ( z * ( a_Width + 1 ) ) + ( x + 1 ) ) )
-                    ixadd( int( ( ( z + 1 ) * ( a_Width + 1 ) ) + ( x + 1 ) ) )
-                    ixadd( int( ( ( z + 1 ) * ( a_Width + 1 ) ) + x ) )
-                
-        for i, rq in enumerate( self.quads ):
-            rq.ll = indexes[ i * 4 ]
-            rq.lr = indexes[ ( i * 4 ) + 1 ]
-            rq.ur = indexes[ ( i * 4 ) + 2 ]
-            rq.ul = indexes[ ( i * 4 ) + 3 ]
-            
-        
-        # now generate a vertex array for opengl
-        va_vertexes = []; vadd = va_vertexes.append
-        va_colours = []; cadd = va_colours.append
-        va_normals = []; nadd = va_normals.append
-        va_texcoords = []; tadd = va_texcoords.append
-        
-        for i, rq in enumerate( self.quads ):
-            rq.va_index = i * 4 # index to first vertex of the quad
-            rq.i = i
-            vadd( self.vertexes[ rq.ll ] )
-            vadd( self.vertexes[ rq.lr ] )
-            vadd( self.vertexes[ rq.ur ] )
-            vadd( self.vertexes[ rq.ul ] )
-            
-            #normals
-            nadd( normals[ rq.ll ] )
-            nadd( normals[ rq.lr ] )
-            nadd( normals[ rq.ur ] )
-            nadd( normals[ rq.ul ] )
-            #texcoords
-            tadd( [ 0, 0] )
-            tadd( [ 1, 0] )
-            tadd( [ 1, 1] )
-            tadd( [ 0, 1] )
-            #colours
-            cadd( colours[ rq.ll ] )
-            cadd( colours[ rq.lr ] )
-            cadd( colours[ rq.ur ] )
-            cadd( colours[ rq.ul ] )
-                      
-        self.va = VA( va_vertexes, va_normals, None, va_texcoords, va_colours )
-        #self.va = VBO( va_vertexes, va_normals, va_texcoords, va_colours )
-        self.useVBO = True
+##        for z in xrange( a_Height ):
+##            for x in xrange( a_Width ):
+##                rq = RegionQuad( ( float( x ) * a_Size ), 
+##                                  2, 
+##                                  ( float( z ) * a_Size ),
+##                                  a_Size ) 
+##                rq.CreateQuad( self, 2 )
         self.mode = REGION_NORMAL
         
         self.selected_quads = []
         
         self.m_ObjectType = OBJECT_3D_MESH
         self.listID = None
-        #self.compile_list()
-        
-        self.compiled = False
-        
+##        
     def compile_list( self ):
         self.listID = glGenLists( 1 )
         glNewList( self.listID, GL_COMPILE )
@@ -388,22 +168,22 @@ class Region( Vector3d ):
         
         if lines[ 0 ].startswith( "FLOOR" ):
             parts = lines[ 0 ].split( ":" )
-            self.textureID = a_AssetManager.GetTexture( parts[ 1 ].replace( "\n", "" ) )
+            self.floor_material = a_AssetManager.GetTexture( parts[ 1 ].replace( "\n", "" ) )
             del lines[ 0 ]
             
-        if lines[ 0 ].startswith( "WALLS" ):
+        if lines[ 0 ].startswith( "WALL_INNER" ):
             parts = lines[ 0 ].split( ":" )
-            self.wallTextureID = a_AssetManager.GetTexture( parts[ 1 ].replace( "\n", "" ) )
+            self.wall_inner_material = a_AssetManager.GetTexture( parts[ 1 ].replace( "\n", "" ) )
             del lines[ 0 ]
             
-        
-        
+        if lines[ 0 ].startswith( "WALL_OUTER" ):
+            parts = lines[ 0 ].split( ":" )
+            self.wall_outer_material = a_AssetManager.GetTexture( parts[ 1 ].replace( "\n", "" ) )
+            del lines[ 0 ]
             
+        self.CreateFromFloorPlan( lines )
         
-                    
-        self.CreateVAFromFloorPlan( lines )
-        
-    def CreateVAFromFloorPlan( self, lines ):
+    def CreateFromFloorPlan( self, lines ):
         self.DeleteAllQuads()
         
         self.quads = []; qadd = self.quads.append
@@ -412,35 +192,31 @@ class Region( Vector3d ):
             for x in xrange( self.m_Height):
                 quad = lines[ z ][ x ].replace( "\n", "" )
                 
-                rq = RegionQuad( self.GetX() + ( float( x ) * self.m_Size ), 
-                                  self.GetY(), 
-                                  self.GetZ() + ( float( z ) * self.m_Size ),
+                rq = RegionQuad( self.x + ( float( x ) * self.m_Size ), 
+                                  self.y, 
+                                  self.z + ( float( z ) * self.m_Size ),
                                   self.m_Size,
                                   quad ) 
                 
                 qadd( rq )
                 
         size = len( self.quads )
-        va_vertexes = zeros( ( self.m_Width * self.m_Height * 4, 3 ), dtype=float32 )
-        # va_colours = []; cadd = va_colours.append
-        va_normals = zeros( ( self.m_Width * self.m_Height * 4, 3 ), dtype=float32 )
-        va_texcoords = zeros( ( self.m_Width * self.m_Height * 4, 2 ), dtype=float32 )
+
         for i, quad in enumerate( self.quads ):
             if quad.quadType != '?':
-                quad.CreateQuad( va_vertexes, i * 4, 0.0 )
-                quad.CreateNormals( va_normals, i * 4, 0.0 )
-                quad.CreateTexCoords( va_texcoords, i * 4, 0.0 )
-                if quad.quadType == "A":
-                    quad.CreateLBQuad( va_vertexes, i * 4, 0.0 )
-                elif quad.quadType == "B":
-                    quad.CreateRBQuad( va_vertexes, i * 4, 0.0 )
-                elif quad.quadType == "C":
-                    quad.CreateRTQuad( va_vertexes, i * 4, 0.0 )
-                elif quad.quadType == "D":
-                    quad.CreateLTQuad( va_vertexes, i * 4, 0.0 )
+                quad.CreateQuad( self, 0.0, self.floor_material )
+
+##                if quad.quadType == "A":
+##                    quad.CreateLBQuad( va_vertexes, i * 4, 0.0 )
+##                elif quad.quadType == "B":
+##                    quad.CreateRBQuad( va_vertexes, i * 4, 0.0 )
+##                elif quad.quadType == "C":
+##                    quad.CreateRTQuad( va_vertexes, i * 4, 0.0 )
+##                elif quad.quadType == "D":
+##                    quad.CreateLTQuad( va_vertexes, i * 4, 0.0 )
                 
                         
-        self.va = VA( va_vertexes, va_normals, None, va_texcoords, None )
+        
         
     def DeleteAllQuads( self ):
         for quad in self.quads:
@@ -664,11 +440,23 @@ class FloorRegion( Region ):
                 quad.Draw()
         
 class LoadableRegion( Region ):
-        def __init__( self, a_X=0.0, a_Y=0.0, a_Z=0.0, a_AssetManager=None, a_Width=50, a_Height=50, a_Size=0.5, a_FirstFloor=True ):
-            Region.__init__( self, a_X, a_Y, a_Z, a_Width, a_Height, a_Size )
+        def __init__( self, a_Scene, a_X=0.0, a_Y=0.0, a_Z=0.0, a_AssetManager=None, a_Width=50, a_Height=50, a_Size=0.5, a_FirstFloor=True ):
+            if not a_Scene: 
+                raise Exception, "Loadable Regions require a soya.World instance" 
+            
+            Region.__init__( self, a_Scene, a_Width, a_Height )
+            
             self.AssetManager = a_AssetManager
             self.ShowWalls = True
             self.FirstFloor = a_FirstFloor
+            self.Scene = a_Scene
+            self.solid = 1
+            
+            
+        def Save( self, a_Filename ):
+            f = open( a_Filename, "w" )
+            pickle.dump( self, f )
+            f.close()
             
         def Load( self, a_Filename ):
             Region.Load( self, a_Filename, self.AssetManager )
@@ -678,98 +466,214 @@ class LoadableRegion( Region ):
             else:
                 altitude = -0.41
                 
-            for i in xrange( 1, len( self.quads ) ):
-                quad = self.quads[ i ]
-                if quad.quadType == "a":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( 0.005, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone() 
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.005, altitude, -0.225 ) )
-                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                elif quad.quadType == "b":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( -0.01, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                        ConcatenateObject( quad + Vector3d( 0.225, altitude, 0.01 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "c":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( -0.001, altitude, 0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                        ConcatenateObject( quad + Vector3d( 0.225, altitude, -0.001 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "d":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( -0.225, altitude, -0.005 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                        ConcatenateObject( quad + Vector3d( 0.01, altitude, 0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL_CORNER_BL" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "A":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "B":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "C":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        x, y, z, w_pos = self.GetPosition()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "D":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad , w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        x, y, z, w_pos = self.GetPosition()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "L":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( 0.225, altitude, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "R":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( -0.225, altitude, 0.0 ), w, self.AssetManager.GetObject( "WALL90" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-                elif quad.quadType == "l":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( 0.0, altitude, -0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, altitude, -0.225 ) )
-                elif quad.quadType == "h":
-                    if hasattr( self, "walls"):
-                        ConcatenateObject( quad + Vector3d( 0.0, altitude, 0.225 ), w, self.AssetManager.GetObject( "WALL0" ) )
-                    else:
-                        self.walls = w = self.AssetManager.GetObject( "WALL0" ).Clone()
-                        TranslateVertexArray( self.walls, quad + Vector3d( 0.0, 0.0, 0.0 ) )
-            
-            x, y, z, w = self.GetPosition()
-            self.walls.SetPosition( x, y, z )
-                                  
-            if self.wallTextureID: self.walls.SetTexture( self.wallTextureID )
-                           
-        def Draw( self ):
-            self._draw()
-            if self.ShowWalls:
-                self.walls.Draw()
+            wall_front_material = self.AssetManager.GetTexture( "DEFAULT_WALL" )
+            wall_back_material = self.AssetManager.GetTexture( "LIGHT_WALL_PAPER" )
                 
+            for z in xrange( self.m_Height ):
+                for x in xrange( self.m_Width ):
+                    
+                    quad = self.quads[ ( z * self.m_Height ) + x ]
+                    z_plus_one = z + 1 
+                    z_minus_one = z - 1
+                    if z_plus_one < self.m_Height:
+                        quad_above = self.quads[ ( z_plus_one * self.m_Height ) + x ]
+                    else:
+                        quad_above = None
+                        
+                    if z_minus_one > -1:
+                        quad_below = self.quads[ ( z_minus_one * self.m_Height ) + x ]
+                    else:
+                        quad_below = None
+                        
+                    if quad.quadType == "a":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_LEFT,
+                                  
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+    
+                        
+                    elif quad.quadType == "b":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_RIGHT,
+                                  
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                    elif quad.quadType == "c":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_BACK,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_RIGHT,
+                                  wall_position_extras=WALL_OUTER_TOP_LEFT,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                    elif quad.quadType == "d":
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_BACK,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                                            
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_LEFT,
+                                  wall_position_extras=WALL_OUTER_TOP_RIGHT,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                    elif quad.quadType == "L":
+                        extras = None
+                        if quad_below:
+                            if quad_below.quadType == "#":
+                                quad_left = self.quads[ ( ( z - 1 ) * self.m_Height ) + x + 1 ]
+                                if quad_left.quadType == "h":
+                                    extras = WALL_INNER_BOTTOM_RIGHT
+                                    
+                        if quad_above:
+                            if quad_above.quadType == "#":
+                                quad_left = self.quads[ ( ( z + 1 ) * self.m_Height ) + x + 1 ]
+                                if quad_left.quadType == "l":
+                                    extras = WALL_INNER_TOP_RIGHT        
+                                
+                                    
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_RIGHT,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                        
+                    elif quad.quadType == "R":
+                        extras = None
+                        if quad_above:
+                            if quad_above.quadType == "#":
+                                quad_left = self.quads[ ( ( z_plus_one ) * self.m_Height ) + x - 1 ]
+                                if quad_left.quadType == "l":
+                                    extras = WALL_INNER_TOP_LEFT
+                            if quad_below.quadType == "#":   
+                                quad_right = self.quads[ ( z_minus_one * self.m_Height ) + x - 1 ]
+                                if quad_right.quadType == "h":
+                                    extras = WALL_INNER_BOTTOM_LEFT
+                                
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_LEFT,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+                        
+                    elif quad.quadType == "l":
+                        extras = None
+                        if quad_below:
+                            if quad_below.quadType == "?":
+                                quad_left = self.quads[ ( ( z - 1 ) * self.m_Height ) + x + 1 ]
+                                if quad_left.quadType == "R":
+                                    extras = WALL_INNER_TOP_LEFT
+                                quad_right = self.quads[ ( ( z - 1 ) * self.m_Height ) + x - 1 ]
+                                if quad_right.quadType == "L":
+                                    extras = WALL_INNER_TOP_RIGHT
+                                    
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material )
+                        
+                    elif quad.quadType == "h":
+                        extras = None
+                        if quad_above:
+                            if quad_above.quadType == "?":
+                                quad_left = self.quads[ ( z_minus_one * self.m_Height ) + x + 1 ]
+                                if quad_left.quadType == "L":
+                                    extras = WALL_INNER_BOTTOM_RIGHT
+                                quad_right = self.quads[ ( z_plus_one * self.m_Height ) + x + 1 ]
+                                if quad_right.quadType == "R":
+                                    extras = WALL_INNER_TOP_RIGHT
+                                    
+                        w = Wall( quad.GetX() - ( quad.size / 1.975 ), 
+                                  quad.GetZ() - ( quad.size / 1.75 ), 
+                                  self,
+                                  wall_position=WALL_BACK,
+                                  wall_position_extras=extras,
+                                  front_material=wall_front_material,
+                                  back_material=wall_back_material)
+##            x, y, z, w = self.GetPosition()
+##            self.walls.SetPosition( x, y, z )
+##            
+##            if self.wallTextureID: self.walls.SetTexture( self.wallTextureID )
+                           
+        def CreateGrid( self, a_GroundFloor=True ):
+            g = Grid( self.m_Width * PATHFINDER_RESOLUTION, self.m_Height * PATHFINDER_RESOLUTION )
+            for z in xrange( self.m_Height ):
+                zoff = z * PATHFINDER_RESOLUTION
+                
+                for x in xrange( self.m_Width ):
+                    xoff = ( x * PATHFINDER_RESOLUTION )
+                    quad = self.quads[ ( z * self.m_Width ) + x ]
+                    if not a_GroundFloor:
+                        if quad.quadType == "?":
+                            for j in xrange( PATHFINDER_RESOLUTION ):
+                                for k in xrange( PATHFINDER_RESOLUTION ):
+                                    g.insert_block( x + j, z + k )
+                                    
+                    if quad.quadType == "l":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff + j, zoff )
+                    if quad.quadType == "h":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff + j, zoff   )
+                    if quad.quadType == "R":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff , zoff + j )
+                    if quad.quadType == "L":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff  , zoff + j )
+                            
+                    if quad.quadType == "a":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff + j, zoff )
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff, zoff + j )
+                    if quad.quadType == "b":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff + j, zoff   )
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff , zoff + j )
+                    if quad.quadType == "c":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff , zoff + j )
+                    if quad.quadType == "d":
+                        for j in xrange( PATHFINDER_RESOLUTION ):
+                            g.insert_block( xoff , zoff + j )
+            return g
+        
         def ToggleWalls( self ):
             self.ShowWalls = not self.ShowWalls
         
