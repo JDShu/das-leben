@@ -1,7 +1,7 @@
 #!/usr/env python
 
-from GameApp.game_app_3d import GameApp3d
+from la_vida.game import Game
 
 if __name__ == "__main__":
-    la_vida = GameApp3d()
+    la_vida = Game()
     la_vida.run()

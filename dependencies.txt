@@ -1,25 +1,4 @@
 Dependencies
 ------------
 
-
-INFO: The package names are taken from the Ubuntu repository.
-
-The python base runtime environment:
-python		2.6.6	OK
-python2.5	2.5.7	OK
-python2.6	2.6.6	OK
-python2.7	2.7	Not working	Soya is missing
-python3		3.1.3	Not working	Soya is missing
-python3.1	3.1.2	Not working	Soya is missing
-
-Python modules needed:
-numpy		Math library for arrays for python.
-pygame		SDL binding and game development library for Python.
-python-opengl	OpenGL binding for Python.
-python-soya	High level 3D engine for Python.
-
-
-Please send an email to hibbert.michael@googlemail.com if something is missing.
-
-UPDATE
 This branch of La Vida requires Panda3D.

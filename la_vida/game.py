@@ -25,7 +25,7 @@ import camera
 
 MAP_SIZE = 20
 
-class GameApp3d(ShowBase):
+class Game(ShowBase):
     """
     The main game class which manages all other processes.
     Currently handles graphics.
