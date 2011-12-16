@@ -4,7 +4,6 @@ Dependencies
 
 INFO: The package names are taken from the Ubuntu repository.
 
-
 The python base runtime environment:
 python		2.6.6	OK
 python2.5	2.5.7	OK
@@ -21,3 +20,6 @@ python-soya	High level 3D engine for Python.
 
 
 Please send an email to hibbert.michael@googlemail.com if something is missing.
+
+UPDATE
+This branch of La Vida requires Panda3D.
