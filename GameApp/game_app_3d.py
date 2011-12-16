@@ -42,11 +42,19 @@ class GameApp3d(ShowBase):
 
     def load_graphics( self ):
         '''load all 3d objects and models'''
-        # floor terrain
+        
+        self.load_floor()
+        self.load_walls()
+        self.load_objects()
+
+        # TODO: characters
+
+    def load_floor(self):
         cm = CardMaker("floor")
         cm.setFrame(0, 1, 0, 1)
         card = cm.generate()
-        
+
+        # TODO: Somehow move texture information somewhere else.
         grass_texture = self.loader.loadTexture("./data/images/grass.png")
         wood_texture = self.loader.loadTexture("./data/images/floor_wood_0.png")
         
@@ -62,14 +70,21 @@ class GameApp3d(ShowBase):
                     floor.setTexture(grass_texture)
                 elif tile == floor_layout.WOOD:
                     floor.setTexture(wood_texture)
-                
-        # TODO: system to load all objects as specified from a file
-        self.oven = self.loader.loadModel("./data/egg/oven")
-        self.oven.reparentTo(self.render)
-        self.oven.setScale(0.49, 0.49, 0.49)
-        self.oven.setPos(1.495, 1.495, 0.495)
+        
+    def load_objects(self):
+        object_file = open("./data/games/sample.objects", 'r')
+        for line in object_file:
+            object_data = line.split(" ")
+            object_name = object_data[0]
+            x_coord = int(object_data[1])
+            y_coord = int(object_data[2])
+            scale = float(object_data[3])
+            object_model = self.loader.loadModel("./data/egg/" + object_name)
+            object_model.reparentTo(self.render)
+            object_model.setScale(scale, scale, scale)
+            object_model.setPos(x_coord + scale, y_coord + scale, scale)
 
-        # TODO: encapsulate wall generation
+    def load_walls(self):
         walls = wall_layout.WallLayout()
         walls.load_textfile("./data/games/sample.wall")
 
@@ -84,10 +99,6 @@ class GameApp3d(ShowBase):
                 elif wall == wall_layout.BOTH:
                     self.make_horizontal_wall((x,y))
                     self.make_vertical_wall((x,y))
-                    
-        # TODO: system to load floors
-        
-        # TODO: characters
 
     def make_horizontal_wall(self, pos):
         x, y = pos
