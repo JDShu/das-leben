@@ -21,6 +21,7 @@ from direct.task import Task
 from math import pi, sin, cos
 
 import wall_layout
+import floor_layout
 
 #old stuff
 import sys
@@ -53,22 +54,14 @@ class GameApp3d(ShowBase):
     def __init__(self):
                 
         ShowBase.__init__(self)
-        #initialize camera
-        #self.disableMouse()
+        #TODO: our own camera, currently using the Panda3D default
         self.load_graphics()
-        self.camera.setPos(-15,-15,10)
-        self.camera.setHpr(-40,-25,0)
         
-        #initialize screen
-        #initialize gui
+        #TODO: screen options
+        #TODO: make some kind of gui
         
         self.selected_object = None
         self.edit_terrain = False
-        #self.SetupLighting()
-        #self.SetupFog()
-        #self.SetupKeyBuffer()
-        #self.SetupEventQueue()
-        #self.SetupGUI()
 
     def SetupGUI( self ):
         self.pie_menu = StandardActionsMenu( self.root, self.m_EventQueue )
@@ -118,13 +111,25 @@ class GameApp3d(ShowBase):
         '''load all 3d objects and models'''
         # floor terrain
         cm = CardMaker("floor")
-        cm.setFrame(0, MAP_SIZE, 0, MAP_SIZE)
+        cm.setFrame(0, 1, 0, 1)
         card = cm.generate()
-        floor = self.render.attachNewNode(card)
-        floor.setP(270)
+        
         grass_texture = self.loader.loadTexture("./data/images/grass.png")
-        floor.setTexture(grass_texture)
-
+        wood_texture = self.loader.loadTexture("./data/images/floor_wood_0.png")
+        
+        floor_tiles = floor_layout.FloorLayout()
+        floor_tiles.load_textfile("./data/games/sample.floor")
+        
+        for x, row in enumerate(floor_tiles.get_layout()):
+            for y, tile in enumerate(row):
+                floor = self.render.attachNewNode(cm.generate())
+                floor.setP(270)
+                floor.setPos(x,y,0)                
+                if tile == floor_layout.GRASS:
+                    floor.setTexture(grass_texture)
+                elif tile == floor_layout.WOOD:
+                    floor.setTexture(wood_texture)
+                
         # TODO: system to load all objects as specified from a file
         self.oven = self.loader.loadModel("./data/egg/oven")
         self.oven.reparentTo(self.render)
