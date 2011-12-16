@@ -13,6 +13,7 @@
  * General Public License for more details.
  *
 '''
+import os
 
 from direct.showbase.ShowBase import ShowBase
 from pandac.PandaModules import CardMaker
@@ -20,6 +21,7 @@ from direct.task import Task
 
 import wall_layout
 import floor_layout
+import camera
 
 MAP_SIZE = 20
 
@@ -31,9 +33,9 @@ class GameApp3d(ShowBase):
     def __init__(self):
                 
         ShowBase.__init__(self)
-        #TODO: our own camera, currently using the Panda3D default
+        self.disableMouse()
+        self.camera_handler = camera.CameraHandler(self.camera)
         self.load_graphics()
-        
         #TODO: screen options
         #TODO: make some kind of gui
         
@@ -55,11 +57,11 @@ class GameApp3d(ShowBase):
         card = cm.generate()
 
         # TODO: Somehow move texture information somewhere else.
-        grass_texture = self.loader.loadTexture("./data/images/grass.png")
-        wood_texture = self.loader.loadTexture("./data/images/floor_wood_0.png")
+        grass_texture = self.loader.loadTexture(os.path.join("data", "images", "grass.png"))
+        wood_texture = self.loader.loadTexture(os.path.join("data", "images", "floor_wood_0.png"))
         
         floor_tiles = floor_layout.FloorLayout()
-        floor_tiles.load_textfile("./data/games/sample.floor")
+        floor_tiles.load_textfile(os.path.join("data","games","sample.floor"))
         
         for x, row in enumerate(floor_tiles.get_layout()):
             for y, tile in enumerate(row):
@@ -72,21 +74,21 @@ class GameApp3d(ShowBase):
                     floor.setTexture(wood_texture)
         
     def load_objects(self):
-        object_file = open("./data/games/sample.objects", 'r')
+        object_file = open(os.path.join("data","games","sample.objects"), 'r')
         for line in object_file:
             object_data = line.split(" ")
             object_name = object_data[0]
             x_coord = int(object_data[1])
             y_coord = int(object_data[2])
             scale = float(object_data[3])
-            object_model = self.loader.loadModel("./data/egg/" + object_name)
+            object_model = self.loader.loadModel(os.path.join("data","egg", object_name))
             object_model.reparentTo(self.render)
             object_model.setScale(scale, scale, scale)
             object_model.setPos(x_coord + scale, y_coord + scale, scale)
 
     def load_walls(self):
         walls = wall_layout.WallLayout()
-        walls.load_textfile("./data/games/sample.wall")
+        walls.load_textfile(os.path.join("data","games","sample.wall"))
 
         for x, row in enumerate(walls.get_layout()):
             for y, wall in enumerate(row):
