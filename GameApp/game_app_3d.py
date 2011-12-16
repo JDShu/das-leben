@@ -20,6 +20,8 @@ from direct.task import Task
 
 from math import pi, sin, cos
 
+import wall_layout
+
 #old stuff
 import sys
 from characters import *
@@ -52,7 +54,7 @@ class GameApp3d(ShowBase):
                 
         ShowBase.__init__(self)
         #initialize camera
-        self.disableMouse()
+        #self.disableMouse()
         self.load_graphics()
         self.camera.setPos(-15,-15,10)
         self.camera.setHpr(-40,-25,0)
@@ -116,8 +118,7 @@ class GameApp3d(ShowBase):
         '''load all 3d objects and models'''
         # floor terrain
         cm = CardMaker("floor")
-        terrain_size = MAP_SIZE/2
-        cm.setFrame(-terrain_size, terrain_size, -terrain_size, terrain_size)
+        cm.setFrame(0, MAP_SIZE, 0, MAP_SIZE)
         card = cm.generate()
         floor = self.render.attachNewNode(card)
         floor.setP(270)
@@ -127,14 +128,54 @@ class GameApp3d(ShowBase):
         # TODO: system to load all objects as specified from a file
         self.oven = self.loader.loadModel("./data/egg/oven")
         self.oven.reparentTo(self.render)
-        self.oven.setScale(1, 1, 1)
-        self.oven.setPos(0, 0, 1)
+        self.oven.setScale(0.49, 0.49, 0.49)
+        self.oven.setPos(1.495, 1.495, 0.495)
 
-        # TODO: system to load walls
+        # TODO: encapsulate wall generation
+        walls = wall_layout.WallLayout()
+        walls.load_textfile("./data/games/sample.wall")
 
+        for x, row in enumerate(walls.get_layout()):
+            for y, wall in enumerate(row):
+                if wall == wall_layout.EMPTY:
+                    pass
+                elif wall == wall_layout.HORIZONTAL:
+                    self.make_horizontal_wall((x,y))
+                elif wall == wall_layout.VERTICAL:
+                    self.make_vertical_wall((x,y))
+                elif wall == wall_layout.BOTH:
+                    self.make_horizontal_wall((x,y))
+                    self.make_vertical_wall((x,y))
+                    
         # TODO: system to load floors
         
         # TODO: characters
+
+    def make_horizontal_wall(self, pos):
+        x, y = pos
+        cm = CardMaker("wall")
+        cm.setFrame(0, 1, 0, 2)
+        front_card = cm.generate()
+        front = self.render.attachNewNode(front_card)
+        front.setH(90)
+        front.setPos(x,y,0)
+        back_card = cm.generate()
+        back = self.render.attachNewNode(back_card)
+        back.setH(270)
+        back.setPos(x,y+1,0)
+
+    def make_vertical_wall(self, pos):
+        x, y = pos
+        cm = CardMaker("wall")
+        cm.setFrame(0, 1, 0, 2)
+        front_card = cm.generate()
+        front = self.render.attachNewNode(front_card)
+        front.setH(0)
+        front.setPos(x,y,0)
+        back_card = cm.generate()
+        back = self.render.attachNewNode(back_card)
+        back.setH(180)
+        back.setPos(x+1,y,0)
 
     def begin_round( self ):
         soya.Body.begin_round( self )
