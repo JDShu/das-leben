@@ -1,5 +1,6 @@
 '''
 * This file is part of La Vida.
+* Copyright (C) 2009 Mike Hibbert
 * Copyright (C) 2011 Hans Lo
 *
 * La Vida is free software: you can redistribute it and/or modify
