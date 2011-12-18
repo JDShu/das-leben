@@ -21,7 +21,7 @@ CAMERA_TURN_SPEED = 0.3
 
 class CameraHandler:
     
-    def __init__(self, camera):
+    def __init__(self, camera, map_size):
         self.camera = camera
         self.camera.setPos(-3,-3,9)
         self.camera.setHpr(-45,-50,0)

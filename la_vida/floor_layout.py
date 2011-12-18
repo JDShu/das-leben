@@ -23,28 +23,24 @@ WOOD = 1
 
 class FloorLayout:
     """
-    This stores the layout of walls during a session. We represent
+    This stores the layout of floor tiles during a session. We represent
     this by squares and what each square is.
     """
-    def __init__(self):
-        pass
-    
+
     def load_empty(self, map_size):
+        self.dimensions = self.width, self.height = map_size
         width, height = map_size
-        self.floor_layout = []
+        self.layout = []
         for x in range(width):
             row = []
             for y in range(height):
                 row.append(EMPTY)
-            self.floor_layout.append(row)
-
-    def get_layout(self):
-        return copy.deepcopy(self.floor_layout)
+            self.layout.append(row)
 
     def load_textfile(self, filename):
-        # Load a text file to define wall layout
+        # Load a text file to define floor layout
         text_file = open(filename, 'r')
-        self.floor_layout = []
+        self.layout = []
         for line in text_file:
             row = []
             for character in line:
@@ -57,4 +53,8 @@ class FloorLayout:
                 else:
                     print "Unexpected character in text file: ", character
                     raise BaseException
-            self.floor_layout.append(row)
+            self.layout.append(row)
+
+        self.width = len(self.layout)
+        self.height = len(self.layout[0])
+        self.dimensions = self.width, self.height

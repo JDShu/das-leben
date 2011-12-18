@@ -28,13 +28,13 @@ import house_objects
 
 class GfxManager(ShowBase):
 
-    def __init__(self, game_map):
+    def __init__(self, game_data):
         ShowBase.__init__(self)
-        self.wall_data = game_map.wall_data
-        self.floor_data = game_map.floor_data
-        self.object_catalog = game_map.object_catalog
+        self.wall_data = game_data.wall_data
+        self.floor_data = game_data.floor_data
+        self.object_catalog = game_data.object_catalog
         self.disableMouse()
-        self.camera_handler = camera.CameraHandler(self.camera)
+        self.camera_handler = camera.CameraHandler(self.camera, game_data.map_dimensions)
                 
     def load_graphics(self):
         '''load all 3d objects and models'''
@@ -54,7 +54,7 @@ class GfxManager(ShowBase):
             object_model.setPos(x_coord + scale, y_coord + scale, scale)
 
     def load_walls(self):
-        for x, row in enumerate(self.wall_data):
+        for x, row in enumerate(self.wall_data.layout):
             for y, wall in enumerate(row):
                 if wall == wall_layout.EMPTY:
                     pass
@@ -100,7 +100,7 @@ class GfxManager(ShowBase):
         grass_texture = self.loader.loadTexture(os.path.join("data", "images", "grass.png"))
         wood_texture = self.loader.loadTexture(os.path.join("data", "images", "floor_wood_0.png"))
         
-        for x, row in enumerate(self.floor_data):
+        for x, row in enumerate(self.floor_data.layout):
             for y, tile in enumerate(row):
                 floor = self.render.attachNewNode(cm.generate())
                 floor.setP(270)

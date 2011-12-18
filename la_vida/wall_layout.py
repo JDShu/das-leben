@@ -30,25 +30,19 @@ class WallLayout:
     horizontal or vertical or if it is empty. Walls always go from
     lower indices to higher indices.
     """
-    def __init__(self):
-        pass
-    
-    def load_empty(self, map_size):
-        width, height = map_size
-        self.wall_layout = []
-        for x in range(width):
-            row = []
-            for y in range(height):
-                row.append(EMPTY)
-            self.wall_layout.append(row)
 
-    def get_layout(self):
-        return copy.deepcopy(self.wall_layout)
+    def load_empty(self, map_size):
+        self.layout = []
+        for x in range(self.width):
+            row = []
+            for y in range(self.height):
+                row.append(EMPTY)
+            self.layout.append(row)        
 
     def load_textfile(self, filename):
         # Load a text file to define wall layout
         text_file = open(filename, 'r')
-        self.wall_layout = []
+        self.layout = []
         for line in text_file:
             row = []
             for character in line:
@@ -65,4 +59,4 @@ class WallLayout:
                 else:
                     print "Unexpected character in text file: ", character
                     raise BaseException
-            self.wall_layout.append(row)
+            self.layout.append(row)
