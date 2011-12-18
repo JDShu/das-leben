@@ -16,7 +16,7 @@
 import os
 
 from game_data import GameData
-#from game_handler import GameHandler
+from game_handler import GameHandler
 from graphics import GfxManager
 
 MAP_SIZE = 20
@@ -29,7 +29,7 @@ class Game:
         self.game_data = GameData(data_filename)
         self.gfx_manager = GfxManager(self.game_data)
         self.gfx_manager.load_graphics()
-        #self.game_handler = GameHandler(self.gfx_manager, self.game_data)
+        self.game_handler = GameHandler(self.gfx_manager, self.game_data)
 
     def run(self):
         self.gfx_manager.run()
