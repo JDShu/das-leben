@@ -1,5 +1,5 @@
-CAMERA_SPEED = 0.2
-CAMERA_TURN_SPEED = 0.1
+CAMERA_SPEED = 0.3
+CAMERA_TURN_SPEED = 0.3
 
 class CameraHandler:
     

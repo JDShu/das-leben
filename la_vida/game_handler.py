@@ -8,12 +8,12 @@ class GameHandler(DirectObject.DirectObject):
 
     def setup_gfx_events(self, gfx_manager):
         camera = gfx_manager.camera_handler
-        self.accept('w-repeat', camera.tilt_up)
-        self.accept('s-repeat', camera.tilt_down)
         self.accept('a-repeat', camera.leftward)
         self.accept('d-repeat', camera.rightward)
         self.accept('z-repeat', camera.zoom_in)
         self.accept('x-repeat', camera.zoom_out)
+        self.accept('arrow_up-repeat', camera.tilt_up)
+        self.accept('arrow_down-repeat', camera.tilt_down)
         self.accept('arrow_left-repeat', camera.rotate_clockwise)
         self.accept('arrow_right-repeat', camera.rotate_counterclockwise)
 
