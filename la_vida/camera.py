@@ -23,8 +23,8 @@ class CameraHandler:
     
     def __init__(self, camera):
         self.camera = camera
-        self.camera.setPos(5,-5,5)
-        self.camera.setHpr(0,-40,-4)
+        self.camera.setPos(-3,-3,9)
+        self.camera.setHpr(-45,-50,0)
     
     def tilt_up(self):
         self.camera.setP(self.camera, CAMERA_SPEED)
@@ -49,3 +49,19 @@ class CameraHandler:
 
     def rotate_counterclockwise(self):
         self.camera.setH(self.camera, -CAMERA_TURN_SPEED)
+
+    def north_preset(self):
+        self.camera.setPos(-3,-3,9)
+        self.camera.setHpr(-45,-50,0)
+
+    def south_preset(self):
+        self.camera.setPos(9,9,9)
+        self.camera.setHpr(135,-50,0)
+
+    def west_preset(self):
+        self.camera.setPos(9,-3,9)
+        self.camera.setHpr(45,-50,0)
+
+    def east_preset(self):
+        self.camera.setPos(-3,9,9)
+        self.camera.setHpr(225,-50,0)

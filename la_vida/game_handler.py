@@ -34,6 +34,10 @@ class GameHandler(DirectObject.DirectObject):
         self.accept('arrow_down-repeat', camera.tilt_down)
         self.accept('arrow_left-repeat', camera.rotate_clockwise)
         self.accept('arrow_right-repeat', camera.rotate_counterclockwise)
+        self.accept('1', camera.north_preset)
+        self.accept('2', camera.east_preset)
+        self.accept('3', camera.south_preset)
+        self.accept('4', camera.west_preset)
 
     def setup_game_events(self, game_data):
         '''stub'''
