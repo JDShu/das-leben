@@ -23,8 +23,6 @@ from game_data import GameData
 from game_handler import GameHandler
 from graphics import GfxManager
 
-MAP_SIZE = 20
-
 class Game:
     """
     Load map data from specified filename and run a game session.
