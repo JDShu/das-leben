@@ -23,8 +23,11 @@ class CameraHandler:
     
     def __init__(self, camera, map_size):
         self.camera = camera
-        self.camera.setPos(-3,-3,9)
-        self.camera.setHpr(-45,-50,0)
+        self.map_width, self.map_height = map_size
+        self.map_center = self.map_width/2, self.map_height/2, 0
+        
+        # Default camera view
+        self.north_preset()
     
     def tilt_up(self):
         self.camera.setP(self.camera, CAMERA_SPEED)
@@ -51,17 +54,25 @@ class CameraHandler:
         self.camera.setH(self.camera, -CAMERA_TURN_SPEED)
 
     def north_preset(self):
-        self.camera.setPos(-3,-3,9)
-        self.camera.setHpr(-45,-50,0)
+        self.camera.setPos(-self.map_center[0],
+                           -self.map_center[1],
+                           2*self.map_width)
+        self.camera.lookAt(self.map_center)
 
     def south_preset(self):
-        self.camera.setPos(9,9,9)
-        self.camera.setHpr(135,-50,0)
+        self.camera.setPos(self.map_center[0] + self.map_width,
+                           self.map_center[1] + self.map_height,
+                           2*self.map_width)
+        self.camera.lookAt(self.map_center)
 
     def west_preset(self):
-        self.camera.setPos(9,-3,9)
-        self.camera.setHpr(45,-50,0)
+        self.camera.setPos(self.map_center[0] + self.map_width,
+                           -self.map_center[1],
+                           2*self.map_width)
+        self.camera.lookAt(self.map_center)
 
     def east_preset(self):
-        self.camera.setPos(-3,9,9)
-        self.camera.setHpr(225,-50,0)
+        self.camera.setPos(-self.map_center[0],
+                           self.map_center[1] + self.map_height,
+                           2*self.map_width)
+        self.camera.lookAt(self.map_center)
