@@ -27,6 +27,7 @@ class Game:
     """
     Load map data from specified filename and run a game session.
     """
+
     def __init__(self, data_filename):
         self.game_data = GameData(data_filename)
         self.gfx_manager = GfxManager(self.game_data)

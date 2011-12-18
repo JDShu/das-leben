@@ -19,6 +19,7 @@
 import copy
 
 class ObjectCatalog:
+
     def __init__(self):
         self.data = {}
         self.object_id = 0
