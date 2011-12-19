@@ -1,19 +1,19 @@
 '''
-* This file is part of La Vida.
+* This file is part of Das Leben.
 * Copyright (C) 2011 Hans Lo
 *
-* La Vida is free software: you can redistribute it and/or modify
+* Das Leben is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
 *
-* La Vida is distributed in the hope that it will be useful,
+* Das Leben is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with La Vida.  If not, see <http://www.gnu.org/licenses/>.
+* along with Das Leben.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import copy
