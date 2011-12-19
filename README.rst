@@ -5,12 +5,14 @@ Das Leben
 Das Leben is a fork of La Vida, a life simulation game.
 
 Running
-------------
+-------
 
 Dependencies
 ............
 
-Das Leben uses the Panda3D library. Get the latest runtime package:
+Das Leben has been tested to run on Python 2.7. It also uses the Panda3D
+library. Get the latest Panda3D runtime package for your operating system
+at the following URL:
 
 http://www.panda3d.org/download.php
 

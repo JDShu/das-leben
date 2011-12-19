@@ -1,4 +1,0 @@
-Dependencies
-------------
-
-This branch of La Vida requires Panda3D.
