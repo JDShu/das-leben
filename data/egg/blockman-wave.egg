@@ -1,0 +1,129 @@
+<CoordinateSystem> { Z-Up }
+
+<Comment> {
+  "egg-optchar -inplace /home/hans/development/La-Vida/data/egg/blockman.egg /home/hans/development/La-Vida/data/egg/blockman-wave.egg"
+}
+<Comment> {
+  "Egg laid by Chicken for Blender, version R91"
+}
+<Table> {
+  <Bundle> Armature {
+    <Table> "<skeleton>" {
+      <Table> r_leg {
+        <Xfm$Anim_S$> xform {
+          <Scalar> fps { 24 }
+          <Char*> order { srpht }
+          <S$Anim> i { <V> { 0.133591 } }
+          <S$Anim> j { <V> { 0.133591 } }
+          <S$Anim> k { <V> { 0.133591 } }
+          <S$Anim> h { <V> { 134.081 } }
+          <S$Anim> p { <V> { -89.9821 } }
+          <S$Anim> r { <V> { 134.081 } }
+          <S$Anim> x { <V> { -0.161468 } }
+          <S$Anim> y { <V> { 0.278378 } }
+          <S$Anim> z { <V> { 1.1499 } }
+        }
+        <Table> Bone.007 {
+          <Xfm$Anim_S$> xform {
+            <Scalar> fps { 24 }
+            <Char*> order { sprht }
+            <S$Anim> h { <V> { 0.00598606 } }
+            <S$Anim> p { <V> { 0.246043 } }
+            <S$Anim> y { <V> { 3.41344 } }
+          }
+        }
+      }
+      <Table> Bone.011_L.002 {
+        <Xfm$Anim_S$> xform {
+          <Scalar> fps { 24 }
+          <Char*> order { srpht }
+          <S$Anim> i { <V> { 0.133591 } }
+          <S$Anim> j { <V> { 0.133591 } }
+          <S$Anim> k { <V> { 0.133591 } }
+          <S$Anim> h { <V> { -90 } }
+          <S$Anim> p { <V> { -76.7268 } }
+          <S$Anim> r { <V> { -90 } }
+          <S$Anim> x { <V> { 0.375297 } }
+          <S$Anim> y { <V> { 0.282734 } }
+          <S$Anim> z { <V> { 1.83748 } }
+        }
+        <Table> Bone.011_L.003 {
+          <Xfm$Anim_S$> xform {
+            <Scalar> fps { 24 }
+            <Char*> order { sprht }
+            <S$Anim> h {
+              <V> {
+                -145.46 -142.494 -134.703 -126.916 -123.954 -125.857
+                -131.239 -138.17 -143.555 -145.46
+              }
+            }
+            <S$Anim> y { <V> { 3.16013 } }
+          }
+          <Table> Bone.011_L.004 {
+            <Xfm$Anim_S$> xform {
+              <Scalar> fps { 24 }
+              <Char*> order { sprht }
+              <S$Anim> h {
+                <V> {
+                  -1.00163 5.29827 22.0803 38.8106 45.063 41.0543
+                  29.5472 14.5709 3.02778 -1.00163
+                }
+              }
+              <S$Anim> p {
+                <V> {
+                  -19.8333 -19.8507 -19.8554 -19.8377 -19.8332 -19.8346
+                  -19.8427 -19.8494 -19.8416 -19.8333
+                }
+              }
+              <S$Anim> r {
+                <V> {
+                  -89.1628 -89.1627 -89.1626 -89.1628 -89.1628 -89.1628
+                  -89.1627 -89.1627 -89.1628 -89.1628
+                }
+              }
+              <S$Anim> y { <V> { 3.48618 } }
+            }
+          }
+        }
+      }
+      <Table> l_leg {
+        <Xfm$Anim_S$> xform {
+          <Scalar> fps { 24 }
+          <Char*> order { srpht }
+          <S$Anim> i { <V> { 0.133591 } }
+          <S$Anim> j { <V> { 0.133591 } }
+          <S$Anim> k { <V> { 0.133591 } }
+          <S$Anim> h { <V> { 180 } }
+          <S$Anim> p { <V> { -89.988 } }
+          <S$Anim> r { <V> { 180 } }
+          <S$Anim> x { <V> { 0.179723 } }
+          <S$Anim> y { <V> { 0.278378 } }
+          <S$Anim> z { <V> { 1.1499 } }
+        }
+        <Table> Bone.004 {
+          <Xfm$Anim_S$> xform {
+            <Scalar> fps { 24 }
+            <Char*> order { sprht }
+            <S$Anim> p { <V> { 0.24527 } }
+            <S$Anim> y { <V> { 3.41344 } }
+          }
+        }
+      }
+      <Table> Bone.001 {
+        <Xfm$Anim_S$> xform {
+          <Scalar> fps { 24 }
+          <Char*> order { srpht }
+          <S$Anim> i { <V> { 0.133591 } }
+          <S$Anim> j { <V> { 0.133591 } }
+          <S$Anim> k { <V> { 0.133591 } }
+          <S$Anim> h { <V> { -180 } }
+          <S$Anim> p { <V> { -25.7932 } }
+          <S$Anim> r { <V> { -180 } }
+          <S$Anim> x { <V> { 0.179723 } }
+          <S$Anim> y { <V> { 0.280709 } }
+          <S$Anim> z { <V> { 0.132079 } }
+        }
+      }
+    }
+  }
+}

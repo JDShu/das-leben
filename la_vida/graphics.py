@@ -20,6 +20,7 @@ import os
 
 from pandac.PandaModules import PandaNode, CardMaker
 from direct.showbase.ShowBase import ShowBase
+from direct.actor.Actor import Actor
 
 import camera
 import floor_layout
@@ -42,7 +43,13 @@ class GfxManager(ShowBase):
         self.load_floor()
         self.load_walls()
         self.load_objects()
-        
+
+        self.blockman = Actor(os.path.join("data","egg", "blockman"),
+                              {"wave":os.path.join("data","egg", "blockman-wave")})
+        self.blockman.setPos(5.5,0.5,0)
+        self.blockman.reparentTo(self.render)
+        self.blockman.loop("wave")
+
     def load_objects(self):
         for key in self.object_catalog:
             house_object = self.object_catalog[key]
