@@ -7,9 +7,9 @@
   "Egg laid by Chicken for Blender, version R91"
 }
 <Material> Material {
-  <Scalar> diffr { 0.8 }
-  <Scalar> diffg { 0.8 }
-  <Scalar> diffb { 0.8 }
+  <Scalar> diffr { 0.253797 }
+  <Scalar> diffg { 0.252784 }
+  <Scalar> diffb { 0.638323 }
   <Scalar> specr { 0.25 }
   <Scalar> specg { 0.25 }
   <Scalar> specb { 0.25 }

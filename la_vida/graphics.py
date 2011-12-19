@@ -18,7 +18,7 @@
 
 import os
 
-from pandac.PandaModules import PandaNode, CardMaker
+from pandac.PandaModules import PandaNode, CardMaker, DirectionalLight, AmbientLight, VBase4
 from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
 
@@ -36,6 +36,19 @@ class GfxManager(ShowBase):
         self.object_catalog = game_data.object_catalog
         self.disableMouse()
         self.camera_handler = camera.CameraHandler(self.camera, game_data.map_dimensions)
+        self.set_lighting()
+
+    def set_lighting(self):
+        dlight = DirectionalLight('dlight')
+        dlnp = self.render.attachNewNode(dlight)
+        dlnp.lookAt(3,3,0)
+        self.render.setLight(dlnp)
+
+        ambientLight = AmbientLight('ambientLight')
+        ambientLight.setColor(VBase4(0.5, 0.5, 0.5, 1))
+        ambientLightNP = render.attachNewNode(ambientLight)
+        self.render.setLight(ambientLightNP)
+
                 
     def load_graphics(self):
         '''load all 3d objects and models'''
