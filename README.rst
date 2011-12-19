@@ -1,9 +1,9 @@
-Das Leben`
-----------
+Das Leben
+---------
 
 Das Leben is a fork of La Vida, a life simulation game.
 
-To Run
+Running
 ------------
 
 Dependencies
@@ -19,11 +19,13 @@ To Run
 Make sure run.py is executable and run it:
 
 ::
+
     ./run.py
 
 Alternatively, run it through python:
 
 ::
+
     python run.py
 
 Contributing
