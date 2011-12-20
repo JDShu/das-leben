@@ -38,13 +38,11 @@ class ObjectCatalog:
             object_name = object_data[0]
             x_coord = int(object_data[1])
             y_coord = int(object_data[2])
-            scale = float(object_data[3])
-            new_house_object = HouseObject(object_name, (x_coord,y_coord), scale)
+            new_house_object = HouseObject(object_name, (x_coord,y_coord))
             self.add(new_house_object)
         object_file.close()
         
 class HouseObject:
-    def __init__(self, name, map_coords, scale):
+    def __init__(self, name, map_coords):
         self.name = name
         self.map_coords = map_coords
-        self.scale = scale

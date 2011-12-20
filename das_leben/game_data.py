@@ -21,6 +21,7 @@ import os
 import house_objects
 import wall_layout
 import floor_layout
+import characters
 
 SAVE_DIRECTORY = os.path.join("data","games")
 
@@ -44,6 +45,11 @@ def load_floor_data(filename):
     floor_data.load_textfile(filepath)
     return floor_data
 
+def load_characters_data(filename):
+    character_data = characters.CharacterCatalog()
+    filepath = os.path.join(SAVE_DIRECTORY, filename + "_characters.json")
+    character_data.load_textfile(filepath)
+    return character_data
 
 class GameData:
 
@@ -53,3 +59,4 @@ class GameData:
         self.map_width, self.map_height = self.map_dimensions
         self.object_catalog = load_objects_data(filename)
         self.wall_data = load_wall_data(filename)
+        self.character_catalog = load_characters_data(filename)

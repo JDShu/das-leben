@@ -25,7 +25,6 @@ from direct.actor.Actor import Actor
 import camera
 import floor_layout
 import wall_layout
-import house_objects
 
 class GfxManager(ShowBase):
 
@@ -34,6 +33,8 @@ class GfxManager(ShowBase):
         self.wall_data = game_data.wall_data
         self.floor_data = game_data.floor_data
         self.object_catalog = game_data.object_catalog
+        self.character_catalog = game_data.character_catalog
+
         self.disableMouse()
         self.camera_handler = camera.CameraHandler(self.camera, game_data.map_dimensions)
         self.set_lighting()
@@ -56,22 +57,15 @@ class GfxManager(ShowBase):
         self.load_floor()
         self.load_walls()
         self.load_objects()
-
-        self.blockman = Actor(os.path.join("data","egg", "blockman"),
-                              {"wave":os.path.join("data","egg", "blockman-wave")})
-        self.blockman.setPos(5.5,0.5,0)
-        self.blockman.reparentTo(self.render)
-        self.blockman.loop("wave")
+        self.load_characters()
 
     def load_objects(self):
         for key in self.object_catalog:
             house_object = self.object_catalog[key]
             object_model = self.loader.loadModel(os.path.join("data","egg", house_object.name))
             object_model.reparentTo(self.render)
-            object_model.setScale(house_object.scale, house_object.scale, house_object.scale)
             x_coord, y_coord = house_object.map_coords
-            scale = house_object.scale
-            object_model.setPos(x_coord + scale, y_coord + scale, scale)
+            object_model.setPos(x_coord-0.5, y_coord-0.5, 0)
 
     def load_walls(self):
         for x, row in enumerate(self.wall_data.layout):
@@ -85,6 +79,14 @@ class GfxManager(ShowBase):
                 elif wall == wall_layout.BOTH:
                     self.make_horizontal_wall((x,y))
                     self.make_vertical_wall((x,y))
+
+    def load_characters(self):
+        catalog = self.character_catalog.get_catalog()
+        for key in catalog:
+            character_model = Actor(os.path.join("data","egg","placeholder_character"))
+            x,y = catalog[key].position
+            character_model.setPos(x,y,0)
+            character_model.reparentTo(self.render)
 
     def make_horizontal_wall(self, pos):
         x, y = pos
