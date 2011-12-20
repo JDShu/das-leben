@@ -41,9 +41,9 @@ class WallLayout:
 
     def load_textfile(self, filename):
         # Load a text file to define wall layout
-        text_file = open(filename, 'r')
+        wall_file = open(filename, 'r')
         self.layout = []
-        for line in text_file:
+        for line in wall_file:
             row = []
             for character in line:
                 if character == '0':
@@ -60,3 +60,4 @@ class WallLayout:
                     print "Unexpected character in text file: ", character
                     raise BaseException
             self.layout.append(row)
+        wall_file.close()

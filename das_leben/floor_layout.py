@@ -39,9 +39,9 @@ class FloorLayout:
 
     def load_textfile(self, filename):
         # Load a text file to define floor layout
-        text_file = open(filename, 'r')
+        floor_file = open(filename, 'r')
         self.layout = []
-        for line in text_file:
+        for line in floor_file:
             row = []
             for character in line:
                 if character == 'G':
@@ -54,7 +54,7 @@ class FloorLayout:
                     print "Unexpected character in text file: ", character
                     raise BaseException
             self.layout.append(row)
-
+        floor_file.close()
         self.width = len(self.layout)
         self.height = len(self.layout[0])
         self.dimensions = self.width, self.height

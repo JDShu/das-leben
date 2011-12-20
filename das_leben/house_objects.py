@@ -41,7 +41,7 @@ class ObjectCatalog:
             scale = float(object_data[3])
             new_house_object = HouseObject(object_name, (x_coord,y_coord), scale)
             self.add(new_house_object)
-    
+        object_file.close()
         
 class HouseObject:
     def __init__(self, name, map_coords, scale):
