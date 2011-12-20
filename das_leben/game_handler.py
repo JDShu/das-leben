@@ -15,14 +15,20 @@
 * You should have received a copy of the GNU General Public License
 * along with Das Leben.  If not, see <http://www.gnu.org/licenses/>.
 '''
+import sys
 
 from direct.showbase import DirectObject
+from direct.gui.DirectGui import DirectButton
+from direct.gui.OnscreenText import OnscreenText
+
+from pandac.PandaModules import TextNode
 
 class GameHandler(DirectObject.DirectObject):
 
     def __init__(self, gfx_manager, game_data):
         self.setup_gfx_events(gfx_manager)
         self.setup_game_events(game_data)
+        self.setup_gui()
 
     def setup_gfx_events(self, gfx_manager):
         camera = gfx_manager.camera_handler
@@ -45,3 +51,15 @@ class GameHandler(DirectObject.DirectObject):
 
     def setup_game_events(self, game_data):
         '''stub'''
+
+    def setup_gui(self):
+        textObject = OnscreenText(text="Das Leben", pos=(0.95,-0.95), 
+                                  scale=0.07, fg=(1,0.5,0.5,1),
+                                  align=TextNode.ACenter)
+
+        quit_button = DirectButton(text = ("Quit"), pos=(-1,0,-0.95),
+                                   scale=0.1, command=quit)
+
+
+def quit():
+    sys.exit()
