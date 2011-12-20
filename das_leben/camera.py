@@ -24,7 +24,7 @@ class CameraHandler:
     def __init__(self, camera, map_size):
         self.camera = camera
         self.map_width, self.map_height = map_size
-        self.map_center = self.map_width/2, self.map_height/2, 0
+        self.map_center = (self.map_width/2, self.map_height/2, 0)
         
         # Default camera view
         self.north_preset()
@@ -75,4 +75,20 @@ class CameraHandler:
         self.camera.setPos(-self.map_center[0],
                            self.map_center[1] + self.map_height,
                            2*self.map_width)
+        self.camera.lookAt(self.map_center)
+
+    def front_preset(self):
+        self.camera.setPos(self.map_center[0],-2*self.map_width,0.5)
+        self.camera.lookAt(self.map_center)
+
+    def back_preset(self):
+        self.camera.setPos(self.map_center[0],3*self.map_width,0.5)
+        self.camera.lookAt(self.map_center)
+
+    def left_preset(self):
+        self.camera.setPos(-2*self.map_height,self.map_center[1],0.5)
+        self.camera.lookAt(self.map_center)
+
+    def right_preset(self):
+        self.camera.setPos(3*self.map_height,self.map_center[1],0.5)
         self.camera.lookAt(self.map_center)

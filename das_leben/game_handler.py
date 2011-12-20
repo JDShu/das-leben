@@ -38,6 +38,10 @@ class GameHandler(DirectObject.DirectObject):
         self.accept('2', camera.east_preset)
         self.accept('3', camera.south_preset)
         self.accept('4', camera.west_preset)
+        self.accept('5', camera.front_preset)
+        self.accept('6', camera.back_preset)
+        self.accept('7', camera.left_preset)
+        self.accept('8', camera.right_preset)
 
     def setup_game_events(self, game_data):
         '''stub'''
