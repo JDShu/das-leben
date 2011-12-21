@@ -42,7 +42,7 @@ class GfxManager(ShowBase):
     def set_lighting(self):
         dlight = DirectionalLight('dlight')
         dlnp = self.render.attachNewNode(dlight)
-        dlnp.lookAt(3,3,0)
+        dlnp.setHpr(45,-45,0)
         self.render.setLight(dlnp)
 
         ambientLight = AmbientLight('ambientLight')
