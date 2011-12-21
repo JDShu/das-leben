@@ -22,6 +22,7 @@ import os
 from game_data import GameData
 from game_handler import GameHandler
 from graphics import GfxManager
+from gui import GuiManager
 
 class Game:
     """
@@ -32,7 +33,10 @@ class Game:
         self.game_data = GameData(data_filename)
         self.gfx_manager = GfxManager(self.game_data)
         self.gfx_manager.load_graphics()
-        self.game_handler = GameHandler(self.gfx_manager, self.game_data)
+        self.gui = GuiManager()
+        self.game_handler = GameHandler(gfx=self.gfx_manager,
+                                        gui=self.gui,
+                                        data=self.game_data)
 
     def run(self):
         self.gfx_manager.run()
