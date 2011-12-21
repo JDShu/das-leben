@@ -21,6 +21,7 @@ class GuiManager:
             global_functions.quit()
         else:
             self.quit_dialog.hide()
+            self.dialogs_open = False
 
     def escape_command(self):
         if self.dialogs_open:
