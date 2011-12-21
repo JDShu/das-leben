@@ -23,6 +23,7 @@ from game_data import GameData
 from game_handler import GameHandler
 from graphics import GfxManager
 from gui import GuiManager
+from audio import Audio
 
 class Game:
     """
@@ -34,6 +35,7 @@ class Game:
         self.gfx_manager = GfxManager(self.game_data)
         self.gfx_manager.load_graphics()
         self.gui = GuiManager()
+        self.audio = Audio(self.gfx_manager.loader)
         self.game_handler = GameHandler(gfx=self.gfx_manager,
                                         gui=self.gui,
                                         data=self.game_data)
