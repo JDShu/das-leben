@@ -26,8 +26,8 @@ class GameHandler(DirectObject.DirectObject):
         self.setup_game_events(data)
         self.setup_gui_events(gui)
 
-    def setup_gfx_events(self, gfx_manager):
-        camera = gfx_manager.camera_handler
+    def setup_gfx_events(self, gfx):
+        camera = gfx.camera_handler
         self.accept('a-repeat', camera.leftward)
         self.accept('d-repeat', camera.rightward)
         self.accept('z-repeat', camera.zoom_in)
@@ -44,6 +44,8 @@ class GameHandler(DirectObject.DirectObject):
         self.accept('6', camera.back_preset)
         self.accept('7', camera.left_preset)
         self.accept('8', camera.right_preset)
+        self.accept('9', camera.top_preset)
+        self.accept('SelectCharacter', gfx.select_character)
 
     def setup_game_events(self, game_data):
         '''stub'''

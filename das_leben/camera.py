@@ -92,3 +92,7 @@ class CameraHandler:
     def right_preset(self):
         self.camera.setPos(3*self.map_height,self.map_center[1],0.5)
         self.camera.lookAt(self.map_center)
+
+    def top_preset(self):
+        self.camera.setPos(self.map_center[0],self.map_center[1], 5)
+        self.camera.lookAt(self.map_center)

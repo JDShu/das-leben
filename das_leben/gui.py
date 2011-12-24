@@ -15,11 +15,12 @@ class GuiManager:
         self.main_panel = DirectFrame(frameColor=(0.5, 0.2, 0, 1),
                                       frameSize=(0, 2.2, 0, 0.3),
                                       pos=(-1.1, 0, -1))
+        self.game_data = game_data
         self.character_buttons = []
-        catalog = game_data.character_catalog.get_catalog()
-        self.generate_character_buttons(catalog)
+        self.generate_character_buttons()
 
-    def generate_character_buttons(self, catalog):
+    def generate_character_buttons(self):
+        catalog = self.game_data.character_catalog.get_catalog()
         position_id = 0
         x = 0.3
         z = 0.15
@@ -27,7 +28,9 @@ class GuiManager:
             button = DirectButton(text = character.profile.name,
                                   pos=(x,0,z),
                                   frameSize=(-2,2,-1,1),
-                                  scale=0.1)
+                                  scale=0.1,
+                                  command=self.game_data.select_character,
+                                  extraArgs=[character_id])
             button.reparentTo(self.main_panel)
             self.character_buttons.append(button)
             x += 0.4
@@ -56,3 +59,4 @@ class GuiManager:
     def close_all_dialogs(self):
         self.quit_dialog.hide()
         self.dialogs_open = False
+        

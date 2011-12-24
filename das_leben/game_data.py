@@ -52,7 +52,11 @@ def load_characters_data(filename):
     return character_data
 
 class GameData:
-
+    """
+    Stores the game state. Any changes to the game must call a function
+    from this class. For now, this is the ONLY class that should call
+    messenger methods.
+    """
     def __init__(self, filename):
         self.floor_data = load_floor_data(filename)
         self.map_dimensions = self.floor_data.dimensions
@@ -60,3 +64,10 @@ class GameData:
         self.object_catalog = load_objects_data(filename)
         self.wall_data = load_wall_data(filename)
         self.character_catalog = load_characters_data(filename)
+
+        self.selected_character = None
+
+    def select_character(self, character_id):
+        self.selected_character = character_id
+        messenger.send('SelectCharacter', [character_id])
+        

@@ -34,6 +34,7 @@ class GfxManager(ShowBase):
         self.floor_data = game_data.floor_data
         self.object_catalog = game_data.object_catalog
         self.character_catalog = game_data.character_catalog
+        self.load_3d_gui()
 
         self.disableMouse()
         self.camera_handler = camera.CameraHandler(self.camera, game_data.map_dimensions)
@@ -49,7 +50,6 @@ class GfxManager(ShowBase):
         ambientLight.setColor(VBase4(0.5, 0.5, 0.5, 1))
         ambientLightNP = render.attachNewNode(ambientLight)
         self.render.setLight(ambientLightNP)
-
                 
     def load_graphics(self):
         '''load all 3d objects and models'''
@@ -81,12 +81,21 @@ class GfxManager(ShowBase):
                     self.make_vertical_wall((x,y))
 
     def load_characters(self):
+        self.character_models = {}
         catalog = self.character_catalog.get_catalog()
         for key in catalog:
             character_model = Actor(os.path.join("data","egg","placeholder_character"))
             x,y = catalog[key].position
             character_model.setPos(x,y,0)
             character_model.reparentTo(self.render)
+            self.character_models[key] = character_model
+
+    def load_3d_gui(self):
+        self.selector = self.loader.loadModel(os.path.join("data","egg", "selected"))
+        self.selector.setPos(0,0,3)
+        self.selector.hide()
+        self.selector.reparentTo(self.render)
+        
 
     def make_horizontal_wall(self, pos):
         x, y = pos
@@ -131,3 +140,9 @@ class GfxManager(ShowBase):
                     floor.setTexture(grass_texture)
                 elif tile == floor_layout.WOOD:
                     floor.setTexture(wood_texture)
+
+    def select_character(self, character_id):
+        self.selector.show()
+        self.selector.reparentTo(self.character_models[character_id])
+        
+        
