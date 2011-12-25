@@ -2,10 +2,11 @@ from pandac.PandaModules import TextNode
 from direct.gui.DirectGui import *
 
 import global_functions
+from gui_3d import Gui3D
 
 class GuiManager:
     
-    def __init__(self, game_data):
+    def __init__(self, game_data, camera):
         self.onscreen_title = OnscreenText(text="Das Leben", pos=(0.95,-0.95), 
                                   scale=0.07, fg=(1,0.5,0.5,1),
                                   align=TextNode.ACenter)
@@ -15,9 +16,12 @@ class GuiManager:
         self.main_panel = DirectFrame(frameColor=(0.5, 0.2, 0, 1),
                                       frameSize=(0, 2.2, 0, 0.3),
                                       pos=(-1.1, 0, -1))
+        
         self.game_data = game_data
         self.character_buttons = []
         self.generate_character_buttons()
+
+        self.gui_3d = Gui3D(camera)
 
     def generate_character_buttons(self):
         catalog = self.game_data.character_catalog.get_catalog()

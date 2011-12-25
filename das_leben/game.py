@@ -34,7 +34,7 @@ class Game:
         self.game_data = GameData(data_filename)
         self.gfx_manager = GfxManager(self.game_data)
         self.gfx_manager.load_graphics()
-        self.gui = GuiManager(self.game_data)
+        self.gui = GuiManager(self.game_data,self.gfx_manager.camera_handler.camera)
         self.audio = Audio(self.gfx_manager.loader)
         self.game_handler = GameHandler(gfx=self.gfx_manager,
                                         gui=self.gui,

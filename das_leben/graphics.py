@@ -18,7 +18,7 @@
 
 import os
 
-from pandac.PandaModules import PandaNode, CardMaker, DirectionalLight, AmbientLight, VBase4
+from pandac.PandaModules import PandaNode, CardMaker, DirectionalLight,AmbientLight, VBase4, CollisionTraverser
 from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
 
@@ -94,8 +94,7 @@ class GfxManager(ShowBase):
         self.selector = self.loader.loadModel(os.path.join("data","egg", "selected"))
         self.selector.setPos(0,0,3)
         self.selector.hide()
-        self.selector.reparentTo(self.render)
-        
+        self.selector.reparentTo(self.render)        
 
     def make_horizontal_wall(self, pos):
         x, y = pos

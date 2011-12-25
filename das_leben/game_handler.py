@@ -52,3 +52,4 @@ class GameHandler(DirectObject.DirectObject):
 
     def setup_gui_events(self, gui):
         self.accept('escape', gui.escape_command)
+        self.accept('mouse1', gui.gui_3d.mouse_click)
