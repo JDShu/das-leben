@@ -54,7 +54,7 @@ class GfxManager(ShowBase):
         ambientLight.setColor(VBase4(0.5, 0.5, 0.5, 1))
         ambientLightNP = render.attachNewNode(ambientLight)
         self.render.setLight(ambientLightNP)
-                
+        
     def load_graphics(self):
         '''load all 3d objects and models'''
         
