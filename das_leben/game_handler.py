@@ -46,6 +46,7 @@ class GameHandler(DirectObject.DirectObject):
         self.accept('8', camera.right_preset)
         self.accept('9', camera.top_preset)
         self.accept('SelectCharacter', gfx.select_character)
+        self.accept('MoveCharacter', gfx.move_character)
 
     def setup_game_events(self, game_data):
         '''stub'''

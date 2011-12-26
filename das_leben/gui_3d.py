@@ -21,6 +21,7 @@ class Gui3D:
         self.gui_traverser.addCollider(picker_np, self.handler)
         self.floor = CollisionPlane(Plane(Vec3(0, 0, 1), Point3(0, 0, 0)))
         self.floor_np = render.attachNewNode(CollisionNode('floor'))
+        self.floor_np.setTag("type", "ground")
         self.floor_np.node().addSolid(self.floor)
         
     def mouse_click(self):
@@ -36,3 +37,5 @@ class Gui3D:
                 selected_type = selected.getTag("type")
                 if selected_type == "character":
                     self.game_data.select_character(int(selected.getTag("id")))
+                elif selected_type == "ground":
+                    self.game_data.click_point(entry.getSurfacePoint(render))

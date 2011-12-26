@@ -144,4 +144,5 @@ class GfxManager(ShowBase):
         self.selector.show()
         self.selector.reparentTo(self.character_models[character_id])
         
-        
+    def move_character(self, character_id, destination):
+        pass
