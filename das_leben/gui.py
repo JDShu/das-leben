@@ -6,7 +6,7 @@ from gui_3d import Gui3D
 
 class GuiManager:
     
-    def __init__(self, game_data, camera):
+    def __init__(self, game_data, gfx_manager):
         self.onscreen_title = OnscreenText(text="Das Leben", pos=(0.95,-0.95), 
                                   scale=0.07, fg=(1,0.5,0.5,1),
                                   align=TextNode.ACenter)
@@ -21,7 +21,7 @@ class GuiManager:
         self.character_buttons = []
         self.generate_character_buttons()
 
-        self.gui_3d = Gui3D(camera)
+        self.gui_3d = Gui3D(game_data, gfx_manager)
 
     def generate_character_buttons(self):
         catalog = self.game_data.character_catalog.get_catalog()
