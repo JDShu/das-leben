@@ -25,6 +25,7 @@ from direct.actor.Actor import Actor
 import camera
 import floor_layout
 import wall_layout
+from ai import AI
 
 class GfxManager(ShowBase):
 
@@ -35,10 +36,13 @@ class GfxManager(ShowBase):
         self.object_catalog = game_data.object_catalog
         self.character_catalog = game_data.character_catalog
         self.load_3d_gui()
-
+        
         self.disableMouse()
         self.camera_handler = camera.CameraHandler(self.camera, game_data.map_dimensions)
         self.set_lighting()
+
+        self.load_graphics()
+        self.ai = AI(game_data, self.character_models)
 
     def set_lighting(self):
         dlight = DirectionalLight('dlight')
@@ -145,4 +149,5 @@ class GfxManager(ShowBase):
         self.selector.reparentTo(self.character_models[character_id])
         
     def move_character(self, character_id, destination):
-        pass
+        self.ai.stop_move(character_id)
+        self.ai.begin_move(character_id, destination)

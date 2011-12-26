@@ -74,4 +74,4 @@ class GameData:
     def click_point(self, coords):
         if self.selected_character != None:
             messenger.send('MoveCharacter', [self.selected_character, coords])
-            print "move ", self.selected_character, " to ", coords
+            

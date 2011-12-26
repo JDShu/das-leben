@@ -13,7 +13,7 @@ class Gui3D:
             new_collision_nodepath = model.attachNewNode(new_collision_node)
             new_collision_nodepath.setTag("type","character")
             new_collision_nodepath.setTag("id",str(cid))
-        
+                    
         picker_node = CollisionNode('mouseRay')
         picker_np = camera.attachNewNode(picker_node)
         self.picker_ray = CollisionRay()

@@ -49,7 +49,7 @@ class GameHandler(DirectObject.DirectObject):
         self.accept('MoveCharacter', gfx.move_character)
 
     def setup_game_events(self, game_data):
-        '''stub'''
+        """stub"""
 
     def setup_gui_events(self, gui):
         self.accept('escape', gui.escape_command)
