@@ -152,8 +152,7 @@ class GfxManager(ShowBase):
         self.selector.reparentTo(self.character_models[character_id])
         
     def move_character(self, character_id, destination):
-        new_destination = destination[0], destination[1]
-        self.ai.begin_move(character_id, new_destination)
+        self.ai.begin_move(character_id, destination)
 
     def step_character(self, character_id, next_node):
         model = self.character_models[character_id]
@@ -165,8 +164,8 @@ class GfxManager(ShowBase):
         if (abs(next_node[0] - model_pos[0]) < 0.5
             and abs(next_node[1] - model_pos[1]) < 0.5):
             self.ai.character_catalog[character_id].pop_front()
-            
-        
+
+
 def calculate_step(current, destination):
     v1, v2 = current, destination
     x, y = v1[0]-v2[0], v1[1]-v2[1]

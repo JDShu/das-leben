@@ -24,12 +24,17 @@ NODES = (25,25) #This cannot be changed at the moment.
 
 class AI:
 
-    def __init__(self, game_data, character_models, objects):
+    def __init__(self, game_data, character_models, object_models):
         self.game_data = game_data
         self.ai_map = create_empty_map(*NODES)
         self.character_catalog = {}
         for character_id, model in character_models.items():
-            self.character_catalog[character_id] = AICharacter(model, objects)
+            self.character_catalog[character_id] = AICharacter(model)
+
+        for object_id, model in object_models.items():
+            x,y = int_2d_position(model.getPos())
+            self.ai_map[x][y] = 1
+            print x,y
             
         taskMgr.add(self.update,"AIUpdate")
 
@@ -40,11 +45,12 @@ class AI:
         return Task.cont
 
     def begin_move(self, character_id, destination):
-        self.character_catalog[character_id].set_path(destination, self.ai_map)
+        new_destination = destination[0], destination[1]
+        self.character_catalog[character_id].set_path(new_destination, self.ai_map)
 
 class AICharacter:
 
-    def __init__(self, model, objects):
+    def __init__(self, model):
         self.model = model
         self.position = int_2d_position(model.getPos())
         self.path = None
@@ -55,6 +61,7 @@ class AICharacter:
         goal = int_2d_position(destination)
         self.path = astar_path(ai_map, self.position, goal)
         self.pop_front()
+        print self.path
  
     def pop_front(self):
         if self.path:
@@ -63,7 +70,7 @@ class AICharacter:
 
 
 def int_2d_position(position):
-    return int(math.floor(position[0])), int(math.floor(position[1]))
+    return int(math.floor(position[0]+0.5)), int(math.floor(position[1]+0.5))
 
 def get_ai_node(geo_coords):
     pass
