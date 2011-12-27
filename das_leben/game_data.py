@@ -74,4 +74,6 @@ class GameData:
     def click_point(self, coords):
         if self.selected_character != None:
             messenger.send('MoveCharacter', [self.selected_character, coords])
-            
+
+    def step_character(self, character_id, next_node):
+        messenger.send('StepCharacter', [character_id, next_node])

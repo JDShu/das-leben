@@ -17,6 +17,7 @@
 '''
 
 import os
+import math
 
 from pandac.PandaModules import PandaNode, CardMaker, DirectionalLight,AmbientLight, VBase4, CollisionTraverser
 from direct.showbase.ShowBase import ShowBase
@@ -42,7 +43,7 @@ class GfxManager(ShowBase):
         self.set_lighting()
 
         self.load_graphics()
-        self.ai = AI(game_data, self.character_models)
+        self.ai = AI(game_data, self.character_models, self.object_models)
 
     def set_lighting(self):
         dlight = DirectionalLight('dlight')
@@ -64,12 +65,14 @@ class GfxManager(ShowBase):
         self.load_characters()
 
     def load_objects(self):
+        self.object_models = {}
         for key in self.object_catalog:
             house_object = self.object_catalog[key]
             object_model = self.loader.loadModel(os.path.join("data","egg", house_object.name))
             object_model.reparentTo(self.render)
             x_coord, y_coord = house_object.map_coords
             object_model.setPos(x_coord-0.5, y_coord-0.5, 0)
+            self.object_models[key] = object_model
 
     def load_walls(self):
         for x, row in enumerate(self.wall_data.layout):
@@ -90,7 +93,7 @@ class GfxManager(ShowBase):
         for key in catalog:
             character_model = Actor(os.path.join("data","egg","placeholder_character"))
             x,y = catalog[key].position
-            character_model.setPos(x,y,0)
+            character_model.setPos(x-0.5,y-0.5,0)
             character_model.reparentTo(self.render)
             self.character_models[key] = character_model
 
@@ -149,5 +152,23 @@ class GfxManager(ShowBase):
         self.selector.reparentTo(self.character_models[character_id])
         
     def move_character(self, character_id, destination):
-        self.ai.stop_move(character_id)
-        self.ai.begin_move(character_id, destination)
+        new_destination = destination[0], destination[1]
+        self.ai.begin_move(character_id, new_destination)
+
+    def step_character(self, character_id, next_node):
+        model = self.character_models[character_id]
+        x, y, z = model.getPos()
+        step = calculate_step((x,y),next_node)
+
+        model.setPos(model, step[0], step[1], 0)
+        model_pos = model.getPos()
+        if (abs(next_node[0] - model_pos[0]) < 0.5
+            and abs(next_node[1] - model_pos[1]) < 0.5):
+            self.ai.character_catalog[character_id].pop_front()
+            
+        
+def calculate_step(current, destination):
+    v1, v2 = current, destination
+    x, y = v1[0]-v2[0], v1[1]-v2[1]
+    length = math.hypot(x,y)
+    return (-x*0.1/length, -y*0.1/length)
