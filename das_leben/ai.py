@@ -34,8 +34,7 @@ class AI:
         for object_id, model in object_models.items():
             x,y = int_2d_position(model.getPos())
             self.ai_map[x][y] = 1
-            print x,y
-            
+                        
         taskMgr.add(self.update,"AIUpdate")
 
     def update(self, task):
@@ -53,24 +52,35 @@ class AICharacter:
     def __init__(self, model):
         self.model = model
         self.position = int_2d_position(model.getPos())
-        self.path = None
+        self.path = []
         self.moving = False
 
     def set_path(self, destination, ai_map):
         self.moving = True
         goal = int_2d_position(destination)
-        self.path = astar_path(ai_map, self.position, goal)
+        if self.position == goal:
+            self.get_to_exact(destination)
+            return
+        try:
+            self.path = astar_path(ai_map, self.position, goal)
+            # Hack to shift the ai map to fit the graphics map
+            self.path = [(x+0.5, y+0.5) for x,y in self.path] 
+        except BaseException:
+            return
+        self.get_to_exact(destination)
         self.pop_front()
-        print self.path
- 
+         
     def pop_front(self):
         if self.path:
-            self.position = self.path[0]
+            self.position = int_2d_position(self.path[0])
             self.path = self.path[1:]
 
-
+    def get_to_exact(self, position):
+        #get to the final position
+        self.path.append(position) 
+        
 def int_2d_position(position):
-    return int(math.floor(position[0]+0.5)), int(math.floor(position[1]+0.5))
+    return int(math.floor(position[0])), int(math.floor(position[1]))
 
 def get_ai_node(geo_coords):
     pass
@@ -108,6 +118,7 @@ def astar_path(map_layout, start, goal):
                 g[n] = temp_g
                 h[n] = astar_heuristic(n, goal)
                 f[n] = g[n] + h[n]
+    print "There is no path to", goal
     raise BaseException
         
 def lowest_score_node(open_set, f):
@@ -127,7 +138,8 @@ def reconstruct(came_from, current_node):
 def get_neighbors(node, map_layout):
     x, y = node
     neighbors = []
-    for n_x, n_y in [(x+1, y), (x-1, y), (x, y-1), (x, y+1)]:
+    for n_x, n_y in [(x+1, y), (x-1, y), (x, y-1), (x, y+1),
+                     (x+1,y+1), (x+1,y-1), (x-1,y+1), (x-1,y-1)]:
         try:
             if map_layout[n_x][n_y] == 0:
                 neighbors.append((n_x, n_y))

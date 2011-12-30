@@ -131,7 +131,7 @@ class GfxManager(ShowBase):
 
     def load_floor(self):
         cm = CardMaker("floor")
-        cm.setFrame(0, 1, 0, 1)
+        cm.setFrame(0.01, 0.99, 0.01, 0.99)
         card = cm.generate()
 
         grass_texture = self.loader.loadTexture(os.path.join("data", "images", "grass.png"))
@@ -161,10 +161,9 @@ class GfxManager(ShowBase):
 
         model.setPos(model, step[0], step[1], 0)
         model_pos = model.getPos()
-        if (abs(next_node[0] - model_pos[0]) < 0.5
-            and abs(next_node[1] - model_pos[1]) < 0.5):
+        if (abs(next_node[0] - model_pos[0]) < 0.1
+            and abs(next_node[1] - model_pos[1]) < 0.1):
             self.ai.character_catalog[character_id].pop_front()
-
 
 def calculate_step(current, destination):
     v1, v2 = current, destination
