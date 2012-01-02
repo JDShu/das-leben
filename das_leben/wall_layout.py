@@ -21,7 +21,8 @@ import copy
 EMPTY = 0
 HORIZONTAL = 1
 VERTICAL = 2
-BOTH = 3
+POINT = 3
+OPEN_POINT = 4
 
 class WallLayout:
     """
@@ -53,11 +54,15 @@ class WallLayout:
                 elif character == '-':
                     row.append(HORIZONTAL)
                 elif character == '+':
-                    row.append(BOTH)
+                    row.append(POINT)
+                elif character == '*':
+                    row.append(OPEN_POINT)
                 elif character == '\n':
                     continue
                 else:
                     print "Unexpected character in text file: ", character
                     raise BaseException
+            row.append(EMPTY)
             self.layout.append(row)
+        self.layout.append([EMPTY]*len(self.layout[0]))
         wall_file.close()

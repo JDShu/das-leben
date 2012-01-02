@@ -28,6 +28,24 @@ import floor_layout
 import wall_layout
 from ai import AI
 
+DRAW_HORIZONTAL = set([(wall_layout.POINT, wall_layout.POINT),
+                       (wall_layout.POINT, wall_layout.OPEN_POINT),
+                       (wall_layout.POINT, wall_layout.HORIZONTAL),
+                       (wall_layout.OPEN_POINT, wall_layout.HORIZONTAL),
+                       (wall_layout.OPEN_POINT, wall_layout.POINT),
+                       (wall_layout.HORIZONTAL, wall_layout.POINT),
+                       (wall_layout.HORIZONTAL, wall_layout.OPEN_POINT),
+                       (wall_layout.HORIZONTAL, wall_layout.HORIZONTAL)])                      
+
+DRAW_VERTICAL = set([(wall_layout.POINT, wall_layout.POINT),
+                       (wall_layout.POINT, wall_layout.OPEN_POINT),
+                       (wall_layout.POINT, wall_layout.VERTICAL),
+                       (wall_layout.OPEN_POINT, wall_layout.VERTICAL),
+                       (wall_layout.OPEN_POINT, wall_layout.POINT),
+                       (wall_layout.VERTICAL, wall_layout.POINT),
+                       (wall_layout.VERTICAL, wall_layout.OPEN_POINT),
+                       (wall_layout.VERTICAL, wall_layout.VERTICAL)])
+                  
 class GfxManager(ShowBase):
 
     def __init__(self, game_data):
@@ -43,7 +61,7 @@ class GfxManager(ShowBase):
         self.set_lighting()
 
         self.load_graphics()
-        self.ai = AI(game_data, self.character_models, self.object_models)
+        self.ai = AI(game_data, self.character_models, self.object_models, self.wall_data)
 
     def set_lighting(self):
         dlight = DirectionalLight('dlight')
@@ -75,17 +93,15 @@ class GfxManager(ShowBase):
             self.object_models[key] = object_model
 
     def load_walls(self):
-        for x, row in enumerate(self.wall_data.layout):
-            for y, wall in enumerate(row):
-                if wall == wall_layout.EMPTY:
-                    pass
-                elif wall == wall_layout.HORIZONTAL:
-                    self.make_horizontal_wall((x,y))
-                elif wall == wall_layout.VERTICAL:
-                    self.make_vertical_wall((x,y))
-                elif wall == wall_layout.BOTH:
-                    self.make_horizontal_wall((x,y))
-                    self.make_vertical_wall((x,y))
+        for i in xrange(len(self.wall_data.layout)-1):
+            for j in xrange(len(self.wall_data.layout[0])-1):
+                wall = self.wall_data.layout[i][j]
+                wall_below = self.wall_data.layout[i+1][j]
+                wall_next = self.wall_data.layout[i][j+1]
+                if (wall, wall_next) in DRAW_HORIZONTAL:
+                    self.make_horizontal_wall((i,j))
+                if (wall, wall_below) in DRAW_VERTICAL:
+                    self.make_vertical_wall((i,j))
 
     def load_characters(self):
         self.character_models = {}

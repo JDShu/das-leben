@@ -20,11 +20,13 @@ import math
 
 from direct.task import Task
 
+import wall_layout
+
 NODES = (25,25) #This cannot be changed at the moment.
 
 class AI:
 
-    def __init__(self, game_data, character_models, object_models):
+    def __init__(self, game_data, character_models, object_models, walls):
         self.game_data = game_data
         self.ai_map = create_empty_map(*NODES)
         self.character_catalog = {}
@@ -36,6 +38,9 @@ class AI:
             self.ai_map[x][y] = 1
                         
         taskMgr.add(self.update,"AIUpdate")
+
+        create_ai_map(object_models, walls)
+
 
     def update(self, task):
         for character_id, ai in self.character_catalog.items():
@@ -149,3 +154,24 @@ def get_neighbors(node, map_layout):
 
 def create_empty_map(w,h):
     return [[0]*w for i in range(h)]
+
+def create_ai_map(objects, walls):
+    new_map = AIMap()
+    vertical_points = set([0,len(walls.layout)-2])
+    horizontal_points = set([0, len(walls.layout[0])-2])
+    print walls.layout
+    for i in xrange(1, len(walls.layout)):
+        for j in xrange(1, len(walls.layout[0])):
+            if walls.layout[i][j] in [wall_layout.POINT,
+                                      wall_layout.OPEN_POINT]:
+                horizontal_points.add(i)
+                vertical_points.add(j)
+                
+    print "V:", vertical_points
+    print "H:", horizontal_points
+    
+class AIMap:
+    def __init__(self):
+        self.cells = {}
+
+    
