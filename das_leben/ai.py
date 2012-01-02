@@ -23,6 +23,7 @@ from direct.task import Task
 import wall_layout
 
 NODES = (25,25) #This cannot be changed at the moment.
+N,S,E,W = range(4)
 
 class AI:
 
@@ -39,8 +40,7 @@ class AI:
                         
         taskMgr.add(self.update,"AIUpdate")
 
-        create_ai_map(object_models, walls)
-
+        self.better_map = create_ai_map(object_models, walls)
 
     def update(self, task):
         for character_id, ai in self.character_catalog.items():
@@ -69,7 +69,8 @@ class AICharacter:
         try:
             self.path = astar_path(ai_map, self.position, goal)
             # Hack to shift the ai map to fit the graphics map
-            self.path = [(x+0.5, y+0.5) for x,y in self.path] 
+            self.path = [(x+0.5, y+0.5) for x,y in self.path]
+            
         except BaseException:
             return
         self.get_to_exact(destination)
@@ -156,22 +157,75 @@ def create_empty_map(w,h):
     return [[0]*w for i in range(h)]
 
 def create_ai_map(objects, walls):
-    new_map = AIMap()
     vertical_points = set([0,len(walls.layout)-2])
     horizontal_points = set([0, len(walls.layout[0])-2])
-    print walls.layout
-    for i in xrange(1, len(walls.layout)):
-        for j in xrange(1, len(walls.layout[0])):
-            if walls.layout[i][j] in [wall_layout.POINT,
+    for j in xrange(len(walls.layout)):
+        for i in xrange(len(walls.layout[0])):
+            if walls.layout[j][i] in [wall_layout.POINT,
                                       wall_layout.OPEN_POINT]:
                 horizontal_points.add(i)
                 vertical_points.add(j)
                 
-    print "V:", vertical_points
-    print "H:", horizontal_points
-    
+    sorted_verticals = sorted(list(vertical_points))
+    sorted_horizontals = sorted(list(horizontal_points))
+    new_map = AIMap(sorted_verticals, sorted_horizontals, walls.layout)
+    return new_map
+            
 class AIMap:
-    def __init__(self):
-        self.cells = {}
+    def __init__(self, sorted_verticals, sorted_horizontals, wall_layout):
+        self.sorted_verticals = sorted_verticals
+        self.sorted_horizontals = sorted_horizontals
+        w = len(sorted_horizontals)
+        h = len(sorted_verticals)
+        self.cells = [[None]*(h-1) for i in xrange(w-1)] 
+        for i in xrange(w-1):
+            for j in xrange(h-1):
+                x1, y1 = sorted_horizontals[i], sorted_verticals[j]
+                x2, y2 = sorted_horizontals[i+1], sorted_verticals[j+1]
+                self.add_cell(i,j,AICell(x1,x2,y1,y2,wall_layout))
+        
+    def add_cell(self, i, j, cell):
+        self.cells[i][j] = cell
 
-    
+    def point_to_cell(self, position):
+        x, y = position
+        final_x = None
+        final_y = None
+        for i, cell_x in enumerate(self.sorted_horizontals):
+            if x < cell_x:
+                final_x = self.sorted_horizontals[i-1]
+        final_y = None
+        for j, cell_y in enumerate(self.sorted_verticals):
+            if x < cell_y:
+                final_y = self.sorted_verticals[i-1]
+        return (final_x, final_y)
+
+class AICell:
+    def __init__(self, x1, x2, y1, y2, layout):
+        self.x1, self.x2, self.y1, self.y2 = x1, x2, y1, y2
+        self.accessible = {}
+        nw = layout[y1][x1]
+        sw = layout[y2][x1]
+        ne = layout[y1][x2]
+        se = layout[y2][x2]
+        
+        self.accessible[N] = accessible(nw,ne)
+        self.accessible[S] = accessible(sw,se)
+        self.accessible[E] = accessible(se,ne)
+        self.accessible[W] = accessible(nw,sw)
+
+        if x1 == 0:
+            self.accessible[W] = False
+        if y1 == 0:
+            self.accessible[N] = False
+        if y2 == len(layout)-2:
+            self.accessible[S] = False
+        if x2 == len(layout)-2:
+            self.accessible[E] = False
+        
+def accessible(corner_a, corner_b):
+    if corner_a in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:
+        return True
+    if corner_b in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:
+        return True
+    return False
