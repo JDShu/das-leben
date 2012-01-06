@@ -45,6 +45,7 @@ def load_floor_data(filename):
     floor_data.load_textfile(filepath)
     return floor_data
 
+
 def load_characters_data(filename):
     character_data = characters.CharacterCatalog()
     filepath = os.path.join(SAVE_DIRECTORY, filename + "_characters.json")

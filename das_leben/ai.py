@@ -262,6 +262,10 @@ class AICell:
 def accessible(corner_a, corner_b):
     if corner_a == wall_layout.EMPTY or corner_b == wall_layout.EMPTY:
         return True
+    if corner_a == wall_layout.OPEN_POINT and corner_b in [wall_layout.VERTICAL, wall_layout.HORIZONTAL]:
+        return True
+    if corner_b == wall_layout.OPEN_POINT and corner_a in [wall_layout.VERTICAL, wall_layout.HORIZONTAL]:
+        return True
     if corner_a not in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:
         return False
     if corner_b not in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:

@@ -174,8 +174,9 @@ class GfxManager(ShowBase):
         model = self.character_models[character_id]
         x, y, z = model.getPos()
         step = calculate_step((x,y),next_node)
-
-        model.setPos(model, step[0], step[1], 0)
+        model.lookAt(next_node[0], next_node[1], 0)
+        model.setPos(model, 0, 0.1, 0)
+        #model.setPos(model, step[0], step[1], 0)
         model_pos = model.getPos()
         self.ai.character_catalog[character_id].update_path(model_pos)
 
