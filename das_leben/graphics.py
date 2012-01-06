@@ -61,7 +61,7 @@ class GfxManager(ShowBase):
         self.set_lighting()
 
         self.load_graphics()
-        self.ai = AI(game_data, self.character_models, self.object_models, self.wall_data)
+        self.ai = AI(game_data, self.character_models, self.object_catalog, self.wall_data)
 
     def set_lighting(self):
         dlight = DirectionalLight('dlight')
@@ -89,7 +89,7 @@ class GfxManager(ShowBase):
             object_model = self.loader.loadModel(os.path.join("data","egg", house_object.name))
             object_model.reparentTo(self.render)
             x_coord, y_coord = house_object.map_coords
-            object_model.setPos(x_coord-0.5, y_coord-0.5, 0)
+            object_model.setPos(x_coord+0.5, y_coord+0.5, 0)
             self.object_models[key] = object_model
 
     def load_walls(self):
@@ -177,9 +177,7 @@ class GfxManager(ShowBase):
 
         model.setPos(model, step[0], step[1], 0)
         model_pos = model.getPos()
-        if (abs(next_node[0] - model_pos[0]) < 0.1
-            and abs(next_node[1] - model_pos[1]) < 0.1):
-            self.ai.character_catalog[character_id].pop_front()
+        self.ai.character_catalog[character_id].update_path(model_pos)
 
 def calculate_step(current, destination):
     v1, v2 = current, destination
