@@ -260,11 +260,13 @@ class AICell:
         return str((self.x1, self.y1)) + str((self.x2, self.y2)) + n + s + e + w
         
 def accessible(corner_a, corner_b):
-    if corner_a in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:
+    if corner_a == wall_layout.EMPTY or corner_b == wall_layout.EMPTY:
         return True
-    if corner_b in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:
-        return True
-    return False
+    if corner_a not in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:
+        return False
+    if corner_b not in [wall_layout.OPEN_POINT, wall_layout.EMPTY]:
+        return False
+    return True
 
 def is_invalid_cell(cell):
     return cell[0] is None or cell[1] is None

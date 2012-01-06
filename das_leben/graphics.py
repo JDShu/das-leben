@@ -147,7 +147,7 @@ class GfxManager(ShowBase):
 
     def load_floor(self):
         cm = CardMaker("floor")
-        cm.setFrame(0.01, 0.99, 0.01, 0.99)
+        cm.setFrame(0, 1, 0, 1)
         card = cm.generate()
 
         grass_texture = self.loader.loadTexture(os.path.join("data", "images", "grass.png"))
@@ -183,4 +183,6 @@ def calculate_step(current, destination):
     v1, v2 = current, destination
     x, y = v1[0]-v2[0], v1[1]-v2[1]
     length = math.hypot(x,y)
+    if length == 0:
+        return (0,0)
     return (-x*0.1/length, -y*0.1/length)
