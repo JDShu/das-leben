@@ -19,8 +19,8 @@
 * along with Das Leben.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-from das_leben.game import Game
+from das_leben.application import Application
 
 if __name__ == "__main__":
-    game = Game("sample") # Placeholder level.
-    game.run()
+    app = Application()
+    app.run()

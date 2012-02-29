@@ -21,7 +21,7 @@ from direct.showbase import DirectObject
 
 class GameHandler(DirectObject.DirectObject):
 
-    def __init__(self, gfx=None, gui=None, data=None):
+    def __init__(self, gfx, gui , data):
         self.setup_gfx_events(gfx)
         self.setup_game_events(data)
         self.setup_gui_events(gui)

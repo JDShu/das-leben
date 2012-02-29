@@ -20,10 +20,10 @@ import os
 import math
 
 from pandac.PandaModules import PandaNode, CardMaker, DirectionalLight,AmbientLight, VBase4, CollisionTraverser
-from direct.showbase.ShowBase import ShowBase
 from direct.actor.Actor import Actor
+from direct.showbase.Loader import Loader
 
-import camera
+import camera_handler
 import floor_layout
 import wall_layout
 from ai import AI
@@ -46,18 +46,19 @@ DRAW_VERTICAL = set([(wall_layout.POINT, wall_layout.POINT),
                        (wall_layout.VERTICAL, wall_layout.OPEN_POINT),
                        (wall_layout.VERTICAL, wall_layout.VERTICAL)])
                   
-class GfxManager(ShowBase):
+class GameGfx:
 
-    def __init__(self, game_data):
-        ShowBase.__init__(self)
+    def __init__(self, game_node, game_data):
+        self.render = game_node
+        self.loader = loader
+
         self.wall_data = game_data.wall_data
         self.floor_data = game_data.floor_data
         self.object_catalog = game_data.object_catalog
         self.character_catalog = game_data.character_catalog
         self.load_3d_gui()
         
-        self.disableMouse()
-        self.camera_handler = camera.CameraHandler(self.camera, game_data.map_dimensions)
+        self.camera_handler = camera_handler.CameraHandler(camera, game_data.map_dimensions)
         self.set_lighting()
 
         self.load_graphics()

@@ -19,25 +19,12 @@
 
 import os
 
-from game_data import GameData
+from game_graphics import GameGfx
 from game_handler import GameHandler
-from graphics import GfxManager
 from gui import GuiManager
 from audio import Audio
 
-class Game:
-    """
-    Load map data from specified filename and run a game session.
-    """
-
-    def __init__(self, data_filename):
-        self.game_data = GameData(data_filename)
-        self.gfx_manager = GfxManager(self.game_data)
-        self.gui = GuiManager(self.game_data,self.gfx_manager)
-        self.audio = Audio(self.gfx_manager.loader)
-        self.game_handler = GameHandler(gfx=self.gfx_manager,
-                                        gui=self.gui,
-                                        data=self.game_data)
-
-    def run(self):
-        self.gfx_manager.run()
+def setup(node, data):
+    gfx = GameGfx(node, data)
+    gui = GuiManager(data, gfx)
+    handler = GameHandler(gfx, gui, data)
